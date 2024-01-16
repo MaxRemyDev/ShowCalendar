@@ -405,3 +405,6 @@ FodyWeavers.xsd
 
 # Mac files
 .DS_Store
+
+# Python files
+showMySQL.py
