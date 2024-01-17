@@ -1,7 +1,9 @@
 # Show Calendar - (WIP)
 
-**Show Calendar** is an open-source solution designed to merge your personal and professional calendars. This versatile tool is perfect for colleagues, clients, friends, and families, and you can offer it to them if you’re looking for a simplified way to manage physical or virtual meeting appointments. With Show Calendar, say goodbye to endless emails, text messages, or calls to find the perfect time for your meetings!
-This automated scheduling platform is much more than just a calendar. It seamlessly integrates Google, Microsoft, and Apple calendars at your convenience, allowing users like you to efficiently manage their availabilities and commitments on a single intuitive interface. Whether you’re planning a business meeting, a medical appointment, or a coffee with friends, Show Calendar is your ally for flawless organization.
+**Show Calendar** is an open-source solution designed to merge your personal and professional calendars. This versatile tool is perfect for colleagues, clients, friends, and families, and you can offer it to them if you're looking for a simplified way to manage physical or virtual meeting appointments. With Show Calendar, say goodbye to endless emails, text messages, or calls to find the perfect time for your meetings!
+
+This automated scheduling platform is much more than just a calendar. It seamlessly integrates Google, Microsoft, and Apple calendars at your convenience, allowing users like you to efficiently manage their availabilities and commitments on a single intuitive interface. Whether you're planning a business meeting, a medical appointment, or a coffee with friends, Show Calendar is your ally for flawless organization.
+
 Besides the convenience of viewing all your events at a glance, Show Calendar offers a host of advanced features: intelligent notifications, automatic time slot suggestions, invitation management across various platforms like Microsoft Teams or Zoom for video conferences, or location setting for physical meetings, and much more. All this with the ultimate goal of simplifying your daily and professional life.
 
 This project is currently under development (WIP - Work In Progress).
