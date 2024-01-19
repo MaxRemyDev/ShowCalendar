@@ -8,6 +8,13 @@ Besides the convenience of viewing all your events at a glance, Show Calendar of
 
 This project is currently under development (WIP - Work In Progress).
 
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=MaxRemyDev_ShowCalendar&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=MaxRemyDev_ShowCalendar)
+[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=MaxRemyDev_ShowCalendar&metric=bugs)](https://sonarcloud.io/summary/new_code?id=MaxRemyDev_ShowCalendar)
+[![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=MaxRemyDev_ShowCalendar&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=MaxRemyDev_ShowCalendar)
+[![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=MaxRemyDev_ShowCalendar&metric=vulnerabilities)](https://sonarcloud.io/summary/new_code?id=MaxRemyDev_ShowCalendar)
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=MaxRemyDev_ShowCalendar&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=MaxRemyDev_ShowCalendar)
+[![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=MaxRemyDev_ShowCalendar&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=MaxRemyDev_ShowCalendar)
+
 ### Main Objectives
 
 - Merge personal and professional aspects into a single calendar.
@@ -73,3 +80,7 @@ This project is distributed under the MIT License. See the [LICENSE](LICENSE) fi
 
 ---
 © 2024 Max Remy Dev
+
+---
+
+[![SonarCloud](https://sonarcloud.io/images/project_badges/sonarcloud-orange.svg)](https://sonarcloud.io/summary/new_code?id=MaxRemyDev_ShowCalendar)
