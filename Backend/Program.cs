@@ -2,8 +2,13 @@
 using Backend.Data;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.AspNetCore.Builder;
 using dotenv.net;
+using AutoMapper;
 using System;
+using System.Text;
+using Backend.Interfaces;
+using Backend.Services;
 
 // LOAD ENVIRONMENT VARIABLES FROM .ENV FILE
 DotEnv.Load();
@@ -21,6 +26,12 @@ builder.Services.AddControllers();
 
 // ADD AUTHORIZATION POLICY
 builder.Services.AddAuthorization();
+
+// CONFIGURE AUTOMAPPER FOR MAPPING MODELS
+builder.Services.AddAutoMapper(typeof(Backend.Mappings.AutoMapperProfile));
+
+// ADD SINGLETONS FOR SERVICES
+builder.Services.AddScoped<IUserService, UserService>();
 
 // BUILD WEB APPLICATION
 var app = builder.Build();
