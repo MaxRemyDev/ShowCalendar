@@ -50,7 +50,7 @@ namespace Backend.Controllers
         public async Task<IActionResult> CreateUser(UserDto userDto)
         {
             var user = _mapper.Map<User>(userDto);
-            var newUser = await _userService.CreateUser(user);
+            var newUser = await _userService.CreateUser(user, userDto.Password);
             if (newUser == null) return BadRequest("User creation failed");
 
             var newUserDto = _mapper.Map<UserDto>(newUser);
@@ -59,16 +59,16 @@ namespace Backend.Controllers
 
         // UPDATE AN EXISTING USER BY ID (PUT)
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateUser(int id, UserDto userDto)
+        public async Task<IActionResult> UpdateUser(int id, UserUpdateDto userUpdateDto)
         {
             var userToUpdate = await _userService.GetUserById(id);
             if (userToUpdate == null) return NotFound();
 
-            _mapper.Map(userDto, userToUpdate);
+            _mapper.Map(userUpdateDto, userToUpdate);
             var updatedUser = await _userService.UpdateUser(id, userToUpdate);
             if (updatedUser == null) return BadRequest("User update failed");
 
-            var updatedUserDto = _mapper.Map<UserDto>(updatedUser);
+            var updatedUserDto = _mapper.Map<UserUpdateDto>(updatedUser);
             return Ok(updatedUserDto);
         }
 

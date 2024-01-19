@@ -11,6 +11,7 @@ namespace Backend.Mappings
             CreateMap<CalendarDto, Calendar>().ReverseMap();
             CreateMap<AppointmentDto, Appointment>().ReverseMap();
             CreateMap<UserDto, User>().ReverseMap();
+            CreateMap<UserUpdateDto, User>().ReverseMap();
             CreateMap<NotificationDto, Notification>().ReverseMap();
         }
     }

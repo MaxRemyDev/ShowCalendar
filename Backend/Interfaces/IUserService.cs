@@ -8,7 +8,7 @@ namespace Backend.Interfaces
     {
         Task<IEnumerable<User>> GetAllUsers();
         Task<User> GetUserById(int id);
-        Task<User> CreateUser(User user);
+        Task<User> CreateUser(User user, string password);
         Task<User> UpdateUser(int id, User user);
         Task<bool> DeleteUser(int id);
     }

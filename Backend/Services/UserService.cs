@@ -1,9 +1,11 @@
 using Backend.Interfaces;
 using Backend.Models;
 using Backend.Data;
+using Backend.Dtos;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Cryptography;
 
 namespace Backend.Services
 {
@@ -33,11 +35,28 @@ namespace Backend.Services
         }
 
         // CREATE A NEW USER AND SAVE TO DATABASE (POST)
-        public async Task<User> CreateUser(User user)
+        public async Task<User> CreateUser(User user, string password)
         {
+            if (await UserExists(user.Username))
+            {
+                throw new ArgumentException("Username already exists");
+            }
+
+            using var hmac = new HMACSHA512();
+
+            user.PasswordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
+            user.PasswordSalt = hmac.Key;
+
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
+
             return user;
+        }
+
+        // CHECK IF A USER EXISTS IN DATABASE
+        public async Task<bool> UserExists(string username)
+        {
+            return await _context.Users.AnyAsync(x => x.Username == username);
         }
 
         // UPDATE AN EXISTING USER IN DATABASE (PUT)
@@ -64,7 +83,7 @@ namespace Backend.Services
             var user = await _context.Users.FindAsync(id);
             if (user == null)
             {
-                return false;
+                throw new KeyNotFoundException("User not found");
             }
 
             _context.Users.Remove(user);
