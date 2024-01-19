@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
+
 namespace Backend.Models
 {
     // USER MODEL DEFINITION
@@ -13,15 +14,15 @@ namespace Backend.Models
 
         // USERNAME FIELD
         [Column(TypeName = "varchar(255)")]
-        public string? Username { get; set; }
+        public string Username { get; set; } = string.Empty;
 
         // EMAIL FIELD
         [Column(TypeName = "varchar(255)")]
         public string? Email { get; set; }
 
         // PASSWORD HASH FIELD
-        [Column(TypeName = "varchar(255)")]
-        public string? PasswordHash { get; set; }
+        public required byte[] PasswordHash { get; set; }
+        public required byte[] PasswordSalt { get; set; }
 
         // ACCOUNT CREATION TIMESTAMP
         public DateTime CreatedAt { get; set; }
