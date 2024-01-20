@@ -24,13 +24,13 @@ jobs:
           dotnet-version: '8.0.x'
 
       - name: Restore dependencies
-        run: dotnet restore
+        run: dotnet restore Backend/Backend.sln
 
       - name: Build
-        run: dotnet build --no-restore --configuration Release
+        run: dotnet build Backend/Backend.sln --no-restore --configuration Release
 
-      #- name: Test
-        #run: dotnet test --no-build --verbosity normal
+      - name: Test
+        run: dotnet test Backend/Backend.sln --no-build --verbosity normal
 
       - name: Analyze with SonarCloud
         uses: SonarSource/sonarcloud-github-action@master
