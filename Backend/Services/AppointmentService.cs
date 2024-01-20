@@ -65,7 +65,7 @@ namespace Backend.Services
             var appointment = await _context.Appointments.FindAsync(id);
             if (appointment == null)
             {
-                return false;
+                throw new KeyNotFoundException("Appointment not found");
             }
 
             _context.Appointments.Remove(appointment);

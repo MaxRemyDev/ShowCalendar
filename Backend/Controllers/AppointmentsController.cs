@@ -59,16 +59,16 @@ namespace Backend.Controllers
 
         // UPDATE AN EXISTING APPOINTMENT BY ID (PUT)
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateAppointment(int id, AppointmentDto appointmentDto)
+        public async Task<IActionResult> UpdateAppointment(int id, AppointmentUpdateDto appointmentUpdateDto)
         {
             var appointmentToUpdate = await _appointmentService.GetAppointmentById(id);
             if (appointmentToUpdate == null) return NotFound();
 
-            _mapper.Map(appointmentDto, appointmentToUpdate);
+            _mapper.Map(appointmentUpdateDto, appointmentToUpdate);
             var updatedAppointment = await _appointmentService.UpdateAppointment(id, appointmentToUpdate);
             if (updatedAppointment == null) return BadRequest("Appointment update failed");
 
-            var updatedAppointmentDto = _mapper.Map<AppointmentDto>(updatedAppointment);
+            var updatedAppointmentDto = _mapper.Map<AppointmentUpdateDto>(updatedAppointment);
             return Ok(updatedAppointmentDto);
         }
 
