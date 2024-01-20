@@ -58,16 +58,16 @@ namespace Backend.Controllers
 
         // UPDATE AN EXISTING CALENDAR BY ID (PUT)
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateCalendar(int id, CalendarDto calendarDto)
+        public async Task<IActionResult> UpdateCalendar(int id, CalendarUpdateDto calendarUpdateDto)
         {
             var calendarToUpdate = await _calendarService.GetCalendarById(id);
             if (calendarToUpdate == null) return NotFound();
 
-            _mapper.Map(calendarDto, calendarToUpdate);
+            _mapper.Map(calendarUpdateDto, calendarToUpdate);
             var updatedCalendar = await _calendarService.UpdateCalendar(id, calendarToUpdate);
             if (updatedCalendar == null) return BadRequest("Calendar update failed");
 
-            var updatedCalendarDto = _mapper.Map<CalendarDto>(updatedCalendar);
+            var updatedCalendarDto = _mapper.Map<CalendarUpdateDto>(updatedCalendar);
             return Ok(updatedCalendarDto);
         }
 

@@ -66,7 +66,7 @@ namespace Backend.Services
             var calendar = await _context.Calendars.FindAsync(id);
             if (calendar == null)
             {
-                return false;
+                throw new KeyNotFoundException("Calendar not found");
             }
 
             _context.Calendars.Remove(calendar);

@@ -9,6 +9,7 @@ namespace Backend.Mappings
         public AutoMapperProfile()
         {
             CreateMap<CalendarDto, Calendar>().ReverseMap();
+            CreateMap<CalendarUpdateDto, Calendar>().ReverseMap();
             CreateMap<AppointmentDto, Appointment>().ReverseMap();
             CreateMap<UserDto, User>().ReverseMap();
             CreateMap<UserUpdateDto, User>().ReverseMap();
