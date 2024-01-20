@@ -31,7 +31,11 @@ builder.Services.AddAuthorization();
 builder.Services.AddAutoMapper(typeof(Backend.Mappings.AutoMapperProfile));
 
 // ADD SINGLETONS FOR SERVICES
+builder.Services.AddScoped<IAuthService, AuthenticationService>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<ICalendarService, CalendarService>();
+builder.Services.AddScoped<IAppointmentService, AppointmentService>();
+builder.Services.AddScoped<INotificationService, NotificationService>();
 
 // BUILD WEB APPLICATION
 var app = builder.Build();
