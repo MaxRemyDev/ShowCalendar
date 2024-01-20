@@ -66,7 +66,7 @@ namespace Backend.Services
             var notification = await _context.Notifications.FindAsync(id);
             if (notification == null)
             {
-                return false;
+                throw new KeyNotFoundException("Notification not found");
             }
 
             _context.Notifications.Remove(notification);

@@ -59,16 +59,16 @@ namespace Backend.Controllers
 
         // UPDATE AN EXISTING NOTIFICATION BY ID (PUT)
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateNotification(int id, NotificationDto notificationDto)
+        public async Task<IActionResult> UpdateNotification(int id, NotificationUpdateDto notificationUpdateDto)
         {
             var notificationToUpdate = await _notificationService.GetNotificationById(id);
             if (notificationToUpdate == null) return NotFound();
 
-            _mapper.Map(notificationDto, notificationToUpdate);
+            _mapper.Map(notificationUpdateDto, notificationToUpdate);
             var updatedNotification = await _notificationService.UpdateNotification(id, notificationToUpdate);
             if (updatedNotification == null) return BadRequest("Notification update failed");
 
-            var updatedNotificationDto = _mapper.Map<NotificationDto>(updatedNotification);
+            var updatedNotificationDto = _mapper.Map<NotificationUpdateDto>(updatedNotification);
             return Ok(updatedNotificationDto);
         }
 
