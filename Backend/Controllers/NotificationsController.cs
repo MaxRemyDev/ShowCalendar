@@ -6,12 +6,14 @@ using Backend.Models;
 using AutoMapper;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Backend.Controllers
 {
     // CONTROLLER FOR MANAGING NOTIFICATIONS (GET, POST, PUT, DELETE)
     [ApiController]
     [Route("api/[controller]")]
+    // [Authorize] //! UNCOMMENT THIS LINE TO REQUIRE AUTHENTICATION FOR ALL ROUTES IN THIS CONTROLLER OR COMMENT THIS LINE TO ALLOW ANONYMOUS ACCESS TO ALL ROUTES IN THIS CONTROLLER
     public class NotificationsController : ControllerBase
     {
         // DEPENDENCY INJECTION FOR NOTIFICATION SERVICE AND AUTOMAPPER
