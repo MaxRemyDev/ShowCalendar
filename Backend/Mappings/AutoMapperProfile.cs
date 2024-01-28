@@ -16,6 +16,8 @@ namespace Backend.Mappings
             CreateMap<UserUpdateDto, User>().ReverseMap();
             CreateMap<NotificationDto, Notification>().ReverseMap();
             CreateMap<NotificationUpdateDto, Notification>().ReverseMap();
+            CreateMap<UserRegistrationDto, User>().ReverseMap();
+            CreateMap<UserLoginDto, User>().ReverseMap();
         }
     }
 }
