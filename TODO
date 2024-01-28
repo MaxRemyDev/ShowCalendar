@@ -1,2 +1,53 @@
-Todo:
-  ☐ Need watch why Users data "CreatedAt", "UpdatedAt" and "LastLogin" fields is empty
+Todo Backend:
+  ☐ Investigate why "CreatedAt", "UpdatedAt", and "LastLogin" fields in User data are empty.
+  ☐ Add complementary authentication endpoints: "POST /api/auth/logout" and "POST /api/auth/refresh-token" to complete authentication system.
+  ☐ Test and validate connection between MySQL database and Backend solution.
+  ☐ Optimize queries and manage transactions with database.
+  ☐ Set up a Xunit testing environment.
+  ☐ Write unit tests for models, services, and database connection.
+  ☐ Write integration tests for API endpoints.
+  ☐ Continue to strengthen API's security, including integrating SSL/TLS for data encryption.
+  ☐ Perform penetration testing and security audits to identify and fix potential vulnerabilities.
+  ☐ Consider integrating more advanced authentication mechanisms like Multi-Factor Authentication (MFA).
+  ☐ Implement pagination, sorting, and filtering mechanisms for endpoints that return collections of data.
+  ☐ Document each endpoint with Swagger for easier understanding and testing of API.
+  ☐ Conduct a code review to ensure consistency and adherence to best development practices.
+  ☐ Optimize error handling and logging mechanisms to improve traceability and diagnostics.
+  ☐ Evaluate and potentially integrate monitoring and alerting tools to monitor performance and health of API.
+  ☐ Develop a database backup and restoration strategy.
+  ☐ Develop a user session management strategy to enhance security and user experience.
+  ☐ Integrate an advanced logging system for better traceability of actions and errors such as Serilog or NLog.
+  ☐ Implement caching mechanisms to improve API performance.
+  ☐ Conduct API performance analysis and optimize the code based on the results.
+  ☐ Develop password recovery features (e.g., email-based password reset).
+  ☐ Implement rate limiting mechanisms to prevent spam and denial-of-service attacks.
+  ☐ Set up separate deployment environments (development, testing, production).
+  ☐ Ensure continuous integration and continuous deployment (CI/CD) to automate the software delivery process.
+  ☐ Implement API version management to facilitate updates and backward compatibility.
+  ☐ Evaluate the need to integrate external services (e.g., payment services, push notifications).
+  ☐ Plan regular maintenance and dependency updates to ensure security and performance.
+  ☐ Review and optimize the database structure for better efficiency and scalability.
+  ☐ Add data export and import features for users.
+  ☐ Establish incident response protocols to quickly and effectively handle security issues.
+
+Todo Frontend (Draft):
+  ☐ Install and configure Vite.js and Next.js.
+  ☐ Set up TypeScript development environment.
+  ☐ Configure build and transpilation tools (Webpack, Babel).
+  ☐ Create UI mockups and prototypes (using tools like Figma).
+  ☐ Develop UI components using Next.js and React.
+  ☐ Integrate Tailwind CSS for styling and layout.
+  ☐ Configure routing with Next Router.
+  ☐ Choose and implement state management (Redux, Context API).
+  ☐ Set up API services to interact with backend.
+  ☐ Handle HTTP requests (GET, POST, PUT, DELETE) with Axios or Fetch API.
+  ☐ Implement client-side authentication and secure management of JWT tokens and user sessions.
+  ☐ Ensure interface is responsive for different devices and optimized for different browsers.
+  ☐ Conduct unit and integration tests for React components and user flow.
+  ☐ Analyze and optimize application performance using tools like Lighthouse.
+
+
+This task list is one among several for the "Show Calendar" project. It is intended to provide an overview of planned and current tasks.
+It is important to note that, depending on the specific needs of the project and the emergence of new features, modifications or additions to this list may be necessary.
+The complete and updated task list is managed by the project's lead developer and may vary based on the progress of the project and established priorities.
+This draft aims to facilitate coordination and planning but should not be considered definitive or exhaustive.
