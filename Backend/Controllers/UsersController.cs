@@ -6,12 +6,14 @@ using Backend.Models;
 using AutoMapper;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Backend.Controllers
 {
     // CONTROLLER FOR MANAGING USERS (GET, POST, PUT, DELETE)
     [ApiController]
     [Route("api/[controller]")]
+    // [Authorize] //! UNCOMMENT THIS LINE TO REQUIRE AUTHENTICATION FOR ALL ROUTES IN THIS CONTROLLER OR COMMENT THIS LINE TO ALLOW ANONYMOUS ACCESS TO ALL ROUTES IN THIS CONTROLLER
     public class UsersController : ControllerBase
     {
         // DEPENDENCY INJECTION FOR USER SERVICE AND AUTOMAPPER
@@ -35,7 +37,7 @@ namespace Backend.Controllers
         }
 
         // GET USER BY ID (GET)
-        [HttpGet("{id}")]
+        [HttpGet("{id}", Name = "GetUserById")]
         public async Task<IActionResult> GetUserById(int id)
         {
             var user = await _userService.GetUserById(id);
