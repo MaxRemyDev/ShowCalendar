@@ -1,7 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Backend.Data;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Microsoft.AspNetCore.Builder;
 using dotenv.net;
 using AutoMapper;
@@ -9,6 +7,11 @@ using System;
 using System.Text;
 using Backend.Interfaces;
 using Backend.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using Backend.Middlewares;
+using AspNetCoreRateLimit;
+using Newtonsoft.Json;
 
 // LOAD ENVIRONMENT VARIABLES FROM .ENV FILE
 DotEnv.Load();
@@ -16,21 +19,61 @@ DotEnv.Load();
 // CREATE WEB APPLICATION BUILDER
 var builder = WebApplication.CreateBuilder(args);
 
-// ADD DATABASE CONTEXT WITH MYSQL CONFIGURATION WITH ENVIRONMENT VARIABLES
+// CONFIGURE SERVICES CORS POLICY
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("CorsPolicy", builder =>
+    {
+        builder.WithOrigins("https://localhost:7201", "http://localhost:5113", "https://showcalendar.com")
+               .AllowAnyMethod()
+               .AllowAnyHeader()
+               .AllowCredentials();
+    });
+});
+
+// CONFIGURE SERVICES MIDDLEWARE FOR RATE LIMITING POLICIES AND SERVICES
+builder.Services.AddMemoryCache();
+builder.Services.Configure<IpRateLimitOptions>(builder.Configuration.GetSection("IpRateLimiting"));
+builder.Services.Configure<IpRateLimitPolicies>(builder.Configuration.GetSection("IpRateLimitPolicies"));
+builder.Services.AddInMemoryRateLimiting();
+builder.Services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>();
+
+// CONFIGURE SERVICE DATABASE CONTEXT
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseMySql(Environment.GetEnvironmentVariable("DB_CONNECTION_STRING"),
     new MySqlServerVersion(new Version(8, 0, 21))));
 
-// ADD SERVICE CONTROLLERS
-builder.Services.AddControllers();
+// CONFIGURE SERVICE AUTHENTICATION
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(Environment.GetEnvironmentVariable("JWT_SECRET") ?? throw new InvalidOperationException("JWT Secret is not set"))),
+            ValidateIssuer = false,
+            ValidateAudience = false,
+        };
+        options.Events = new JwtBearerEvents
+        {
+            OnAuthenticationFailed = context =>
+            {
+                context.Response.StatusCode = 401;
+                context.Response.ContentType = "application/json";
+                return context.Response.WriteAsync(JsonConvert.SerializeObject(new
+                {
+                    error = "An authentication error has occurred"
+                }));
+            },
+        };
+    });
 
-// ADD AUTHORIZATION POLICY
+// CONFIGURE SERVICES AUTHORIZATION AND CONTROLLERS WITH AUTOMAPPER
 builder.Services.AddAuthorization();
-
-// CONFIGURE AUTOMAPPER FOR MAPPING MODELS
+builder.Services.AddControllers();
 builder.Services.AddAutoMapper(typeof(Backend.Mappings.AutoMapperProfile));
 
-// ADD SINGLETONS FOR SERVICES
+// CONFIGURE SERVICES DEPENDENCY INJECTION
 builder.Services.AddScoped<IAuthService, AuthenticationService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ICalendarService, CalendarService>();
@@ -47,20 +90,23 @@ if (!app.Environment.IsDevelopment())
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
-
-// ENABLE HTTPS REDIRECTION
+// ENABLE HTTPS REDIRECTION AND ENABLE ROUTING
 app.UseHttpsRedirection();
-
-// ENABLE ROUTING
 app.UseRouting();
 
-// ENABLE AUTHORIZATION
+// CONFIGURE MIDDLEWARES FOR RATE LIMITING, JSON PARSING, SECURITY HEADERS AND ERROR HANDLING
+app.UseCors("CorsPolicy");
+app.UseIpRateLimiting();
+app.UseMiddleware<SafeJsonMiddleware>();
+app.UseMiddleware<SecurityHeadersMiddleware>();
+app.UseMiddleware<ErrorHandlerMiddleware>();
+
+// CONFIGURE AUTHENTICATION AND AUTHORIZATION
+app.UseAuthentication();
 app.UseAuthorization();
 
-// DEFINE CONTROLLER ROUTE MAPPING (CONTROLLER NAME, DEFAULT ACTION, OPTIONAL ID)
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller}/{action=Index}/{id?}");
+// CONFIGURE ENDPOINTS
+app.MapControllers();
 
 // RUN WEB APPLICATION
 app.Run();
