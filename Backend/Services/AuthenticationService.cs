@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Cryptography;
 using System.Text;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Backend.Services
 {
@@ -19,6 +22,26 @@ namespace Backend.Services
         public AuthenticationService(ApplicationDbContext context)
         {
             _context = context;
+        }
+
+        public string GenerateJwtToken(User user)
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var keyString = Environment.GetEnvironmentVariable("JWT_SECRET") ?? throw new InvalidOperationException("JWT Secret is not set in environment variables");
+            var key = Encoding.ASCII.GetBytes(keyString);
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(new Claim[]
+                {
+                new Claim(ClaimTypes.NameIdentifier, user.UserId.ToString()),
+                new Claim(ClaimTypes.Name, user.Username)
+                }),
+                Expires = DateTime.UtcNow.AddDays(1), // Expiration du token
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+            };
+
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+            return tokenHandler.WriteToken(token);
         }
 
         // REGISTER A NEW USER WITH USERNAME AND PASSWORD (POST)
