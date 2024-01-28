@@ -7,5 +7,6 @@ namespace Backend.Interfaces
     {
         Task<User> Register(User user, string password);
         Task<User> Login(string username, string password);
+        string GenerateJwtToken(User user);
     }
 }
