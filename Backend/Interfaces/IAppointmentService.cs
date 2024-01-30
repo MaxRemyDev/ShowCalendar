@@ -9,7 +9,7 @@ namespace Backend.Interfaces
         Task<IEnumerable<Appointment>> GetAllAppointments();
         Task<Appointment> GetAppointmentById(int id);
         Task<Appointment> CreateAppointment(Appointment appointment);
-        Task<Appointment> UpdateAppointment(int id, Appointment appointment);
+        Task<Appointment> UpdateAppointment(int id, Appointment updatedAppointment);
         Task<bool> DeleteAppointment(int id);
     }
 }
