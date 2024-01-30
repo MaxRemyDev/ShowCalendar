@@ -1,6 +1,4 @@
 Todo Backend:
-  ☐ Investigate why "CreatedAt", "UpdatedAt", and "LastLogin" fields in User data are empty.
-  ☐ Add complementary authentication endpoints: "POST /api/auth/logout" and "POST /api/auth/refresh-token" to complete authentication system.
   ☐ Test and validate connection between MySQL database and Backend solution.
   ☐ Optimize queries and manage transactions with database.
   ☐ Set up a Xunit testing environment.
