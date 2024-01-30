@@ -49,7 +49,7 @@ namespace Backend.Services
         {
             if (await UserExists(user.Username))
             {
-                throw new Exception("User already exists.");
+                throw new InvalidOperationException("User already exists.");
             }
 
             // CREATING PASSWORD HASH AND SALT FOR STORING IN DATABASE
@@ -70,10 +70,10 @@ namespace Backend.Services
             var user = await _context.Users.FirstOrDefaultAsync(x => x.Username == username);
             if (user == null || !VerifyPasswordHash(password, user.PasswordHash, user.PasswordSalt))
             {
-                throw new Exception("Username or password is incorrect.");
+                throw new AuthenticationException("Username or password is incorrect.");
             }
 
-            return user ?? throw new KeyNotFoundException("User not found");
+            return user;
         }
 
         // CREATE HASH AND SALT FOR A PASSWORD TO BE STORED IN DATABASE
@@ -104,6 +104,13 @@ namespace Backend.Services
         private async Task<bool> UserExists(string username)
         {
             return await _context.Users.AnyAsync(x => x.Username == username);
+        }
+    }
+
+    public class AuthenticationException : Exception
+    {
+        public AuthenticationException(string message) : base(message)
+        {
         }
     }
 }
