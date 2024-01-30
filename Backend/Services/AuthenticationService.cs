@@ -24,6 +24,7 @@ namespace Backend.Services
             _context = context;
         }
 
+        // GENERATE A JWT TOKEN FOR A USER
         public string GenerateJwtToken(User user)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
@@ -36,12 +37,19 @@ namespace Backend.Services
                 new Claim(ClaimTypes.NameIdentifier, user.UserId.ToString()),
                 new Claim(ClaimTypes.Name, user.Username)
                 }),
-                Expires = DateTime.UtcNow.AddDays(1), // Expiration du token
+                Expires = DateTime.UtcNow.AddHours(1), // EXPIRATION OF TOKEN (1 HOUR)
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
 
             var token = tokenHandler.CreateToken(tokenDescriptor);
             return tokenHandler.WriteToken(token);
+        }
+
+        // GENERATE A REFRESH TOKEN FOR A USER
+        public string RefreshJwtToken(User user)
+        {
+            //TODO: ADD A CHECK IF USER STILL HAS RIGHT TO LOGIN
+            return GenerateJwtToken(user);
         }
 
         // REGISTER A NEW USER WITH USERNAME AND PASSWORD (POST)

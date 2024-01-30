@@ -53,5 +53,29 @@ namespace Backend.Controllers
             var token = _authService.GenerateJwtToken(userFromService);
             return Ok(new { token = token });
         }
+
+        // USER LOGOUT (POST) | Will be managed on client side, because JWT token is stored in client (for example, in browser's local storage) and not on server.
+        // However, if implementing a blacklist of tokens on server is really necessary to control disconnection on server side, it will always be possible to add conditions.
+        [HttpPost("logout")]
+        public IActionResult Logout()
+        {
+            return Ok(new { message = "Logout successful" });
+        }
+
+        // REFRESH JWT TOKEN (POST)
+        [HttpPost("refresh-token")]
+        public async Task<IActionResult> RefreshToken(UserLoginDto loginDto)
+        {
+            try
+            {
+                var userFromService = await _authService.Login(loginDto.Username, loginDto.Password);
+                var token = _authService.RefreshJwtToken(userFromService);
+                return Ok(new { token = token });
+            }
+            catch (Exception ex)
+            {
+                return Unauthorized(ex.Message);
+            }
+        }
     }
 }
