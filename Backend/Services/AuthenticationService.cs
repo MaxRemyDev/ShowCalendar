@@ -77,7 +77,7 @@ namespace Backend.Services
         }
 
         // CREATE HASH AND SALT FOR A PASSWORD TO BE STORED IN DATABASE
-        private void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
+        private static void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
         {
             using (var hmac = new HMACSHA512())
             {
@@ -87,7 +87,7 @@ namespace Backend.Services
         }
 
         // VERIFY IF PROVIDED PASSWORD MATCHES STORED HASH AND SALT IN DATABASE
-        private bool VerifyPasswordHash(string password, byte[] storedHash, byte[] storedSalt)
+        private static bool VerifyPasswordHash(string password, byte[] storedHash, byte[] storedSalt)
         {
             using (var hmac = new HMACSHA512(storedSalt))
             {
