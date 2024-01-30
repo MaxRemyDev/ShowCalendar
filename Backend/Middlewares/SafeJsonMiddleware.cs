@@ -32,50 +32,44 @@ namespace Backend.Middlewares
             // CHECKING IF REQUEST CONTENT TYPE IS JSON
             if (context.Request.ContentType == "application/json")
             {
-                string requestBody;
-
                 context.Request.EnableBuffering(); // ENABLING BUFFERING TO READ REQUEST BODY
 
                 // READING REQUEST BODY AS STRING
                 using (var reader = new StreamReader(context.Request.Body, Encoding.UTF8, true, 1024, true))
                 {
-                    requestBody = await reader.ReadToEndAsync();
+                    var requestBody = await reader.ReadToEndAsync();
                     context.Request.Body.Position = 0;
-                }
 
-                try
-                {
-                    var deserializedBody = JsonSerializer.Deserialize<object>(requestBody, _options); // ATTEMPTING TO DESERIALIZE REQUEST BODY
-                }
-                catch (JsonException jsonException)
-                {
-                    Console.WriteLine(jsonException);
-
-                    // RETURNING BAD REQUEST IF JSON IS INVALID
-                    context.Response.StatusCode = StatusCodes.Status400BadRequest;
-                    await context.Response.WriteAsync($"Invalid JSON format: {jsonException.Message}");
-                    return;
+                    // CHECKING IF REQUEST BODY IS VALID JSON FORMAT AND RETURNING BAD REQUEST IF NOT
+                    try
+                    {
+                        JsonSerializer.Deserialize<object>(requestBody, _options);
+                    }
+                    catch (JsonException jsonException)
+                    {
+                        context.Response.StatusCode = StatusCodes.Status400BadRequest;
+                        await context.Response.WriteAsync($"Invalid JSON format: {jsonException.Message}");
+                        return;
+                    }
                 }
             }
 
-            // STORING ORIGINAL RESPONSE BODY STREAM
-            var originalBodyStream = context.Response.Body;
+            var originalBodyStream = context.Response.Body; // SAVING ORIGINAL RESPONSE BODY STREAM
 
-            // CREATING A NEW MEMORY STREAM FOR RESPONSE
+            // READING RESPONSE BODY AS STRING
             using (var memoryStream = new MemoryStream())
             {
+                // REPLACING RESPONSE BODY STREAM WITH MEMORY STREAM
                 context.Response.Body = memoryStream;
+                await _next(context);
 
-                await _next(context); // PASSING REQUEST TO NEXT MIDDLEWARE
-
-                // READING RESPONSE BODY FROM MEMORY STREAM
+                // READING RESPONSE BODY AS STRING
                 memoryStream.Seek(0, SeekOrigin.Begin);
                 var responseBody = await new StreamReader(memoryStream).ReadToEndAsync();
-                var responseObj = JsonSerializer.Deserialize<object>(responseBody, _options);
 
-                // WRITING MODIFIED RESPONSE BACK TO ORIGINAL STREAM
+                // CHECKING IF RESPONSE CONTENT TYPE IS JSON
                 context.Response.Body = originalBodyStream;
-                await context.Response.WriteAsync(JsonSerializer.Serialize(responseObj, _options));
+                await context.Response.WriteAsync(responseBody);
             }
         }
     }
