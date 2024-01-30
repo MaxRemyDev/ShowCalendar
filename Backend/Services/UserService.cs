@@ -46,6 +46,8 @@ namespace Backend.Services
 
             user.PasswordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
             user.PasswordSalt = hmac.Key;
+            user.CreatedAt = DateTime.UtcNow;
+            user.UpdatedAt = DateTime.UtcNow;
 
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
@@ -71,6 +73,7 @@ namespace Backend.Services
             // UPDATING USER DETAILS WITH UPDATED USER DETAILS
             userToUpdate.Username = user.Username;
             userToUpdate.Email = user.Email;
+            userToUpdate.UpdatedAt = DateTime.UtcNow;
 
             _context.Entry(userToUpdate).State = EntityState.Modified;
             await _context.SaveChangesAsync();

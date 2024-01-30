@@ -81,6 +81,11 @@ namespace Backend.Services
                 throw new AuthenticationException("Username or password is incorrect.");
             }
 
+            // UPDATE LASTLOGIN FIELD WITH CURRENT DATE AND TIME
+            user.LastLogin = DateTime.UtcNow;
+            _context.Entry(user).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+
             return user;
         }
 

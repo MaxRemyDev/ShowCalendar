@@ -25,7 +25,8 @@ namespace Backend.Models
         public required byte[] PasswordSalt { get; set; }
 
         // ACCOUNT CREATION TIMESTAMP
-        public DateTime CreatedAt { get; set; }
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
         // LAST ACCOUNT UPDATE TIMESTAMP
         public DateTime? UpdatedAt { get; set; }
