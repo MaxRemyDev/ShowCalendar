@@ -39,7 +39,7 @@ namespace Backend.Middlewares
                 };
 
                 // SERIALIZING ERROR MESSAGE TO JSON FORMAT
-                var result = JsonSerializer.Serialize(new { message = error?.Message });
+                var result = JsonSerializer.Serialize(new { message = error.Message }); //! old version: error?.Message
 
                 // WRITING ERROR RESPONSE BACK TO CLIENT
                 await response.WriteAsync(result);
