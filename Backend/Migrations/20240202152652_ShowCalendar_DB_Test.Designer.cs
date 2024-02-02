@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Backend.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240130175748_UpdateCreatedAtField")]
-    partial class UpdateCreatedAtField
+    [Migration("20240202152652_ShowCalendar_DB_Test")]
+    partial class ShowCalendar_DB_Test
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
