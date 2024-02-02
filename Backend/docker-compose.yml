@@ -1,0 +1,9 @@
+version: '3.8'
+services:
+  mysql-test:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: "${MYSQL_ROOT_PASSWORD}"
+      MYSQL_DATABASE: "${MYSQL_DATABASE_TEST}"
+    ports:
+      - "3307:3306"
