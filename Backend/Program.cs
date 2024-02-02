@@ -39,9 +39,13 @@ builder.Services.AddInMemoryRateLimiting();
 builder.Services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>();
 
 // CONFIGURE SERVICE DATABASE CONTEXT
+var connectionString = builder.Environment.IsDevelopment()
+    ? Environment.GetEnvironmentVariable("DB_CONNECTION_STRING")
+    : Environment.GetEnvironmentVariable("DB_CONNECTION_STRING_TEST");
+
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseMySql(Environment.GetEnvironmentVariable("DB_CONNECTION_STRING"),
-    new MySqlServerVersion(new Version(8, 0, 21))));
+    options.UseMySql(connectionString, new MySqlServerVersion(new Version(8, 0, 21))));
+
 
 // CONFIGURE SERVICE AUTHENTICATION
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -82,6 +86,17 @@ builder.Services.AddScoped<INotificationService, NotificationService>();
 
 // BUILD WEB APPLICATION
 var app = builder.Build();
+
+// CONFIGURE DEVELOPMENT ENVIRONMENT SEEDING OF DATABASE WITH INITIAL DATA
+// CLI for switching to test environment: "dotnet run --environment test" | "dotnet run" for switch to normal development
+if (app.Environment.IsDevelopment() || app.Environment.IsEnvironment("Test"))
+{
+    using (var scope = app.Services.CreateScope())
+    {
+        var services = scope.ServiceProvider;
+        SeedData.Initialize(services);
+    }
+}
 
 // CONFIGURE ERROR HANDLING FOR NON-DEVELOPMENT ENVIRONMENTS
 if (!app.Environment.IsDevelopment())
