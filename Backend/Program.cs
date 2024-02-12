@@ -48,13 +48,24 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 
 
 // CONFIGURE SERVICE AUTHENTICATION
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+// TODO: REFACTOR JWT CONFIGURATION TO AVOID USING "BUILDSERVICEPROVIDER"
+// TODO: IMPLEMENT UNIT AND INTEGRATION TESTS TO VALIDATE CONFIGURATION CHANGES AND SERVICE ACCESS
+// INFO: CONSIDER INJECTING IENVIRONMENTSERVICE WHERE IT CAN BE DIRECTLY USED
+// WARN: USING "BUILDSERVICEPROVIDER" CAN LEAD TO ADDITIONAL COPIES OF SINGLETON SERVICES BEING CREATED
+// INFO: USE HTTPS://AKA.MS/ASPNETCORE-HSTS FOR INFORMATION ON CONFIGURING HSTS IN PRODUCTION
+// INFO: REVIEW MICROSOFT DOCUMENTATION AND BEST PRACTICES REGARDING DEPENDENCY INJECTION AND SERVICE CONFIGURATION
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme) //! WORK BUT NEEDS REFACTORING
     .AddJwtBearer(options =>
     {
+        var serviceProvider = builder.Services.BuildServiceProvider();
+        var environmentService = serviceProvider.GetService<IEnvironmentService>();
+        // TODO: CHECK THE POSSIBILITY OF MOVING JWT SECRET ACCESS LOGIC INTO A CUSTOM MIDDLEWARE WHERE DEPENDENCY INJECTION IS SUPPORTED
+
         options.TokenValidationParameters = new TokenValidationParameters
         {
             ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(Environment.GetEnvironmentVariable("JWT_SECRET") ?? throw new InvalidOperationException("JWT Secret is not set"))),
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(environmentService.GetJwtSecret())),
+            // TODO: ADD NULLITY VALIDATION FOR SERVICES RESOLVED DYNAMICALLY TO AVOID NULL REFERENCES
             ValidateIssuer = false,
             ValidateAudience = false,
         };
@@ -83,6 +94,7 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ICalendarService, CalendarService>();
 builder.Services.AddScoped<IAppointmentService, AppointmentService>();
 builder.Services.AddScoped<INotificationService, NotificationService>();
+builder.Services.AddScoped<IEnvironmentService, EnvironmentService>();
 
 // BUILD WEB APPLICATION
 var app = builder.Build();
