@@ -34,7 +34,8 @@ namespace Backend.Migrations
                     b.Property<string>("Details")
                         .HasColumnType("varchar(255)");
 
-                    b.Property<DateTime>("End")
+                    b.Property<DateTime?>("End")
+                        .IsRequired()
                         .HasColumnType("datetime(6)");
 
                     b.Property<bool>("IsAllDay")
@@ -43,10 +44,12 @@ namespace Backend.Migrations
                     b.Property<string>("Location")
                         .HasColumnType("varchar(255)");
 
-                    b.Property<DateTime>("Start")
+                    b.Property<DateTime?>("Start")
+                        .IsRequired()
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("Title")
+                        .IsRequired()
                         .HasColumnType("varchar(255)");
 
                     b.Property<DateTime>("UpdatedAt")
@@ -66,6 +69,7 @@ namespace Backend.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Color")
+                        .IsRequired()
                         .HasColumnType("varchar(7)");
 
                     b.Property<DateTime>("CreatedAt")
@@ -75,6 +79,7 @@ namespace Backend.Migrations
                         .HasColumnType("varchar(255)");
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasColumnType("varchar(255)");
 
                     b.Property<DateTime>("UpdatedAt")
@@ -103,9 +108,11 @@ namespace Backend.Migrations
                         .HasColumnType("tinyint(1)");
 
                     b.Property<string>("Message")
+                        .IsRequired()
                         .HasColumnType("varchar(255)");
 
                     b.Property<string>("Type")
+                        .IsRequired()
                         .HasColumnType("varchar(255)");
 
                     b.Property<int>("UserId")
@@ -129,6 +136,7 @@ namespace Backend.Migrations
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("Email")
+                        .IsRequired()
                         .HasColumnType("varchar(255)");
 
                     b.Property<DateTime?>("LastLogin")
