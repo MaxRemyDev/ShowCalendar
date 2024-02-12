@@ -17,18 +17,20 @@ namespace Backend.Services
     {
         // DATABASE CONTEXT FOR ACCESSING DATABASE VIA ENTITY FRAMEWORK
         private readonly ApplicationDbContext _context;
+        private readonly IEnvironmentService _environmentService;
 
         // CONSTRUCTOR FOR INITIALIZING DATABASE CONTEXT VIA DEPENDENCY INJECTION
-        public AuthenticationService(ApplicationDbContext context)
+        public AuthenticationService(ApplicationDbContext context, IEnvironmentService environmentService)
         {
             _context = context;
+            _environmentService = environmentService;
         }
 
         // GENERATE A JWT TOKEN FOR A USER
         public string GenerateJwtToken(User user)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
-            var keyString = Environment.GetEnvironmentVariable("JWT_SECRET") ?? throw new InvalidOperationException("JWT Secret is not set in environment variables");
+            var keyString = _environmentService.GetJwtSecret();
             var key = Encoding.ASCII.GetBytes(keyString);
             var tokenDescriptor = new SecurityTokenDescriptor
             {
