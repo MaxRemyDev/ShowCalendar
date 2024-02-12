@@ -15,10 +15,12 @@ namespace Backend.Models
 
         // NOTIFICATION TYPE FIELD
         [Column(TypeName = "varchar(255)")]
+        [Required(ErrorMessage = "The notification type is required.")]
         public string? Type { get; set; }
 
         // NOTIFICATION MESSAGE FIELD
         [Column(TypeName = "varchar(255)")]
+        [Required(ErrorMessage = "The notification message is required.")]
         public string? Message { get; set; }
 
         // TIMESTAMP FOR WHEN NOTIFICATION WAS GENERATED
@@ -28,6 +30,7 @@ namespace Backend.Models
         public bool IsRead { get; set; }
 
         // RELATIONSHIP WITH USER
+
         public User? User { get; set; }
     }
 }

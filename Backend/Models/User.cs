@@ -14,14 +14,19 @@ namespace Backend.Models
 
         // USERNAME FIELD
         [Column(TypeName = "varchar(255)")]
+        [Required(ErrorMessage = "Username is required.")]
         public string Username { get; set; } = string.Empty;
 
         // EMAIL FIELD
         [Column(TypeName = "varchar(255)")]
+        [Required(ErrorMessage = "Email is required.")]
+        [EmailAddress(ErrorMessage = "The email format is invalid.")]
         public string? Email { get; set; }
 
         // PASSWORD HASH FIELD
         public required byte[] PasswordHash { get; set; }
+
+        // PASSWORD SALT FIED
         public required byte[] PasswordSalt { get; set; }
 
         // ACCOUNT CREATION TIMESTAMP

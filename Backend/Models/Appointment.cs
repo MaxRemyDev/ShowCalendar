@@ -15,13 +15,16 @@ namespace Backend.Models
 
         // APPOINTMENT TITLE FIELD
         [Column(TypeName = "varchar(255)")]
-        public string? Title { get; set; }
+        [Required(ErrorMessage = "The appointment title is required.")]
+        public string Title { get; set; } = string.Empty;
 
         // START TIME OF APPOINTMENT
-        public DateTime Start { get; set; }
+        [Required(ErrorMessage = "The start time of the appointment is required.")]
+        public DateTime? Start { get; set; }
 
         // END TIME OF APPOINTMENT
-        public DateTime End { get; set; }
+        [Required(ErrorMessage = "The end time of the appointment is required.")]
+        public DateTime? End { get; set; }
 
         // APPOINTMENT LOCATION FIELD
         [Column(TypeName = "varchar(255)")]

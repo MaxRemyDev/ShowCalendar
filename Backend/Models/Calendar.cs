@@ -16,6 +16,7 @@ namespace Backend.Models
 
         // CALENDAR NAME FIELD
         [Column(TypeName = "varchar(255)")]
+        [Required(ErrorMessage = "The calendar name is required.")]
         public string? Name { get; set; }
 
         // CALENDAR DESCRIPTION FIELD
@@ -24,6 +25,8 @@ namespace Backend.Models
 
         // CALENDAR COLOR FIELD
         [Column(TypeName = "varchar(7)")]
+        [Required(ErrorMessage = "The color of the calendar is mandatory.")]
+        [RegularExpression("^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$", ErrorMessage = "The color format is invalid.")]
         public string? Color { get; set; }
 
         // CALENDAR CREATION TIMESTAMP
