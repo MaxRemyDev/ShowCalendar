@@ -70,7 +70,7 @@ namespace Backend.Controllers
             var updatedUser = await _userService.UpdateUser(id, userToUpdate);
             if (updatedUser == null) return BadRequest("User update failed");
 
-            var updatedUserDto = _mapper.Map<UserUpdateDto>(updatedUser);
+            var updatedUserDto = _mapper.Map<UserDto>(updatedUser);
             return Ok(updatedUserDto);
         }
 
