@@ -4,6 +4,7 @@ using Backend.Dtos;
 using System.Threading.Tasks;
 using AutoMapper;
 using Backend.Models;
+using Backend.Dtos.Responses;
 
 namespace Backend.Controllers
 {
@@ -51,7 +52,7 @@ namespace Backend.Controllers
                 return Unauthorized("Invalid username or password");
 
             var token = _authService.GenerateJwtToken(userFromService);
-            return Ok(new { token = token });
+            return Ok(new LoginResponse { Token = token });
         }
 
         // USER LOGOUT (POST) | Will be managed on client side, because JWT token is stored in client (for example, in browser's local storage) and not on server.
