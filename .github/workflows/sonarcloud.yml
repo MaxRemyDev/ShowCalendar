@@ -37,12 +37,17 @@ jobs:
         run: |
           New-Item -Path .\.sonar\scanner -ItemType Directory
           dotnet tool update dotnet-sonarscanner --tool-path .\.sonar\scanner
-      - name: Build and analyze
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      - name: Test and collect coverage
         shell: powershell
         run: |
-          .\.sonar\scanner\dotnet-sonarscanner begin /k:"MaxRemyDev_ShowCalendar" /o:"maxremydev" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io"
-          dotnet build Backend/Backend.sln
+          dotnet tool install --global dotnet-reportgenerator-globaltool
+          dotnet test Backend/Backend.sln --no-build --logger "trx" /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:CoverletOutput=./TestResults/Coverage/
+          reportgenerator -reports:./TestResults/Coverage/*.cobertura.xml -targetdir:./TestResults/Coverage/Reports -reporttypes:"HtmlInline_AzurePipelines;Cobertura"
+          .\.sonar\scanner\dotnet-sonarscanner begin /k:"MaxRemyDev_ShowCalendar" /o:"maxremydev" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.cs.opencover.reportsPaths="./TestResults/Coverage/Reports/Cobertura.xml"
+      - name: Build
+        shell: powershell
+        run: dotnet build Backend/Backend.sln
+      - name: SonarCloud analysis
+        shell: powershell
+        run: |
           .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
