@@ -24,10 +24,12 @@ namespace Backend.Models
         public string? Email { get; set; }
 
         // PASSWORD HASH FIELD
-        public required byte[] PasswordHash { get; set; }
+        [Required(ErrorMessage = "PasswordHash is required.")]
+        public byte[] PasswordHash { get; set; } = new byte[0];
 
         // PASSWORD SALT FIED
-        public required byte[] PasswordSalt { get; set; }
+        [Required(ErrorMessage = "PasswordSalt is required.")]
+        public byte[] PasswordSalt { get; set; } = new byte[0];
 
         // ACCOUNT CREATION TIMESTAMP
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -39,10 +41,11 @@ namespace Backend.Models
         // LAST LOGIN TIMESTAMP
         public DateTime? LastLogin { get; set; }
 
+        // INFO: Why removed "?" from end of (ICollection<Notification>?) and (ICollection<Calendar>?) for nullable type collection
+        // INFO: Because we are using default empty collection for Notifications and Calendars, so no need to use nullable type collection NORMALLY !
         // COLLECTION OF USER NOTIFICATIONS
-        public ICollection<Notification>? Notifications { get; set; }
-
+        public ICollection<Notification> Notifications { get; set; } = new List<Notification>(); //! OLD VERSION : with "?" at end of (ICollection<Notification>?) for nullable type collection
         // COLLECTION OF USER CALENDARS
-        public ICollection<Calendar>? Calendars { get; set; }
+        public ICollection<Calendar> Calendars { get; set; } = new List<Calendar>(); //! OLD VERSION : with "?" at end of (ICollection<Calendar>?) for nullable type collection
     }
 }
