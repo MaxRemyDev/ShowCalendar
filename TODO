@@ -1,51 +1,264 @@
-Todo Backend:
-  ☐ Test and validate connection between MySQL database and Backend solution.
-  ☐ Optimize queries and manage transactions with database.
-  ☐ Set up a Xunit testing environment.
-  ☐ Write unit tests for models, services, and database connection.
-  ☐ Write integration tests for API endpoints.
-  ☐ Continue to strengthen API's security, including integrating SSL/TLS for data encryption.
-  ☐ Perform penetration testing and security audits to identify and fix potential vulnerabilities.
-  ☐ Consider integrating more advanced authentication mechanisms like Multi-Factor Authentication (MFA).
-  ☐ Implement pagination, sorting, and filtering mechanisms for endpoints that return collections of data.
-  ☐ Document each endpoint with Swagger for easier understanding and testing of API.
-  ☐ Conduct a code review to ensure consistency and adherence to best development practices.
-  ☐ Optimize error handling and logging mechanisms to improve traceability and diagnostics.
-  ☐ Evaluate and potentially integrate monitoring and alerting tools to monitor performance and health of API.
-  ☐ Develop a database backup and restoration strategy.
-  ☐ Develop a user session management strategy to enhance security and user experience.
-  ☐ Integrate an advanced logging system for better traceability of actions and errors such as Serilog or NLog.
-  ☐ Implement caching mechanisms to improve API performance.
-  ☐ Conduct API performance analysis and optimize the code based on the results.
-  ☐ Develop password recovery features (e.g., email-based password reset).
-  ☐ Implement rate limiting mechanisms to prevent spam and denial-of-service attacks.
-  ☐ Set up separate deployment environments (development, testing, production).
-  ☐ Ensure continuous integration and continuous deployment (CI/CD) to automate the software delivery process.
-  ☐ Implement API version management to facilitate updates and backward compatibility.
-  ☐ Evaluate the need to integrate external services (e.g., payment services, push notifications).
-  ☐ Plan regular maintenance and dependency updates to ensure security and performance.
-  ☐ Review and optimize the database structure for better efficiency and scalability.
-  ☐ Add data export and import features for users.
-  ☐ Establish incident response protocols to quickly and effectively handle security issues.
+SHOW CALENDAR TODO LIST
 
-Todo Frontend (Draft):
-  ☐ Install and configure Vite.js and Next.js.
-  ☐ Set up TypeScript development environment.
-  ☐ Configure build and transpilation tools (Webpack, Babel).
-  ☐ Create UI mockups and prototypes (using tools like Figma).
-  ☐ Develop UI components using Next.js and React.
-  ☐ Integrate Tailwind CSS for styling and layout.
-  ☐ Configure routing with Next Router.
-  ☐ Choose and implement state management (Redux, Context API).
-  ☐ Set up API services to interact with backend.
-  ☐ Handle HTTP requests (GET, POST, PUT, DELETE) with Axios or Fetch API.
-  ☐ Implement client-side authentication and secure management of JWT tokens and user sessions.
-  ☐ Ensure interface is responsive for different devices and optimized for different browsers.
-  ☐ Conduct unit and integration tests for React components and user flow.
-  ☐ Analyze and optimize application performance using tools like Lighthouse.
+DEVELOPMENT PLAN :
+  1. Development Environment Setup:
+    • Checklist:
+      ✔ 1.1. Select and install an integrated development environment (IDE) suitable for C# and .NET (e.g., Visual Studio).
+      ✔ 1.2. Install Git for version control.
+      ✔ 1.3. Set up local development and testing servers (e.g., IIS for .NET).
+      ✔ 1.4. Establish environment variables (.env) to store sensitive configurations.
 
+  2. GitHub Repository Creation:
+    • Checklist:
+      ✔ 2.1. Create a new repository on GitHub.
+      ✔ 2.2. Set up main branches: `main` for production, `develop` for development.
+      ✔ 2.3. Write a clear README explaining the project, its setup, and usage.
+      ✔ 2.4. Implement guidelines for external contributions.
 
-This task list is one among several for the "Show Calendar" project. It is intended to provide an overview of planned and current tasks.
-It is important to note that, depending on the specific needs of the project and the emergence of new features, modifications or additions to this list may be necessary.
-The complete and updated task list is managed by the project's lead developer and may vary based on the progress of the project and established priorities.
-This draft aims to facilitate coordination and planning but should not be considered definitive or exhaustive.
+  3. Initial Backend Development:
+    3.1 Initial Configuration:
+      • .NET 8 Installation and Configuration with Visual Studio:
+        ✔ Choose .NET 8 as the development framework for its enhanced performance and security.
+        ✔ Configure a Visual Studio project to structure the application according to modern standards.
+      • Set Up NuGet for Library and Dependency Management:
+        ✔ Use NuGet, the official package manager for .NET, to efficiently manage external dependencies.
+        ✔ Install and configure essential libraries for the project, such as Entity Framework Core for database management.
+
+    3.2 Data Model Design and Implementation:
+      • Creation and Configuration of Data Models:
+        ✔ Develop model classes for `User`, `Calendar`, `Appointment`, and `Notification`, reflecting the MySQL database structure.
+        ✔ Precisely configure the relationships between models and annotations for data integrity.
+      • Entity Framework Core Initialization and Configuration:
+        ✔ Establish `ApplicationDbContext` to manage interactions with the MySQL database.
+        ✔ Create and apply migrations to structure the database according to defined models.
+      • Local MySQL Database Initialization:
+        ✔ Set up a local MySQL database for development and testing.
+        ✔ Ensure the database connection and proper functioning with the application.
+
+    3.3 API Construction:
+      • API Components Development:
+        ✔ Design controllers to handle HTTP requests, with specific actions for each model.
+        ✔ Create DTOs (Data Transfer Objects) to secure and optimize data transfer.
+        ✔ Establish services to encapsulate complex business logic.
+        ✔ Develop interfaces to define service contracts.
+      • CRUD Methods Implementation and Route Configuration:
+        ✔ Define CRUD endpoints for each entity (e.g., GET, POST, PUT, DELETE).
+        ✔ Precisely configure routes in controllers and use appropriate HTTP methods.
+      • Functional Testing with Postman:
+        ✔ Use Postman to test various API endpoints.
+        ✔ Validate the expected response from each endpoint and resolve encountered errors.
+
+    3.4 Authentication and Security:
+      • JWT Authentication Implementation:
+        ✔ Integrate a JSON Web Tokens based authentication system to secure API access.
+        ✔ Configure JWT generation, validation, and refresh mechanisms.
+      • Security Middleware Integration:
+        ✔ Develop and integrate middleware for authentication error management and API general security.
+        ✔ Implement access control strategies and data validation.
+
+    3.5 Unit Testing and Integration Sub-Solution Creation:
+      • Test Environment Setup with Xunit:
+        ✔ Install and configure Xunit as the testing framework.
+        ✔ Establish an isolated test database and simulate external services.
+      • Detailed Unit Testing:
+        ☐ Write tests for individual service methods, ensuring they operate as expected independently of other components.
+        ☐ Test controllers with simulated requests to verify responses and HTTP statuses.
+      • Comprehensive Integration Testing:
+        ☐ Simulate real-use scenarios to test interactions among various application components.
+        ☐ Validate data flows between models, databases, and web services.
+      • Test Automation and Integration:
+        ☐ Configure CI/CD pipelines to automatically run tests on every push or pull request.
+        ☐ Integrate test reports and code coverage to monitor code quality.
+
+    3.6 Solution Optimization and Refactoring with Unit and Integration Tests:
+      • Performance Analysis and Code Refactoring:
+        ☐ Assess application performance to identify bottlenecks.
+        ☐ Refactor code to improve quality, maintainability, and efficiency.
+
+    3.7 Adding Additional Features:
+      • Advanced Logging Integration:
+        ☐ Implement a configurable logging system to monitor application activities in production.
+        ☐ Configure log levels and formatting for easy diagnosis.
+      • Additional Features:
+        ☐ Scheduled Task Manager: Integrate Quartz.NET to manage scheduled tasks, such as recurring notifications or maintenance operations.
+        ☐ API Security with OAuth 2.0: Implement an authorization server to manage secure API access.
+      • Advanced Search Functionality:
+        ☐ Integrate Elasticsearch for fast and efficient data searching.
+        ☐ Business Intelligence Solution Integration: Use tools like Power BI for in-depth insights and analysis on collected data.
+        ☐ Data Export APIs: Develop API endpoints for data export in CSV or Excel formats.
+
+    3.8 Deployment and Monitoring:
+      • Deployment Strategies:
+        ☐ Implement gradual deployment strategies to minimize risks.
+        ☐ Use Docker and Kubernetes for automated deployment and scaling.
+      • Advanced Monitoring Systems:
+        ☐ Install and configure ELK Stack (Elasticsearch, Logstash, Kibana) for in-depth log analysis.
+        ☐ Set up alerts based on performance thresholds or errors for quick intervention.
+
+    3.9 Advanced Documentation:
+        • Source Code Documentation:
+        ☐ Detailed comments in the source code to explain design choices and complex algorithms.
+        ☐ Regularly update documentation to reflect changes in the code.
+      • User and Developer Guides:
+        ☐ Write step-by-step guides explaining how to use various application features.
+        ☐ Create video tutorials or webinars to train users and developers.
+
+    3.10 Scalability Preparation:
+      • Performance and Capacity Evaluation:
+        ☐ Conduct stress tests to simulate extreme load conditions and evaluate application responsiveness.
+        ☐ Analyze results to identify and address bottlenecks.
+      • Scalability Planning:
+        ☐ Design architecture to support the addition of microservices.
+        ☐ Evaluate the use of serverless technologies for maximum elasticity.
+
+  4. Initial Frontend Development:
+    • 4.1. Initial Setup:
+      Checklist:
+        ☐ Installation and setup of Vite.js and Next.js.
+        ☐ Establishment of the TypeScript development environment.
+        ☐ Configuration of build and transpilation tools (Webpack, Babel).
+
+    • 4.2. Design and UI:
+      Checklist:
+        ☐ Creation of user interface mockups and prototypes (e.g., using Figma).
+        ☐ Development of user interface components using Next.js and React.
+        ☐ Integration of Tailwind CSS for styling and layout.
+
+    • 4.3. Routing and State Management:
+      Checklist:
+        ☐ Setup of routing with Next Router.
+        ☐ Selection and implementation of state management (Redux, Context API).
+        ☐ Management of global and local states for components.
+
+    • 4.4. Backend Connection:
+      Checklist:
+        ☐ Establishment of API services to interact with the backend.
+        ☐ Handling of HTTP requests (GET, POST, PUT, DELETE) with Axios or Fetch API.
+        ☐ Processing of data received from the backend and UI update.
+
+    • 4.5. Security and Session Management:
+      Checklist:
+        ☐ Implementation of client-side authentication.
+        ☐ Secure management of JWT tokens and user sessions.
+        ☐ Implementation of protection mechanisms against common vulnerabilities (CSRF, XSS).
+
+    • 4.6. Responsive Design and Accessibility:
+      Checklist:
+        ☐ Ensuring the interface is responsive on different devices.
+        ☐ Testing and optimization for various browsers.
+        ☐ Checking and improving accessibility according to WCAG standards.
+
+    • 4.7. Front-End Testing:
+      Checklist:
+        ☐ Setup of Jest for unit testing.
+        ☐ Writing tests for React components.
+        ☐ Integration tests for user flow and interactions.
+
+    • 4.8. Performance Optimization:
+      Checklist:
+        ☐ Analysis of application performance with tools like Lighthouse.
+        ☐ Implementation of optimization techniques (lazy loading, code splitting).
+        ☐ Minimization of resources and reduction of loading time.
+
+  5. Integration with Messaging/Calendar/Video Conferencing Services:
+    • 5.1. Research and Selection of APIs:
+      Checklist:
+        ☐ Identification and assessment of messaging APIs (Gmail, Outlook, etc.).
+        ☐ Study of calendar service APIs (Google Calendar, Microsoft Outlook, Apple Calendar).
+        ☐ Exploration of video conferencing APIs (Zoom, Microsoft Teams, etc.).
+
+    • 5.2. Integration of Messaging APIs:
+      Checklist:
+        ☐ Establishment of connection and authentication with messaging services.
+        ☐ Development of functionalities to read and send emails.
+        ☐ Management of attachments and message formatting.
+
+    • 5.3. Synchronization with Calendars:
+      Checklist:
+        ☐ Integration of calendar APIs to display and manage events.
+        ☐ Implementation of bidirectional synchronization of calendars.
+        ☐ Management of conflicts and real-time updates.
+
+    • 5.4. Integration of Video Conferencing Services:
+      Checklist:
+        ☐ Development of the functionality to create and manage online meetings.
+        ☐ Integration of video conferencing links in calendar invitations.
+        ☐ Testing of compatibility and performance of video conferencing integrations.
+
+    • 5.5. Testing and Validation:
+      Checklist:
+        ☐ Testing of integration with each service to ensure proper functioning.
+        ☐ Validation of data exchange security and privacy.
+        ☐ Usability tests to ensure integrations are intuitive for users.
+
+  6. Unit and Integration Testing:
+    • 6.1. Test Environment Setup:
+      Checklist:
+        ☐ Installation and configuration of Xunit for Backend.
+        ☐ Installation and configuration of Jest for Frontend.
+        ☐ Establishment of an isolated testing environment with test data.
+
+    • 6.2. Backend Unit Testing:
+      Checklist:
+        ☐ Writing unit tests for models (User, Calendar, Appointment, etc.).
+        ☐ Testing services (AuthenticationService, CalendarService, etc.).
+        ☐ Validation of authentication functionalities and error handling.
+
+    • 6.3. Frontend Unit Testing:
+      Checklist:
+        ☐ Writing tests for React components (rendering tests, event tests).
+        ☐ Testing state management logic (Redux or Context API).
+        ☐ Testing user interactions (clicks, form submissions).
+
+    • 6.4. Integration Testing:
+      Checklist:
+        ☐ Testing data flows between frontend and backend.
+        ☐ Testing API endpoints (expected responses, error handling).
+        ☐ Simulating real user scenarios and testing user journey.
+
+    • 6.5. Test Automation:
+      Checklist:
+        ☐ Integrating tests into CI/CD pipelines.
+        ☐ Setting up automatic test runs on pushes or pull requests.
+        ☐ Implementing test reports and notifications in case of failure.
+
+  7. Writing Technical Documentation:
+    • Checklist:
+      ☐ 7.1. Documentation of the source code, including comments and function descriptions.
+      ☐ 7.2. Using Swagger or a similar tool to document API endpoints.
+      ☐ 7.3. Writing a detailed technical manual detailing the architecture and internal workings.
+
+  8. User Guides:
+    • Checklist:
+      ☐ 8.1. Creating user guides for installation, setup, and application usage.
+      ☐ 8.2. Writing FAQs and troubleshooting documents.
+      ☐ 8.3. Preparing written or video tutorials for end users.
+
+  9. Performance, Security, and Accessibility Testing:
+    • Checklist:
+      ☐ 9.1. Using tools like JMeter to test application performance.
+      ☐ 9.2. Verifying application security (e.g., SQL injection tests, XSS tests).
+      ☐ 9.3. Ensuring web accessibility in accordance with WCAG standards.
+
+  10. Preparation for Community Contribution:
+    • Checklist:
+      ☐ 10.1. Organizing webinars to introduce the project to the community.
+      ☐ 10.2. Writing a document explaining how to contribute to the project.
+      ☐ 10.3. Setting up a space for bug reports and feature suggestions.
+
+  11. Continuous Improvements and Maintenance:
+    • Checklist:
+      ☐ 11.1. Planning regular sprints for the implementation of new features.
+      ☐ 11.2. Reviewing and integrating user feedback.
+      ☐ 11.3. Establishing a process for tracking and resolving bugs.
+
+  12. Expansion and Diversification:
+    • Checklist:
+      ☐ 12.1. Assessing and integrating new features requested by the community.
+      ☐ 12.2. Establishing partnerships with other open-source projects for integrations.
+      ☐ 12.3. Developing a marketing strategy to promote the project.
+
+Note
+This schema is a starting point for the tasks to be done during the project development.
+Depending on the specific needs of the project and additional functionalities, modifications
+or additions may be necessary.
