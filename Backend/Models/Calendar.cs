@@ -30,10 +30,10 @@ namespace Backend.Models
         public string? Color { get; set; }
 
         // CALENDAR CREATION TIMESTAMP
-        public DateTime CreatedAt { get; set; }
+        public DateTime? CreatedAt { get; set; }
 
         // CALENDAR LAST UPDATE TIMESTAMP
-        public DateTime UpdatedAt { get; set; }
+        public DateTime? UpdatedAt { get; set; }
 
         // REFERENCE TO ASSOCIATED USER
         public User? User { get; set; }
