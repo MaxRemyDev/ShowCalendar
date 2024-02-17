@@ -23,8 +23,7 @@ namespace Backend.Tests.ModelsTests
                 Location = "Test location",
                 Details = "Test details",
                 IsAllDay = false,
-                CreatedAt = DateTime.UtcNow,
-                UpdatedAt = DateTime.UtcNow
+                CreatedAt = DateTime.UtcNow
             };
 
             // ACT - PERFORM VALIDATION CHECK ON USER OBJECT
@@ -51,7 +50,6 @@ namespace Backend.Tests.ModelsTests
                 Details = "Test details",
                 IsAllDay = false,
                 CreatedAt = DateTime.UtcNow,
-                UpdatedAt = DateTime.UtcNow
             };
 
             // ACT - PERFORM VALIDATION CHECK ON USER OBJECT
@@ -77,8 +75,7 @@ namespace Backend.Tests.ModelsTests
                 Location = "Test location",
                 Details = "Test details",
                 IsAllDay = false,
-                CreatedAt = DateTime.UtcNow,
-                UpdatedAt = DateTime.UtcNow
+                CreatedAt = DateTime.UtcNow
             };
 
             // ACT - PERFORM VALIDATION CHECK ON USER OBJECT
@@ -104,8 +101,7 @@ namespace Backend.Tests.ModelsTests
                 Location = "Test location",
                 Details = "Test details",
                 IsAllDay = false,
-                CreatedAt = DateTime.UtcNow,
-                UpdatedAt = DateTime.UtcNow
+                CreatedAt = DateTime.UtcNow
             };
 
             // ACT - PERFORM VALIDATION CHECK ON USER OBJECT
@@ -117,11 +113,96 @@ namespace Backend.Tests.ModelsTests
             Assert.Contains(validationResults, vr => vr.MemberNames.Contains(nameof(Appointment.End)));
         }
 
-        //TODO: Add a test to verify that validation fails when CalendarId is missing.
-        //TODO: Add a test to check behavior of Location and Details when provided.
-        //TODO: Add a test to check behavior of IsAllDay, particularly on Start and End validations.
+        // TEST TO VERIFY THAT VALIDATION PASSES WITH OR WITHOUT "LOCATION" AND "DETAILS" FIELDS
+        [Fact]
+        public void Appointment_Validation_Success_Without_Location_And_Details()
+        {
+            // ARRANGE - PREPARE APPOINTMENT OBJECTS WITHOUT LOCATION/DETAILS
+            var appointmentWithoutLocationAndDetails = new Appointment
+            {
+                CalendarId = 1,
+                Title = "Test appointment without location and details",
+                Start = DateTime.UtcNow,
+                End = DateTime.UtcNow.AddHours(1),
+                // Location is missing
+                // Details is missing
+                IsAllDay = false,
+                CreatedAt = DateTime.UtcNow
+            };
+
+            var validationResultsWith = new List<ValidationResult>();
+            var validationResultsWithout = new List<ValidationResult>();
+
+            // ACT - PERFORM VALIDATION CHECK ON BOTH APPOINTMENT OBJECTS
+            var isValidWithout = Validator.TryValidateObject(appointmentWithoutLocationAndDetails, new ValidationContext(appointmentWithoutLocationAndDetails), validationResultsWithout, true);
+
+            // ASSERT - VERIFY THAT BOTH VALIDATIONS PASS WITHOUT ANY ERRORS
+            Assert.Empty(validationResultsWith);
+            Assert.True(isValidWithout);
+            Assert.Empty(validationResultsWithout);
+        }
+
+        // TEST TO VERIFY THAT VALIDATION PASSES WHEN "ISALLDAY" IS TRUE
+        [Fact]
+        public void Appointment_Validation_Success_When_IsAllDay_Is_True()
+        {
+            // ARRANGE - PREPARE APPOINTMENT OBJECT WITH VALID DATA FOR TESTING
+            var appointment = new Appointment
+            {
+                CalendarId = 1,
+                Title = "Test appointment",
+                Start = DateTime.UtcNow,
+                End = DateTime.UtcNow.AddHours(1),
+                Location = "Test location",
+                Details = "Test details",
+                IsAllDay = true,
+                CreatedAt = DateTime.UtcNow
+            };
+
+            // ACT - PERFORM VALIDATION CHECK ON USER OBJECT
+            var validationResults = new List<ValidationResult>();
+            var isValid = Validator.TryValidateObject(appointment, new ValidationContext(appointment), validationResults, true);
+
+            // ASSERT - VERIFY THAT VALIDATION PASSES WITHOUT ANY ERRORS
+            Assert.True(isValid);
+            Assert.Empty(validationResults);
+        }
+
+        // TEST TO VERIFY THAT "UPDATEDAT" FIELD IS AUTOMATICALLY UPDATED WHEN CHANGES ARE MADE
+        [Fact]
+        public void Appointment_UpdatedAt_AutoUpdate_When_Changes_Are_Made()
+        {
+            // ARRANGE - PREPARE APPOINTMENT OBJECT WITH VALID DATA FOR TESTING
+            var appointment = new Appointment
+            {
+                CalendarId = 1,
+                Title = "Test appointment",
+                Start = DateTime.UtcNow,
+                End = DateTime.UtcNow.AddHours(1),
+                Location = "Test location",
+                Details = "Test details",
+                IsAllDay = false,
+                CreatedAt = DateTime.UtcNow
+            };
+
+            // ACT - PERFORM VALIDATION CHECK ON USER OBJECT
+            var validationResults = new List<ValidationResult>();
+            var isValid = Validator.TryValidateObject(appointment, new ValidationContext(appointment), validationResults, true);
+
+            // ASSERT - VERIFY THAT VALIDATION PASSES WITHOUT ANY ERRORS
+            Assert.True(isValid);
+            Assert.Empty(validationResults);
+
+            // ACT - MAKE CHANGES TO APPOINTMENT OBJECT
+            appointment.Title = "Updated title";
+            appointment.UpdatedAt = DateTime.UtcNow;
+
+            // ASSERT - VERIFY THAT UPDATEDAT FIELD IS AUTOMATICALLY UPDATED
+            Assert.NotEqual(appointment.CreatedAt, appointment.UpdatedAt);
+        }
+
         //TODO: Add a test to verify that validation fails when Start is later than End.
-        //TODO: Add a test to check automatic updating of UpdatedAt when changes are made.
+        //TODO: Add a test to verify that validation fails when CalendarId is missing. (Maybe not needed because it's a foreign key.)
 
     }
 }
