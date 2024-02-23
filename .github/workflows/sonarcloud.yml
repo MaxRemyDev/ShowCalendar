@@ -3,13 +3,15 @@ on:
   push:
     branches:
       - main
-  pull_request:
+  pull_request: # EXECUTE ON PULL REQUESTS
     types: [opened, synchronize, reopened]
 jobs:
-  build:
-    name: Build and analyze
+  build_and_analyze:
+    # BUILD AND ANALYZE THE PROJECT
+    name: Build and Analyze
     runs-on: windows-latest
     steps:
+      # CHECKOUT THE REPOSITORY
       - name: Set up JDK 17
         uses: actions/setup-java@v3
         with:
@@ -18,36 +20,35 @@ jobs:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
-      - name: Cache SonarCloud packages
-        uses: actions/cache@v3
-        with:
-          path: ~\sonar\cache
-          key: ${{ runner.os }}-sonar
-          restore-keys: ${{ runner.os }}-sonar
-      - name: Cache SonarCloud scanner
-        id: cache-sonar-scanner
-        uses: actions/cache@v3
-        with:
-          path: .\.sonar\scanner
-          key: ${{ runner.os }}-sonar-scanner
-          restore-keys: ${{ runner.os }}-sonar-scanner
+
+      # INSTALL SONARCLOUD SCANNER
       - name: Install SonarCloud scanner
-        if: steps.cache-sonar-scanner.outputs.cache-hit != 'true'
         shell: powershell
         run: |
           New-Item -Path .\.sonar\scanner -ItemType Directory
           dotnet tool update dotnet-sonarscanner --tool-path .\.sonar\scanner
-      - name: Build
+
+      # BEGIN SONARCLOUD ANALYSIS
+      - name: Begin SonarCloud analysis
+        shell: powershell
+        run: |
+          .\.sonar\scanner\dotnet-sonarscanner begin /k:"MaxRemyDev_ShowCalendar" /o:"maxremydev" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.cs.opencover.reportsPaths="./TestResults/Coverage/Reports/Cobertura.xml"
+
+      # BUILD THE PROJECT
+      - name: Build the project
         shell: powershell
         run: dotnet build Backend/Backend.sln
+
+      # TEST AND COLLECT COVERAGE
       - name: Test and collect coverage
         shell: powershell
         run: |
           dotnet tool install --global dotnet-reportgenerator-globaltool
           dotnet test Backend/Backend.sln --no-build --logger "trx" /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:CoverletOutput=./TestResults/Coverage/
           reportgenerator -reports:./TestResults/Coverage/*.cobertura.xml -targetdir:./TestResults/Coverage/Reports -reporttypes:"HtmlInline_AzurePipelines;Cobertura"
-          .\.sonar\scanner\dotnet-sonarscanner begin /k:"MaxRemyDev_ShowCalendar" /o:"maxremydev" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.cs.opencover.reportsPaths="./TestResults/Coverage/Reports/Cobertura.xml"
-      - name: SonarCloud analysis
+
+      # END SONARCLOUD ANALYSIS
+      - name: End SonarCloud analysis
         shell: powershell
         run: |
           .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
