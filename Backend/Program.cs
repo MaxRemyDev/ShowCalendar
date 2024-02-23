@@ -94,6 +94,7 @@ app.UseIpRateLimiting();
 app.UseMiddleware<SafeJsonMiddleware>();
 app.UseMiddleware<SecurityHeadersMiddleware>();
 app.UseMiddleware<ErrorHandlerMiddleware>();
+app.UseMiddleware<RequestResponseLoggingMiddleware>();
 
 // CONFIGURE AUTHENTICATION AND AUTHORIZATION
 app.UseAuthentication();
