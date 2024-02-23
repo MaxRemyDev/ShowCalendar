@@ -52,8 +52,12 @@ namespace Backend.Tests.ServicesTests
         [Fact]
         public async Task GetUserById_ShouldReturnUser()
         {
-            var user = await _userService.GetUserById(1);
-            Assert.Equal("TestUser1", user.Username);
+            // ACT - CALLS "GETUSERBYID" METHOD TO GET USER WITH ID 1
+            var result = await _userService.GetUserById(1);
+            var user = result.Value;
+
+            // ASSERT - VERIFIES THAT THE SPECIFIC USER IS RETURNED
+            Assert.Equal("TestUser1", user?.Username);
         }
 
         //TODO: ADD A TEST FOR CREATEUSER TO VERIFY THAT A NEW USER IS CORRECTLY ADDED WITH A PASSWORD HASH AND SALT

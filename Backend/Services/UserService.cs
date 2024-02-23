@@ -1,6 +1,7 @@
 using Backend.Interfaces;
 using Backend.Models;
 using Backend.Data;
+using Backend.Helpers;
 using Backend.Dtos;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -27,19 +28,23 @@ namespace Backend.Services
             return await _context.Users.ToListAsync();
         }
 
-        // GET A SPECIFIC USER BY ID FROM DATABASE
-        public async Task<User> GetUserById(int id)
+        // GET A SPECIFIC USER BY ID FROM DATABASE WITH RESULT HELPER (GET)
+        public async Task<Result<User>> GetUserById(int id)
         {
             var user = await _context.Users.FindAsync(id);
-            return user ?? throw new KeyNotFoundException("User not found");
+            if (user == null)
+            {
+                return Result<User>.Failure("User not found");
+            }
+            return Result<User>.Success(user);
         }
 
-        // CREATE A NEW USER AND SAVE TO DATABASE (POST)
-        public async Task<User> CreateUser(User user, string password)
+        // CREATE A NEW USER AND SAVE TO DATABASE WITH RESULT HELPER (POST)
+        public async Task<Result<User>> CreateUser(User user, string password)
         {
             if (await UserExists(user.Username))
             {
-                throw new ArgumentException("Username already exists");
+                return Result<User>.Failure("Username already exists");
             }
 
             using var hmac = new HMACSHA512();
@@ -52,7 +57,7 @@ namespace Backend.Services
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
 
-            return user;
+            return Result<User>.Success(user);
         }
 
         // CHECK IF A USER EXISTS IN DATABASE
@@ -61,13 +66,13 @@ namespace Backend.Services
             return await _context.Users.AnyAsync(x => x.Username == username);
         }
 
-        // UPDATE AN EXISTING USER IN DATABASE (PUT)
-        public async Task<User> UpdateUser(int id, User user)
+        // UPDATE AN EXISTING USER IN DATABASE WITH RESULT HELPER (PUT)
+        public async Task<Result<User>> UpdateUser(int id, User user)
         {
             var userToUpdate = await _context.Users.FindAsync(id);
             if (userToUpdate == null)
             {
-                throw new KeyNotFoundException("User not found");
+                return Result<User>.Failure("User not found");
             }
 
             // UPDATING USER DETAILS WITH UPDATED USER DETAILS
@@ -77,7 +82,7 @@ namespace Backend.Services
 
             _context.Entry(userToUpdate).State = EntityState.Modified;
             await _context.SaveChangesAsync();
-            return userToUpdate;
+            return Result<User>.Success(userToUpdate);
         }
 
         // DELETE A USER FROM DATABASE (DELETE)
