@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace Backend.Middlewares
 {
+    // MIDDLEWARE CLASS FOR HANDLING JSON REQUEST AND RESPONSE
     public class SafeJsonMiddleware
     {
         // REQUEST DELEGATE TO HANDLE NEXT MIDDLEWARE IN PIPELINE AND JSON SERIALIZER OPTIONS
@@ -67,9 +68,12 @@ namespace Backend.Middlewares
                 memoryStream.Seek(0, SeekOrigin.Begin);
                 var responseBody = await new StreamReader(memoryStream).ReadToEndAsync();
 
-                // CHECKING IF RESPONSE CONTENT TYPE IS JSON
+                // CHECKING IF RESPONSE BODY IS VALID JSON FORMAT AND RETURNING BAD REQUEST IF NOT
                 context.Response.Body = originalBodyStream;
-                await context.Response.WriteAsync(responseBody);
+                if (context.Response.StatusCode != StatusCodes.Status204NoContent)
+                {
+                    await context.Response.WriteAsync(responseBody);
+                }
             }
         }
     }
