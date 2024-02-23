@@ -40,10 +40,13 @@ namespace Backend.Controllers
         [HttpGet("{id}", Name = "GetUserById")]
         public async Task<IActionResult> GetUserById(int id)
         {
-            var user = await _userService.GetUserById(id);
-            if (user == null) return NotFound();
+            var result = await _userService.GetUserById(id);
+            if (!result.IsSuccess)
+            {
+                return NotFound(new { message = "User not found" });
+            }
 
-            var userDto = _mapper.Map<UserDto>(user);
+            var userDto = _mapper.Map<UserDto>(result.Value);
             return Ok(userDto);
         }
 
@@ -52,10 +55,14 @@ namespace Backend.Controllers
         public async Task<IActionResult> CreateUser(UserDto userDto)
         {
             var user = _mapper.Map<User>(userDto);
-            var newUser = await _userService.CreateUser(user, userDto.Password);
-            if (newUser == null) return BadRequest("User creation failed");
+            var result = await _userService.CreateUser(user, userDto.Password);
 
-            var newUserDto = _mapper.Map<UserDto>(newUser);
+            if (!result.IsSuccess)
+            {
+                return BadRequest(result.Error);
+            }
+
+            var newUserDto = _mapper.Map<UserDto>(result.Value);
             return CreatedAtAction(nameof(GetUserById), new { id = newUserDto.UserId }, newUserDto);
         }
 
@@ -63,14 +70,27 @@ namespace Backend.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateUser(int id, UserUpdateDto userUpdateDto)
         {
-            var userToUpdate = await _userService.GetUserById(id);
-            if (userToUpdate == null) return NotFound();
+            var resultGetUser = await _userService.GetUserById(id);
+            if (!resultGetUser.IsSuccess)
+            {
+                return NotFound(resultGetUser.Error);
+            }
+
+            var userToUpdate = resultGetUser.Value;
+            if (userToUpdate == null)
+            {
+                return NotFound();
+            }
 
             _mapper.Map(userUpdateDto, userToUpdate);
-            var updatedUser = await _userService.UpdateUser(id, userToUpdate);
-            if (updatedUser == null) return BadRequest("User update failed");
 
-            var updatedUserDto = _mapper.Map<UserDto>(updatedUser);
+            var resultUpdateUser = await _userService.UpdateUser(id, userToUpdate);
+            if (!resultUpdateUser.IsSuccess)
+            {
+                return BadRequest(resultUpdateUser.Error);
+            }
+
+            var updatedUserDto = _mapper.Map<UserDto>(resultUpdateUser.Value);
             return Ok(updatedUserDto);
         }
 
