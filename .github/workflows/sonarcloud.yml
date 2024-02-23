@@ -3,7 +3,7 @@ on:
   push:
     branches:
       - main
-  pull_request: # EXECUTE ON PULL REQUESTS
+  pull_request:
     types: [opened, synchronize, reopened]
 jobs:
   build_and_analyze:
@@ -46,6 +46,12 @@ jobs:
           dotnet tool install --global dotnet-reportgenerator-globaltool
           dotnet test Backend/Backend.sln --no-build --logger "trx" /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:CoverletOutput=./TestResults/Coverage/
           reportgenerator -reports:./TestResults/Coverage/*.cobertura.xml -targetdir:./TestResults/Coverage/Reports -reporttypes:"HtmlInline_AzurePipelines;Cobertura"
+
+      # LIST COVERAGE REPORTS
+      - name: List Coverage Reports
+        shell: powershell
+        run: |
+          Get-ChildItem -Path ./TestResults/Coverage/ -Recurse
 
       # END SONARCLOUD ANALYSIS
       - name: End SonarCloud analysis
