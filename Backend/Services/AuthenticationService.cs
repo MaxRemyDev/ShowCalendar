@@ -9,6 +9,7 @@ using System.Text;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using Microsoft.IdentityModel.Tokens;
+using Backend.Helpers;
 
 namespace Backend.Services
 {
@@ -55,7 +56,7 @@ namespace Backend.Services
         }
 
         // REGISTER A NEW USER WITH USERNAME AND PASSWORD (POST)
-        public async Task<User> Register(User user, string password)
+        public async Task<Result<User>> Register(User user, string password)
         {
             if (await UserExists(user.Username))
             {
@@ -71,11 +72,11 @@ namespace Backend.Services
             await _context.Users.AddAsync(user);
             await _context.SaveChangesAsync();
 
-            return user;
+            return Result<User>.Success(user);
         }
 
         // LOGIN A USER WITH USERNAME AND PASSWORD (POST)
-        public async Task<User> Login(string username, string password)
+        public async Task<Result<User>> Login(string username, string password)
         {
             var user = await _context.Users.FirstOrDefaultAsync(x => x.Username == username);
             if (user == null || !VerifyPasswordHash(password, user.PasswordHash, user.PasswordSalt))
@@ -88,7 +89,7 @@ namespace Backend.Services
             _context.Entry(user).State = EntityState.Modified;
             await _context.SaveChangesAsync();
 
-            return user;
+            return Result<User>.Success(user);
         }
 
         // CREATE HASH AND SALT FOR A PASSWORD TO BE STORED IN DATABASE

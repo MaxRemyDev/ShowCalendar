@@ -2,6 +2,7 @@ using AutoMapper;
 using Backend.Controllers;
 using Backend.Dtos;
 using Backend.Dtos.Responses;
+using Backend.Helpers;
 using Backend.Interfaces;
 using Backend.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -32,31 +33,25 @@ namespace Backend.Tests.ControllersTests
         [Fact]
         public async Task Register_WhenCalled_ReturnsCreatedAtRouteResult()
         {
-            // ARRANGE - PREPARE MOCK AUTH SERVICE AND MAPPER WITH TEST USER DATA FOR REGISTRATION
-            var userRegistrationDto = new UserRegistrationDto { Username = "testUser", Password = "testPassword" };
-            var user = new User
-            {
-                UserId = 1,
-                Username = "testUser",
-                PasswordHash = Encoding.UTF8.GetBytes("testUser"),
-                PasswordSalt = Encoding.UTF8.GetBytes("testUser")
-            };
-            var userDto = new UserDto { UserId = 1, Username = "testUser" };
+            // ARRANGE - SETUP MOCKS TO RETURN EXPECTED VALUES
+            var userRegistrationDto = new UserRegistrationDto { Username = "testUser", Password = "testPassword", Email = "newuser@example.com" };
+            var user = new User { UserId = 1, Username = "testUser" };
+            var userDto = new UserDto { UserId = 1, Username = "testUser", Email = "newuser@example.com" };
 
-            _mockAuthService.Setup(x => x.Register(It.IsAny<User>(), It.IsAny<string>())).ReturnsAsync(user);
+            // SETUP MOCKS TO RETURN EXPECTED VALUES
             _mockMapper.Setup(x => x.Map<User>(It.IsAny<UserRegistrationDto>())).Returns(user);
+            _mockAuthService.Setup(x => x.Register(It.IsAny<User>(), It.IsAny<string>()))
+                            .ReturnsAsync(Result<User>.Success(user));
             _mockMapper.Setup(x => x.Map<UserDto>(It.IsAny<User>())).Returns(userDto);
 
-            // ACT - CALL "REGISTER" METHOD WITH VALID DATA
+            // ACT - CALL "REGISTER" METHOD WITH VALID REGISTRATION DATA
             var result = await _controller.Register(userRegistrationDto);
 
-            // ASSERT - VERIFY THAT METHOD RETURNS A "CREATEDATROUTERESULT" WITH CORRECT ROUTE AND DATA
+            // ASSERT - VERIFY THAT METHOD RETURNS "CREATEDATROUTERESULT" WITH EXPECTED USER DTO
             var actionResult = Assert.IsType<CreatedAtRouteResult>(result);
             Assert.Equal("GetUserById", actionResult.RouteName);
-            Assert.NotNull(actionResult.Value);
-            var resultValue = actionResult.Value as UserDto;
-            Assert.NotNull(resultValue);
-            Assert.Equal(userDto.UserId, resultValue.UserId);
+            var resultValue = Assert.IsType<UserDto>(actionResult.Value);
+            Assert.Equal(userRegistrationDto.Username, resultValue.Username);
         }
 
         // TEST TO VERIFY THAT "LOGIN" METHOD RETURNS "OKOBJECTRESULT" WITH TOKEN WHEN CALLED WITH VALID CREDENTIALS
@@ -74,7 +69,7 @@ namespace Backend.Tests.ControllersTests
             };
             var token = "BackendTests_ControllerTests_AuthControllerTests_SecretKey";
 
-            _mockAuthService.Setup(x => x.Login(userLoginDto.Username, userLoginDto.Password)).ReturnsAsync(userFromService);
+            _mockAuthService.Setup(x => x.Login(userLoginDto.Username, userLoginDto.Password)).ReturnsAsync(Result<User>.Success(userFromService));
             _mockAuthService.Setup(x => x.GenerateJwtToken(It.IsAny<User>())).Returns(token);
 
             // ACT - CALL "LOGIN" METHOD WITH VALID CREDENTIALS

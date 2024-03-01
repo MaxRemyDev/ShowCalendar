@@ -35,11 +35,23 @@ namespace Backend.Controllers
 
             var userToCreate = _mapper.Map<User>(registrationDto);
 
-            var createdUser = await _authService.Register(userToCreate, registrationDto.Password);
-            if (createdUser == null)
-                return BadRequest("User could not be created");
+            if (userToCreate == null)
+            {
+                return BadRequest("User information is invalid.");
+            }
 
-            var userToReturn = _mapper.Map<UserDto>(createdUser);
+            var result = await _authService.Register(userToCreate, registrationDto.Password);
+            if (!result.IsSuccess)
+            {
+                return BadRequest(result.Error ?? "User could not be created");
+            }
+
+            var userToReturn = _mapper.Map<UserDto>(result.Value);
+            if (userToReturn == null)
+            {
+                return BadRequest("Failed to map the created user.");
+            }
+
             return CreatedAtRoute("GetUserById", new { id = userToReturn.UserId }, userToReturn);
         }
 
@@ -48,11 +60,11 @@ namespace Backend.Controllers
         public async Task<IActionResult> Login(UserLoginDto loginDto)
         {
             var userFromService = await _authService.Login(loginDto.Username, loginDto.Password);
-            if (userFromService == null)
-                return Unauthorized("Invalid username or password");
+            if (!userFromService.IsSuccess)
+                return Unauthorized(userFromService.Error);
 
-            var token = _authService.GenerateJwtToken(userFromService);
-            return Ok(new LoginResponse { Token = token });
+            var token = userFromService.Value != null ? _authService.GenerateJwtToken(userFromService.Value) : null;
+            return Ok(new LoginResponse { Token = token! });
         }
 
         // USER LOGOUT (POST) | Will be managed on client side, because JWT token is stored in client (for example, in browser's local storage) and not on server.
@@ -70,8 +82,8 @@ namespace Backend.Controllers
             try
             {
                 var userFromService = await _authService.Login(loginDto.Username, loginDto.Password);
-                var token = _authService.RefreshJwtToken(userFromService);
-                return Ok(new { token = token });
+                var token = userFromService.Value != null ? _authService.RefreshJwtToken(userFromService.Value) : null;
+                return Ok(new LoginResponse { Token = token! });
             }
             catch (Exception ex)
             {

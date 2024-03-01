@@ -46,9 +46,10 @@ namespace Backend.Tests.ServicesTests
             var registeredUser = await _authService.Register(user, password);
 
             Assert.NotNull(registeredUser);
-            Assert.Equal(user.Username, registeredUser.Username);
-            Assert.NotEmpty(registeredUser.PasswordHash);
-            Assert.NotEmpty(registeredUser.PasswordSalt);
+            Assert.NotNull(registeredUser.Value);
+            Assert.Equal(user.Username, registeredUser.Value!.Username);
+            Assert.NotEmpty(registeredUser.Value.PasswordHash);
+            Assert.NotEmpty(registeredUser.Value.PasswordSalt);
         }
 
         // TEST TO VERIFY THAT "LOGIN" METHOD SHOULD RETURN USER WHEN CREDENTIALS ARE CORRECT
@@ -69,7 +70,8 @@ namespace Backend.Tests.ServicesTests
             var loggedInUser = await _authService.Login(username, password);
 
             Assert.NotNull(loggedInUser);
-            Assert.Equal(username, loggedInUser.Username);
+            Assert.NotNull(loggedInUser.Value);
+            Assert.Equal(username, loggedInUser.Value.Username);
         }
 
         // TEST TO VERIFY THAT "GENERATEJWTTOKEN" METHOD SHOULD RETURN TOKEN WHEN USER IS VALID
