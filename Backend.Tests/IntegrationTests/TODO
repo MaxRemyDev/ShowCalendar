@@ -1,0 +1,35 @@
+DEBUGGING PLAN :
+   1. Debugging and Testing Strategy Implementation:
+      • Checklist:
+         ✔ 1.1. Confirm the availability and correct setup of local development and testing environments. @done(24-04-02 21:08)
+         ✔ 1.2. Verify that environment variables (`DB_CONNECTION_STRING_TEST`) are correctly defined and accessible in the testing environment. @started(24-04-02 21:08) @done(24-04-02 21:08) @lasted(31s)
+         ✔ 1.3. Ensure that the IDE or command line correctly loads environment variables for test executions. @done(24-04-02 21:08)
+
+   2. Database Testing Configuration:
+      • Checklist:
+         ✔ 2.1. Modify `ApiWebApplicationFactory` to conditionally use MySQL or In-Memory database based on environment variables or test configuration. @done(24-04-02 21:08)
+         ☐ 2.2. Implement a logic to check and apply database migrations conditionally to avoid errors such as "Table 'Users' already exists".
+         ☐ 2.3. Add debugging statements to confirm the usage of the correct database configuration during tests.
+
+   3. Test Isolation and Data Management:
+     3.1 Isolating Tests with Transactions:
+      • Checklist:
+         ☐ 3.1.1. Wrap test executions in transactions and roll them back after each test to maintain database state.
+         ☐ 3.1.2. Investigate and implement transactional testing where feasible to ensure test independence from seed data.
+
+     3.2 Managing Seed Data and Test Database State:
+      • Checklist:
+         ☐ 3.2.1. Create a strategy for managing or ignoring seed data during tests to ensure predictable test outcomes.
+         ☐ 3.2.2. Develop utility functions or scripts to clean up or reset the database before or after test runs as needed.
+
+   4. Test Execution and Validation:
+      • Checklist:
+         ☐ 4.1. Execute tests with and without seed data to understand the impact of pre-existing data on test outcomes.
+         ☐ 4.2. Validate that tests can run in isolation and yield consistent results regardless of database state.
+         ☐ 4.3. Review test cases and adjust assertions or setup/teardown logic to accommodate for the presence of seed data.
+
+   5. Continuous Integration and Deployment Adjustments:
+      • Checklist:
+         ☐ 5.1. Configure CI/CD pipelines to include environment variable setup for database connection strings.
+         ☐ 5.2. Ensure that the test database is correctly prepared and accessible in the CI/CD environment.
+         ☐ 5.3. Integrate database migration and seed data management steps into CI/CD workflows if necessary.
