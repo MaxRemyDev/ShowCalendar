@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Net;
 using System.Text.Json;
@@ -10,10 +11,12 @@ namespace Backend.Middlewares
     {
         // REQUEST DELEGATE TO HANDLE NEXT MIDDLEWARE IN PIPELINE
         private readonly RequestDelegate _next;
+        private readonly ILogger<ErrorHandlerMiddleware> _logger;
 
-        public ErrorHandlerMiddleware(RequestDelegate next)
+        public ErrorHandlerMiddleware(RequestDelegate next, ILogger<ErrorHandlerMiddleware> logger)
         {
             _next = next;
+            _logger = logger;
         }
 
         // METHOD TO HANDLE HTTP REQUEST
@@ -26,24 +29,35 @@ namespace Backend.Middlewares
             }
             catch (Exception error)
             {
-                // SETTING UP RESPONSE CONTEXT IN CASE OF AN ERROR
-                var response = context.Response;
-                response.ContentType = "application/json";
-
-                // SWITCHING ERROR TYPES TO DETERMINE CORRECT STATUS CODE
-                response.StatusCode = error switch
+                // CHECK IF RESPONSE HAS ALREADY STARTED
+                if (context.Response.HasStarted)
                 {
-                    KeyNotFoundException => (int)HttpStatusCode.NotFound, // 404 ERROR FOR NOT FOUND
-                    InvalidOperationException => (int)HttpStatusCode.Conflict, // 409 ERROR FOR OPERATION CONFLICT
-                    _ => (int)HttpStatusCode.InternalServerError, // 500 ERROR FOR ANY OTHER INTERNAL SERVER ERROR
-                };
+                    _logger.LogError("The response has already started, the error handler middleware will not execute. Exception: {ErrorMessage}", error.Message);
+                    throw; // PROPAGATE EXCEPTION IF RESPONSE HAS ALREADY STARTED
+                }
 
-                // SERIALIZING ERROR MESSAGE TO JSON FORMAT
-                var result = JsonSerializer.Serialize(new { message = error.Message }); //! old version: error?.Message
-
-                // WRITING ERROR RESPONSE BACK TO CLIENT
-                await response.WriteAsync(result);
+                // LOG ERROR MESSAGE
+                _logger.LogError("An unhandled exception has occurred: {ErrorMessage}", error.Message);
+                await HandleExceptionAsync(context, error);
             }
+        }
+
+        private Task HandleExceptionAsync(HttpContext context, Exception error)
+        {
+            // SET RESPONSE STATUS CODE AND CONTENT TYPE
+            var response = context.Response;
+            response.ContentType = "application/json";
+
+            // SET RESPONSE STATUS CODE BASED ON EXCEPTION
+            response.StatusCode = error switch
+            {
+                KeyNotFoundException => (int)HttpStatusCode.NotFound, // 404
+                InvalidOperationException => (int)HttpStatusCode.Conflict, // 409
+                _ => (int)HttpStatusCode.InternalServerError, // 500
+            };
+
+            var result = JsonSerializer.Serialize(new { message = error.Message }); // SERIALIZE ERROR MESSAGE
+            return response.WriteAsync(result); // WRITE ERROR MESSAGE TO RESPONSE
         }
     }
 }

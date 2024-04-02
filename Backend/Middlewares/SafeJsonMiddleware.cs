@@ -13,10 +13,12 @@ namespace Backend.Middlewares
         // REQUEST DELEGATE TO HANDLE NEXT MIDDLEWARE IN PIPELINE AND JSON SERIALIZER OPTIONS
         private readonly RequestDelegate _next;
         private readonly JsonSerializerOptions _options;
+        private readonly ILogger<SafeJsonMiddleware> _logger;
 
-        public SafeJsonMiddleware(RequestDelegate next)
+        public SafeJsonMiddleware(RequestDelegate next, ILogger<SafeJsonMiddleware> logger)
         {
             _next = next;
+            _logger = logger;
 
             // SETTING UP JSON SERIALIZER OPTIONS
             _options = new JsonSerializerOptions
@@ -31,28 +33,25 @@ namespace Backend.Middlewares
         public async Task InvokeAsync(HttpContext context)
         {
             // CHECKING IF REQUEST CONTENT TYPE IS JSON
-            if (context.Request.ContentType == "application/json")
+            if (context.Request.ContentType?.Contains("application/json") == true)
             {
-                context.Request.EnableBuffering(); // ENABLING BUFFERING TO READ REQUEST BODY
-
-                // READING REQUEST BODY AS STRING
-                using (var reader = new StreamReader(context.Request.Body, Encoding.UTF8, true, 1024, true))
+                try
                 {
-                    var requestBody = await reader.ReadToEndAsync();
-                    context.Request.Body.Position = 0;
+                    context.Request.EnableBuffering(); // ENABLING BUFFERING TO READ REQUEST BODY
+                    var requestBody = await new StreamReader(context.Request.Body).ReadToEndAsync(); // READING REQUEST BODY AS STRING
+                    context.Request.Body.Position = 0; // RESET REQUEST BODY POSITION
 
-                    // CHECKING IF REQUEST BODY IS VALID JSON FORMAT AND RETURNING BAD REQUEST IF NOT
-                    try
-                    {
-                        JsonSerializer.Deserialize<object>(requestBody, _options);
-                    }
-                    catch (JsonException jsonException)
-                    {
-                        context.Response.StatusCode = StatusCodes.Status400BadRequest;
-                        await context.Response.WriteAsync($"Invalid JSON format: {jsonException.Message}");
-                        return;
-                    }
+                    JsonSerializer.Deserialize<object>(requestBody, _options); // CHECKING IF REQUEST BODY IS VALID JSON FORMAT
                 }
+                catch (JsonException jsonException)
+                {
+                    _logger.LogError(jsonException, "Invalid JSON format: {ErrorMessage}", jsonException.Message);
+                    context.Response.StatusCode = 400; // RETURNING BAD REQUEST STATUS CODE
+                    await context.Response.WriteAsync($"Invalid JSON format: {jsonException.Message}");
+                    return; // STOP FURTHER REQUEST PROCESSING
+                }
+
+                await _next(context); // PROCESS REQUEST AND PASS TO NEXT MIDDLEWARE
             }
 
             var originalBodyStream = context.Response.Body; // SAVING ORIGINAL RESPONSE BODY STREAM
