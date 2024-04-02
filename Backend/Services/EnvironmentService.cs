@@ -6,7 +6,13 @@ namespace Backend.Services
     {
         public string GetJwtSecret()
         {
-            return Environment.GetEnvironmentVariable("JWT_SECRET") ?? throw new InvalidOperationException("JWT Secret is not set in environment variables");
+            var secret = Environment.GetEnvironmentVariable("JWT_SECRET");
+            if (string.IsNullOrEmpty(secret))
+            {
+                throw new InvalidOperationException("JWT Secret is not set in environment variables");
+            }
+            return secret;
         }
+
     }
 }
