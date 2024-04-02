@@ -12,6 +12,7 @@ using Microsoft.IdentityModel.Tokens;
 using Backend.Middlewares;
 using AspNetCoreRateLimit;
 using Newtonsoft.Json;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 
 // LOAD ENVIRONMENT VARIABLES FROM .ENV FILE
 DotEnv.Load();
@@ -67,13 +68,21 @@ builder.Services.AddScoped<IEnvironmentService, EnvironmentService>();
 var app = builder.Build();
 
 // CONFIGURE DEVELOPMENT ENVIRONMENT SEEDING OF DATABASE WITH INITIAL DATA
-// CLI for switching to test environment: "dotnet run --environment test" | "dotnet run" for switch to normal development
+// RUN : "docker-compose up -d" TO CREATE TEST DATABASE WITH DOCKER-COMPOSE AND FOR ENTER SCHEMA "dotnet run" TO SEED DATABASE
+// RUN : "dotnet run --environment test" | "dotnet run" FOR SWITCHING TO TEST ENVIRONMENT OR NORMAL DEVELOPMENT
 if (app.Environment.IsDevelopment() || app.Environment.IsEnvironment("Test"))
 {
     using (var scope = app.Services.CreateScope())
     {
         var services = scope.ServiceProvider;
-        SeedData.Initialize(services);
+        var dbContext = services.GetRequiredService<ApplicationDbContext>();
+
+        if (dbContext.Database.IsRelational())
+        {
+            dbContext.Database.Migrate(); // APPLY MIGRATION TO DATABASE
+        }
+
+        SeedData.Initialize(services); // SEED DATA TO DATABASE
     }
 }
 
@@ -91,10 +100,10 @@ app.UseRouting();
 // CONFIGURE MIDDLEWARES FOR RATE LIMITING, JSON PARSING, SECURITY HEADERS AND ERROR HANDLING
 app.UseCors("CorsPolicy");
 app.UseIpRateLimiting();
-app.UseMiddleware<SafeJsonMiddleware>();
-app.UseMiddleware<SecurityHeadersMiddleware>();
 app.UseMiddleware<ErrorHandlerMiddleware>();
 app.UseMiddleware<RequestResponseLoggingMiddleware>();
+app.UseMiddleware<SafeJsonMiddleware>();
+app.UseMiddleware<SecurityHeadersMiddleware>();
 
 // CONFIGURE AUTHENTICATION AND AUTHORIZATION
 app.UseAuthentication();
@@ -105,3 +114,8 @@ app.MapControllers();
 
 // RUN WEB APPLICATION
 app.Run();
+
+public partial class Program
+{
+    protected Program() { }
+}
