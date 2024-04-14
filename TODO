@@ -61,8 +61,8 @@ DEVELOPMENT PLAN :
         ✔ Install and configure Xunit as the testing framework.
         ✔ Establish an isolated test database and simulate external services.
       • Detailed Unit Testing:
-        ☐ Write tests for individual service methods, ensuring they operate as expected independently of other components.
-        ☐ Test controllers with simulated requests to verify responses and HTTP statuses.
+        ✔ Write tests for individual service methods, ensuring they operate as expected independently of other components. @done(24-04-14 22:42)
+        ✔ Test controllers with simulated requests to verify responses and HTTP statuses. @done(24-04-14 22:42)
       • Comprehensive Integration Testing:
         ☐ Simulate real-use scenarios to test interactions among various application components.
         ☐ Validate data flows between models, databases, and web services.
@@ -114,8 +114,8 @@ DEVELOPMENT PLAN :
   4. Initial Frontend Development:
     • 4.1. Initial Setup:
       Checklist:
-        ☐ Installation and setup of Vite.js and Next.js.
-        ☐ Establishment of the TypeScript development environment.
+        ✔ Installation and setup of Next.js. @done(24-04-14 22:43)
+        ✔ Establishment of TypeScript, Tailwind CSS and Shadcn/UI development environment. @done(24-04-14 22:43)
         ☐ Configuration of build and transpilation tools (Webpack, Babel).
 
     • 4.2. Design and UI:
