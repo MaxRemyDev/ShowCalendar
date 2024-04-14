@@ -13,6 +13,7 @@ using Backend.Middlewares;
 using AspNetCoreRateLimit;
 using Newtonsoft.Json;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.OpenApi.Models;
 
 // LOAD ENVIRONMENT VARIABLES FROM .ENV FILE
 DotEnv.Load();
@@ -64,8 +65,27 @@ builder.Services.AddScoped<IAppointmentService, AppointmentService>();
 builder.Services.AddScoped<INotificationService, NotificationService>();
 builder.Services.AddScoped<IEnvironmentService, EnvironmentService>();
 
+// SERVICES FOR CONTROLLING CONTROLLERS AND SWAGGER/OPENAPI
+builder.Services.AddControllers();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "ShowCalendar Backend API", Version = "v0.0.1" });
+});
+
 // BUILD WEB APPLICATION
 var app = builder.Build();
+
+// CONFIGURE DEVELOPMENT ENVIRONMENT SWAGGER AND SWAGGER UI
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "ShowCalendar API V1");
+        c.RoutePrefix = string.Empty;
+    });
+}
 
 // CONFIGURE DEVELOPMENT ENVIRONMENT SEEDING OF DATABASE WITH INITIAL DATA
 // RUN : "docker-compose up -d" TO CREATE TEST DATABASE WITH DOCKER-COMPOSE AND FOR ENTER SCHEMA "dotnet run" TO SEED DATABASE
