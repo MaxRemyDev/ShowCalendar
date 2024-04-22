@@ -28,17 +28,25 @@ This project is currently under development (WIP - Work In Progress).
 ### Backend
 
 - **Language & Framework** : C# with .NET 8
-- **Template** : ASP.NET Core MVC Web Application (Visual Studio v17.6.7)
+- **Initialization** : ASP.NET Core MVC Web Application (Visual Studio v17.6.7)
 - **Authentication** : JWT
+- **API** : RESTful CRUD
 - **Database** : MySQL with Entity Framework Core
-- **Environment Variables** : Local via `.env`
+- **Environment Variables** : `.env`
 
 ### Frontend
 
-- (**Initialization** : Vite.js)
-- **Framework** : Next.js with TypeScript and Tailwind
-- **State Management** : Redux or Context API
-- **UI Library** : Material-UI or Shadcn/ui
+- **Initialization** : Next.js
+- **Framework** : React.js with TypeScript and Tailwind
+- **State Management** : Zustand
+- **Asynchronous State Managment** : TanStack Query
+- **Schema Validation** : Zod
+- **Hook Form Managment** : React Hook Form
+- **UI Library** : Shadcn/ui
+- **Icons Library** : Lucide React
+- **Chart Library** : Recharts
+- **Animation Library** : Framer Motion
+- **Environment Variables** : `.env`
 
 ### Tests
 
