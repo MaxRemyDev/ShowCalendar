@@ -23,7 +23,6 @@ export const HeroSection = () => {
 									<Image
 										src="/assets/landing/hero/Z-LineRed.svg"
 										alt="Z Line Red"
-										layout="intrinsic"
 										width={300}
 										height={300}
 										priority
@@ -62,10 +61,9 @@ export const HeroSection = () => {
 					<Image
 						src="/assets/landing/hero/AppointmentsScreenshot.png"
 						alt="Appointments Screenshot"
-						layout="responsive"
 						width={700}
 						height={400}
-						objectFit="contain"
+						style={{ objectFit: "contain" }}
 						priority
 					/>
 				</div>

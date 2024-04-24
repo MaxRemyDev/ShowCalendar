@@ -8,11 +8,7 @@ import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { CalendarCheck, ChevronRightIcon, Menu } from "lucide-react";
-import {
-	CollapsibleTrigger,
-	CollapsibleContent,
-	Collapsible,
-} from "@/components/ui/collapsible";
+import { CollapsibleTrigger, CollapsibleContent, Collapsible } from "@/components/ui/collapsible";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 import {
 	NavigationMenu,
@@ -36,9 +32,10 @@ export const LandingHeader = () => {
 					<a className="flex items-center text-lg font-bold text-gray-800 hover:text-gray-600 mr-8">
 						<Image
 							src="/ShowCalendarLogo.png"
-							width={22}
-							height={22}
+							width={0}
+							height={0}
 							alt="ShowCalendar logo"
+							style={{ width: "auto", height: "auto" }}
 						/>
 						<div className="text-xl font-bold">/ ShowCalendar</div>
 					</a>
@@ -49,9 +46,7 @@ export const LandingHeader = () => {
 					<NavigationMenu>
 						<NavigationMenuList>
 							<NavigationMenuItem>
-								<NavigationMenuTrigger>
-									Products
-								</NavigationMenuTrigger>
+								<NavigationMenuTrigger>Products</NavigationMenuTrigger>
 								<NavigationMenuContent>
 									<ul className="grid gap-3 p-6 md:w-[400px] lg:w-[500px] lg:grid-cols-[.75fr_1fr]">
 										<li className="row-span-3">
@@ -65,10 +60,8 @@ export const LandingHeader = () => {
 														ShowCalendar
 													</div>
 													<p className="text-sm leading-tight text-muted-foreground">
-														Lorem ipsum dolor sit
-														amet consectetur
-														adipisicing elit. Maxime
-														mollitia
+														Lorem ipsum dolor sit amet consectetur
+														adipisicing elit. Maxime mollitia
 													</p>
 												</a>
 											</NavigationMenuLink>
@@ -86,9 +79,7 @@ export const LandingHeader = () => {
 								</NavigationMenuContent>
 							</NavigationMenuItem>
 							<NavigationMenuItem>
-								<NavigationMenuTrigger>
-									Solutions
-								</NavigationMenuTrigger>
+								<NavigationMenuTrigger>Solutions</NavigationMenuTrigger>
 								<NavigationMenuContent>
 									<ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
 										{components.map((component) => (
@@ -104,9 +95,7 @@ export const LandingHeader = () => {
 								</NavigationMenuContent>
 							</NavigationMenuItem>
 							<NavigationMenuItem>
-								<NavigationMenuTrigger>
-									Enterprise
-								</NavigationMenuTrigger>
+								<NavigationMenuTrigger>Enterprise</NavigationMenuTrigger>
 								<NavigationMenuContent>
 									<ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
 										{components.map((component) => (
@@ -123,18 +112,14 @@ export const LandingHeader = () => {
 							</NavigationMenuItem>
 							<NavigationMenuItem>
 								<Link href="/docs" legacyBehavior passHref>
-									<NavigationMenuLink
-										className={navigationMenuTriggerStyle()}
-									>
+									<NavigationMenuLink className={navigationMenuTriggerStyle()}>
 										Docs
 									</NavigationMenuLink>
 								</Link>
 							</NavigationMenuItem>
 							<NavigationMenuItem>
 								<Link href="/pricing" legacyBehavior passHref>
-									<NavigationMenuLink
-										className={navigationMenuTriggerStyle()}
-									>
+									<NavigationMenuLink className={navigationMenuTriggerStyle()}>
 										Pricing
 									</NavigationMenuLink>
 								</Link>
@@ -172,19 +157,14 @@ export const LandingHeader = () => {
 
 				{/* SHEET CONTENT*/}
 				<Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
-					<SheetContent
-						className="w-64 bg-white shadow-lg dark:bg-gray-800"
-						side="right"
-					>
+					<SheetContent className="w-64 bg-white shadow-lg dark:bg-gray-800" side="right">
 						<div className="mt-8 border-t-2 border-gray-200 dark:border-gray-700" />
 						<div className="flex flex-col justify-between h-full">
 							{/* LINKS */}
 							<div className="p-4 space-y-4">
 								<Collapsible className="grid gap-4">
 									<CollapsibleTrigger className="flex items-center gap-2 text-gray-700 hover:bg-gray-100 px-3 py-2 rounded-md dark:text-gray-300 dark:hover:bg-gray-700">
-										<span className="text-base font-medium">
-											Products
-										</span>
+										<span className="text-base font-medium">Products</span>
 										<ChevronRightIcon className="ml-auto h-5 w-5 transition-all" />
 									</CollapsibleTrigger>
 									<CollapsibleContent>
@@ -220,41 +200,31 @@ export const LandingHeader = () => {
 									className="flex items-center gap-2 text-gray-700 hover:bg-gray-100 px-3 py-2 rounded-md dark:text-gray-300 dark:hover:bg-gray-700"
 									href="#"
 								>
-									<span className="text-base font-medium">
-										Solution
-									</span>
+									<span className="text-base font-medium">Solution</span>
 								</Link>
 								<Link
 									className="flex items-center gap-2 text-gray-700 hover:bg-gray-100 px-3 py-2 rounded-md dark:text-gray-300 dark:hover:bg-gray-700"
 									href="#"
 								>
-									<span className="text-base font-medium">
-										Enterprise
-									</span>
+									<span className="text-base font-medium">Enterprise</span>
 								</Link>
 								<Link
 									className="flex items-center gap-2 text-gray-700 hover:bg-gray-100 px-3 py-2 rounded-md dark:text-gray-300 dark:hover:bg-gray-700"
 									href="#"
 								>
-									<span className="text-base font-medium">
-										Docs
-									</span>
+									<span className="text-base font-medium">Docs</span>
 								</Link>
 								<Link
 									className="flex items-center gap-2 text-gray-700 hover:bg-gray-100 px-3 py-2 rounded-md dark:text-gray-300 dark:hover:bg-gray-700"
 									href="#"
 								>
-									<span className="text-base font-medium">
-										Pricing
-									</span>
+									<span className="text-base font-medium">Pricing</span>
 								</Link>
 								<Link
 									className="flex items-center gap-2 text-gray-700 hover:bg-gray-100 px-3 py-2 rounded-md dark:text-gray-300 dark:hover:bg-gray-700"
 									href="#"
 								>
-									<span className="text-base font-medium">
-										Support
-									</span>
+									<span className="text-base font-medium">Support</span>
 								</Link>
 							</div>
 
@@ -285,32 +255,29 @@ export const LandingHeader = () => {
 };
 
 // LIST ITEM COMPONENT
-const ListItem = React.forwardRef<
-	React.ElementRef<"a">,
-	React.ComponentPropsWithoutRef<"a">
->(({ className, title, children, ...props }, ref) => {
-	return (
-		<li>
-			<NavigationMenuLink asChild>
-				<a
-					ref={ref}
-					className={cn(
-						"block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
-						className
-					)}
-					{...props}
-				>
-					<div className="text-sm font-medium leading-none">
-						{title}
-					</div>
-					<p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-						{children}
-					</p>
-				</a>
-			</NavigationMenuLink>
-		</li>
-	);
-});
+const ListItem = React.forwardRef<React.ElementRef<"a">, React.ComponentPropsWithoutRef<"a">>(
+	({ className, title, children, ...props }, ref) => {
+		return (
+			<li>
+				<NavigationMenuLink asChild>
+					<a
+						ref={ref}
+						className={cn(
+							"block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
+							className
+						)}
+						{...props}
+					>
+						<div className="text-sm font-medium leading-none">{title}</div>
+						<p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+							{children}
+						</p>
+					</a>
+				</NavigationMenuLink>
+			</li>
+		);
+	}
+);
 ListItem.displayName = "ListItem";
 
 // DUMMY DATA
@@ -318,13 +285,11 @@ const components: { title: string; href: string; description: string }[] = [
 	{
 		title: "Alert Dialog",
 		href: "/docs/primitives/alert-dialog",
-		description:
-			"Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime mollitia",
+		description: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime mollitia",
 	},
 	{
 		title: "Hover Card",
 		href: "/docs/primitives/hover-card",
-		description:
-			"Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime mollitia",
+		description: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime mollitia",
 	},
 ];
