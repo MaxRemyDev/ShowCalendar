@@ -31,20 +31,20 @@ export const FAQSection = () => {
 			<div className="w-full max-w-5xl flex-1 text-left">
 				<Accordion
 					type="multiple"
-					className="border border-neutral-400 rounded-2xl overflow-hidden"
+					className="border border-neutral-400 rounded-2xl overflow-hidden shadow-xl"
 				>
 					{FAQS.map((faq, index) => (
 						<AccordionItem
 							value={faq.question}
 							key={faq.question}
-							className="px-4 py-3"
+							className="px-4 py-1"
 						>
 							<AccordionTrigger>
-								<span className="text-left font-bold px-4 py-3">
+								<span className="text-left font-bold px-4 py-1">
 									{faq.question}
 								</span>
 							</AccordionTrigger>
-							<AccordionContent className="px-4 py-3">{faq.answer}</AccordionContent>
+							<AccordionContent className="px-4 py-1">{faq.answer}</AccordionContent>
 						</AccordionItem>
 					))}
 				</Accordion>
