@@ -9,11 +9,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect, useCallback } from "react";
 
 export const HeroSection = () => {
-	const images = [
-		"/assets/landing/hero/AppointmentsScreenshot.png",
-		"/assets/placeholder.svg",
-		"/assets/placeholder.svg",
-	];
+	const images = ["/assets/landing/hero/AppointmentsScreenshot.png", "/assets/placeholder.svg"];
 
 	const [[page, direction], setPage] = useState([0, 0]); // STATE FOR CURRENT PAGE AND DIRECTION
 
@@ -154,10 +150,11 @@ export const HeroSection = () => {
 								<Image
 									src={images[page]}
 									alt="Hero Screenshot"
-									layout="fill"
-									objectFit="contain"
+									sizes="100%"
+									fill={true}
 									priority
 									onDragStart={(e) => e.preventDefault()}
+									style={{ objectFit: "contain", width: "100%", height: "100%" }}
 								/>
 							</motion.div>
 						</AnimatePresence>
@@ -165,9 +162,9 @@ export const HeroSection = () => {
 
 					{/* DOTS NAVIGATION CONTAINER */}
 					<div className="flex justify-center mt-5 z-10">
-						{images.map((_, index) => (
+						{images.map((image, index) => (
 							<motion.div
-								key={index}
+								key={image}
 								onClick={() => setPage([index, 0])}
 								initial={{ opacity: 1 }}
 								animate={{ opacity: page === index ? 1 : 0.75 }}
