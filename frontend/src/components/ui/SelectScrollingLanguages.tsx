@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { ChevronDown, Globe } from "lucide-react";
+import { Globe } from "lucide-react";
 import {
 	Select,
 	SelectContent,
