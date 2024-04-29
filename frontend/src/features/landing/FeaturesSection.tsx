@@ -1,9 +1,8 @@
 "use client";
 
 import { Section } from "./Section";
-import Image from "next/image";
 import { motion } from "framer-motion";
-import React, { createRef, useRef } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 
 type Coordinate = { x: number; y: number }; // TYPE FOR COORDINATES
 
@@ -20,33 +19,74 @@ const calcRotate = (x: number, y: number, rect: DOMRect): Coordinate => {
 };
 
 export const FeaturesSection = () => {
-	const cardRefs = useRef(features.map(() => createRef<HTMLDivElement>())); // CREATE REFS FOR EACH FEATURE CARD
+	const cardRefs = useRef<Array<HTMLDivElement | null>>(features.map(() => null)); // CREATE REFS FOR EACH FEATURE CARD
+
+	// DEBOUNCING STATE FOR ANIMATION
+	const [debouncedPosition, setDebouncedPosition] = useState({ x: 0, y: 0 });
+	const [activeCard, setActiveCard] = useState<number | null>(null);
+
+	// DEBOUNCED ANIMATION EFFECT
+	useEffect(() => {
+		const handler = setTimeout(() => {
+			if (activeCard !== null) {
+				const cardRef = cardRefs.current?.[activeCard];
+				if (cardRef) {
+					cardRef.style.transform = `rotateX(${debouncedPosition.x}deg) rotateY(${debouncedPosition.y}deg)`;
+				}
+			}
+		}, 100); // Debounce time 100 ms
+
+		return () => {
+			clearTimeout(handler);
+		};
+	}, [debouncedPosition, activeCard]);
+
+	// MOUSE MOVEMENT MANAGEMENT WITH DEBOUNCING
+	const handleMouseMove = (index: number) => (e: React.MouseEvent<HTMLDivElement>) => {
+		const cardRef = cardRefs.current?.[index];
+		if (cardRef) {
+			const rect = cardRef.getBoundingClientRect();
+			const rotate = calcRotate(e.clientX, e.clientY, rect);
+
+			setDebouncedPosition(rotate);
+			setActiveCard(index);
+		}
+	};
+
+	const requestRef = useRef<number | null>(null); // REFERENCE FOR ANIMATION FRAME
+
+	// ANIMATION FUNCTION
+	const animate = useCallback(() => {
+		if (activeCard !== null) {
+			const cardRef = cardRefs.current?.[activeCard];
+			if (cardRef) {
+				cardRef.style.transform = `rotateX(${debouncedPosition.x}deg) rotateY(${debouncedPosition.y}deg)`;
+			}
+		}
+		requestRef.current = requestAnimationFrame(animate);
+	}, [activeCard, debouncedPosition]);
+
+	// REQUEST ANIMATION FRAME
+	useEffect(() => {
+		requestRef.current = requestAnimationFrame(animate);
+		return () => cancelAnimationFrame(requestRef.current!);
+	}, [animate]);
 
 	return (
 		<Section>
 			<div className="container mx-auto">
 				<h2 className="text-3xl font-semibold text-center mb-12">
-					What&apos;s in ShowCalendar?
+					WHAT&apos;S IN SHOWCALENDAR?
 				</h2>
 
 				{/* GRID OF FEATURE CARDS */}
 				<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
 					{features.map((feature, index) => {
-						// EVENT HANDLERS FOR MOUSE MOVEMENT
-						const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-							const cardRef = cardRefs.current?.[index];
-							if (cardRef?.current) {
-								const rect = cardRef.current.getBoundingClientRect();
-								const rotate = calcRotate(e.clientX, e.clientY, rect);
-								cardRef.current.style.transform = `rotateX(${rotate.x}deg) rotateY(${rotate.y}deg)`;
-							}
-						};
-
 						// EVENT HANDLER FOR MOUSE LEAVE
 						const handleMouseLeave = () => {
 							const cardRef = cardRefs.current?.[index];
-							if (cardRef?.current) {
-								cardRef.current.style.transform = "rotateX(0deg) rotateY(0deg)";
+							if (cardRef) {
+								cardRef.style.transform = "rotateX(0deg) rotateY(0deg)";
 							}
 						};
 
@@ -55,18 +95,20 @@ export const FeaturesSection = () => {
 							<motion.div
 								key={`${feature.title}-${feature.description}`}
 								className="border-solid border-[2px] border-neutral-300 feature-card p-6 rounded-3xl shadow-xl"
-								ref={cardRefs.current[index]}
-								onMouseMove={handleMouseMove}
-								onMouseLeave={handleMouseLeave}
 							>
-								{/* DISPLAY IMAGE IF AVAILABLE */}
+								{/* DISPLAY IMAGE IF AVAILABLE WITH 3D EFFECT ANIMATION*/}
 								{feature.image && (
-									<Image
+									<motion.img
 										src={feature.image}
 										alt={`${feature.title} image`}
 										width={400}
 										height={400}
-										className="shadow-xl rounded-3xl mb-6"
+										className="shadow-2xl rounded-3xl mb-6"
+										ref={(el: HTMLDivElement | null) =>
+											(cardRefs.current[index] = el)
+										}
+										onMouseMove={handleMouseMove(index)}
+										onMouseLeave={handleMouseLeave}
 									/>
 								)}
 								<h3 className="text-xl font-semibold mb-2">{feature.title}</h3>
