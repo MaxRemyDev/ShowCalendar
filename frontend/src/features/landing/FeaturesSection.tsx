@@ -76,46 +76,55 @@ export const FeaturesSection = () => {
 		<Section>
 			<div className="container mx-auto">
 				<h2 className="text-3xl font-semibold text-center mb-12">
-					WHAT&apos;S IN SHOWCALENDAR?
+					WHAT&apos;S IN SHOWCALENDAR ?
 				</h2>
 
 				{/* GRID OF FEATURE CARDS */}
 				<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-					{features.map((feature, index) => {
-						// EVENT HANDLER FOR MOUSE LEAVE
-						const handleMouseLeave = () => {
-							const cardRef = cardRefs.current?.[index];
-							if (cardRef) {
-								cardRef.style.transform = "rotateX(0deg) rotateY(0deg)";
-							}
-						};
+					{features.map((category, categoryIndex) => (
+						<div key={category.category} className="flex flex-col space-y-8">
+							{category.items.map((feature, featureIndex) => {
+								const cardIndex = categoryIndex * 100 + featureIndex;
+								const handleMouseLeave = () => {
+									const cardRef = cardRefs.current?.[cardIndex];
+									if (cardRef) {
+										cardRef.style.transform = "rotateX(0deg) rotateY(0deg)";
+									}
+								};
 
-						// RETURN FEATURE CARD
-						return (
-							<motion.div
-								key={`${feature.title}-${feature.description}`}
-								className="border-solid border-[2px] border-neutral-300 feature-card p-6 rounded-3xl shadow-xl"
-							>
-								{/* DISPLAY IMAGE IF AVAILABLE WITH 3D EFFECT ANIMATION*/}
-								{feature.image && (
-									<motion.img
-										src={feature.image}
-										alt={`${feature.title} image`}
-										width={400}
-										height={400}
-										className="shadow-2xl rounded-3xl mb-6"
-										ref={(el: HTMLDivElement | null) =>
-											(cardRefs.current[index] = el)
-										}
-										onMouseMove={handleMouseMove(index)}
-										onMouseLeave={handleMouseLeave}
-									/>
-								)}
-								<h3 className="text-xl font-semibold mb-2">{feature.title}</h3>
-								<p>{feature.description}</p>
-							</motion.div>
-						);
-					})}
+								// RETURN FEATURE CARD
+								return (
+									<motion.div
+										key={`${feature.title}-${feature.description}`}
+										className="border-solid border-[2px] border-neutral-300 feature-card p-6 rounded-3xl shadow-xl flex flex-col items-center justify-center"
+										style={{ minHeight: "165px" }}
+									>
+										{/* DISPLAY IMAGE IF AVAILABLE WITH 3D EFFECT ANIMATION*/}
+										{feature.image && (
+											<motion.img
+												src={feature.image}
+												alt={`${feature.title} image`}
+												width={400}
+												height={400}
+												className="shadow-2xl rounded-3xl mb-6 items-center justify-center"
+												ref={(el: HTMLDivElement | null) =>
+													(cardRefs.current[cardIndex] = el)
+												}
+												onMouseMove={handleMouseMove(cardIndex)}
+												onMouseLeave={handleMouseLeave}
+											/>
+										)}
+										<div className="flex-1 flex flex-col pt-3">
+											<h3 className="text-xl font-semibold mb-2">
+												{feature.title}
+											</h3>
+											<p className="flex-1">{feature.description}</p>
+										</div>
+									</motion.div>
+								);
+							})}
+						</div>
+					))}
 				</div>
 			</div>
 		</Section>
@@ -123,73 +132,87 @@ export const FeaturesSection = () => {
 };
 
 const features = [
-	// FIRST HORIZONTAL COLUMN
+	// FIRST VERTICAL COLUMN
 	{
-		title: "Organize and Collaborate",
-		description:
-			"Streamline your planning and collaboration with easy scheduling, real-time updates, and integration with the tools you love.",
-		image: "/assets/placeholder.svg",
-	},
-	{
-		title: "Stay Informed and Personalized",
-		description:
-			"Get timely reminders, tailor your experience to fit your style, and enjoy the convenience of accessing your calendar wherever you are.",
-		image: "/assets/placeholder.svg",
-	},
-	{
-		title: "Support, Security, and Insights",
-		description:
-			"Rely on our dedicated support team, trust in our robust security measures, and gain valuable insights from comprehensive reports.",
-		image: "/assets/placeholder.svg",
-	},
-
-	// SECOND HORIZONTAL COLUMN
-	{
-		title: "Intuitive Scheduling",
-		description:
-			"Organize your day with ease using a simple drag-and-drop interface and customizable calendar views.",
-	},
-	{
-		title: "Automatic Reminders",
-		description:
-			"Never miss an important appointment with custom reminders and push notifications.",
-	},
-	{
-		title: "Dedicated Customer Support",
-		description: "Our team is always on hand to help you make the most of ShowCalendar.",
+		category: "Organize and Collaborate",
+		items: [
+			{
+				title: "Organize and Collaborate",
+				image: "/assets/placeholder.svg",
+				description:
+					"Streamline your planning and collaboration with easy scheduling, real-time updates, and integration with the tools you love.",
+			},
+			{
+				title: "Intuitive Scheduling",
+				description:
+					"Organize your day with ease using a simple drag-and-drop interface and customizable calendar views.",
+			},
+			{
+				title: "Real-Time Collaboration",
+				description:
+					"Invite colleagues to events, share your availability, and schedule together effortlessly.",
+			},
+			{
+				title: "Sync with Your Favorite Tools",
+				description:
+					"Connect ShowCalendar with other apps for seamless synchronization and enhanced productivity.",
+			},
+		],
 	},
 
-	// THIRD HORIZONTAL COLUMN
+	// SECOND VERTICAL COLUMN
 	{
-		title: "Real-Time Collaboration",
-		description:
-			"Invite colleagues to events, share your availability, and schedule together effortlessly.",
-	},
-	{
-		title: "Advanced Customization",
-		description:
-			"Create a calendar that reflects your style with customizable themes and flexible settings.",
-	},
-	{
-		title: "Data Protection",
-		description:
-			"We take security seriously with end-to-end encryption for your information and calendars.",
+		category: "Stay Informed and Personalized",
+		items: [
+			{
+				title: "Stay Informed and Personalized",
+				image: "/assets/placeholder.svg",
+				description:
+					"Get timely reminders, tailor your experience to fit your style, and enjoy the convenience of accessing your calendar wherever you are.",
+			},
+			{
+				title: "Automatic Reminders",
+				description:
+					"Never miss an important appointment with custom reminders and push notifications.",
+			},
+			{
+				title: "Advanced Customization",
+				description:
+					"Create a calendar that reflects your style with customizable themes and flexible settings.",
+			},
+			{
+				title: "Access Anywhere, Anytime",
+				description:
+					"Manage your schedule from any device, at any time, with secure cloud syncing.",
+			},
+		],
 	},
 
-	// FOURTH HORIZONTAL COLUMN
+	// THIRD VERTICAL COLUMN
 	{
-		title: "Sync with Your Favorite Tools",
-		description:
-			"Connect ShowCalendar with other apps for seamless synchronization and enhanced productivity.",
-	},
-	{
-		title: "Access Anywhere, Anytime",
-		description:
-			"Manage your schedule from any device, at any time, with secure cloud syncing.",
-	},
-	{
-		title: "Insights and Reports",
-		description:
-			"Make informed decisions with detailed reports on your time management and activities.",
+		category: "Support, Security, and Insights",
+		items: [
+			{
+				title: "Support, Security, and Insights",
+				image: "/assets/placeholder.svg",
+				description:
+					"Rely on our dedicated support team, trust in our robust security measures, and gain valuable insights from comprehensive reports.",
+			},
+			{
+				title: "Dedicated Customer Support",
+				description:
+					"Our team is always on hand to help you make the most of ShowCalendar.",
+			},
+			{
+				title: "Data Protection",
+				description:
+					"We take security seriously with end-to-end encryption for your information and calendars.",
+			},
+			{
+				title: "Insights and Reports",
+				description:
+					"Make informed decisions with detailed reports on your time management and activities.",
+			},
+		],
 	},
 ];
