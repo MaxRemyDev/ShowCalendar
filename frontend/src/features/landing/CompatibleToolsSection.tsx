@@ -1,4 +1,9 @@
+"use client";
+
 import { Section } from "./Section";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faApple, faDiscord, faGoogle, faMicrosoft } from "@fortawesome/free-brands-svg-icons";
+import { motion } from "framer-motion";
 
 export const CompatibleToolsSection = () => {
 	return (
@@ -7,44 +12,59 @@ export const CompatibleToolsSection = () => {
 				<h2 className="text-4xl font-bold">COMPATIBLE TOOLS</h2>
 				<div className="mt-8 flex flex-wrap items-center justify-center text-muted-foreground sm:justify-between">
 					{/* Apple */}
-					<a
-						href="#"
+					<motion.a
+						href="https://www.apple.com/"
 						className="mb-10 mr-10 hover:text-gray-800 dark:hover:text-gray-400 lg:mb-0"
+						whileHover={{ scale: 1.2 }}
+						whileTap={{ scale: 0.9 }}
+						transition={{ type: "spring", stiffness: 400, damping: 17 }}
 					>
-						<div className="bg-gray-900 size-20"></div>
-					</a>
+						<FontAwesomeIcon icon={faApple} className="size-20" />
+					</motion.a>
 
 					{/* Google */}
-					<a
-						href="#"
+					<motion.a
+						href="https://www.google.com/"
 						className="mb-10 mr-10 hover:text-gray-800 dark:hover:text-gray-400 lg:mb-0"
+						whileHover={{ scale: 1.2 }}
+						whileTap={{ scale: 0.9 }}
+						transition={{ type: "spring", stiffness: 400, damping: 17 }}
 					>
-						<div className="bg-gray-900 size-20"></div>
-					</a>
+						<FontAwesomeIcon icon={faGoogle} className="size-20" />
+					</motion.a>
 
 					{/* Microsoft */}
-					<a
-						href="#"
+					<motion.a
+						href="https://www.microsoft.com/"
 						className="mb-10 mr-10 hover:text-gray-800 dark:hover:text-gray-400 lg:mb-0"
+						whileHover={{ scale: 1.2 }}
+						whileTap={{ scale: 0.9 }}
+						transition={{ type: "spring", stiffness: 400, damping: 17 }}
 					>
-						<div className="bg-gray-900 size-20"></div>
-					</a>
+						<FontAwesomeIcon icon={faMicrosoft} className="size-20" />
+					</motion.a>
 
 					{/* Zoom */}
-					<a
-						href="#"
+					{/* <motion.a
+						href="https://zoom.us/"
 						className="mb-10 mr-10 hover:text-gray-800 dark:hover:text-gray-400 lg:mb-0"
+						whileHover={{ scale: 1.2 }}
+						whileTap={{ scale: 0.9 }}
+						transition={{ type: "spring", stiffness: 400, damping: 17 }}
 					>
-						<div className="bg-gray-900 size-20"></div>
-					</a>
+						<FontAwesomeIcon icon={faZoom} className="size-20" />
+					</motion.a> */}
 
 					{/* Discord */}
-					<a
-						href="#"
+					<motion.a
+						href="https://discord.com/"
 						className="mb-10 mr-10 hover:text-gray-800 dark:hover:text-gray-400 lg:mb-0"
+						whileHover={{ scale: 1.2 }}
+						whileTap={{ scale: 0.9 }}
+						transition={{ type: "spring", stiffness: 400, damping: 17 }}
 					>
-						<div className="bg-gray-900 size-20"></div>
-					</a>
+						<FontAwesomeIcon icon={faDiscord} className="size-20" />
+					</motion.a>
 				</div>
 			</div>
 		</Section>
