@@ -25,7 +25,10 @@ export const LandingHeader = () => {
 	const toggleSheet = () => setIsSheetOpen(!isSheetOpen);
 
 	return (
-		<motion.header className="fixed inset-x-0 z-50 flex h-20 items-center justify-between px-4 shadow-lg backdrop-blur-md bg-white/30">
+		<motion.header
+			className="fixed inset-x-0 z-50 flex h-20 items-center justify-between px-4 shadow-lg bg-white/30"
+			style={{ backdropFilter: "blur(10px)", WebkitBackdropFilter: "blur(10px)" }}
+		>
 			<div className="flex items-center justify-start flex-grow">
 				{/* LOGO AND BRAND NAME */}
 				<Link href="/" legacyBehavior>
@@ -46,7 +49,9 @@ export const LandingHeader = () => {
 					<NavigationMenu>
 						<NavigationMenuList>
 							<NavigationMenuItem>
-								<NavigationMenuTrigger>Products</NavigationMenuTrigger>
+								<NavigationMenuTrigger className="bg-transparent">
+									Products
+								</NavigationMenuTrigger>
 								<NavigationMenuContent>
 									<ul className="grid gap-3 p-6 md:w-[400px] lg:w-[500px] lg:grid-cols-[.75fr_1fr]">
 										<li className="row-span-3">
@@ -79,7 +84,9 @@ export const LandingHeader = () => {
 								</NavigationMenuContent>
 							</NavigationMenuItem>
 							<NavigationMenuItem>
-								<NavigationMenuTrigger>Solutions</NavigationMenuTrigger>
+								<NavigationMenuTrigger className="bg-transparent">
+									Solutions
+								</NavigationMenuTrigger>
 								<NavigationMenuContent>
 									<ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
 										{components.map((component) => (
@@ -95,7 +102,9 @@ export const LandingHeader = () => {
 								</NavigationMenuContent>
 							</NavigationMenuItem>
 							<NavigationMenuItem>
-								<NavigationMenuTrigger>Enterprise</NavigationMenuTrigger>
+								<NavigationMenuTrigger className="bg-transparent">
+									Enterprise
+								</NavigationMenuTrigger>
 								<NavigationMenuContent>
 									<ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
 										{components.map((component) => (
@@ -112,14 +121,20 @@ export const LandingHeader = () => {
 							</NavigationMenuItem>
 							<NavigationMenuItem>
 								<Link href="/docs" legacyBehavior passHref>
-									<NavigationMenuLink className={navigationMenuTriggerStyle()}>
+									<NavigationMenuLink
+										className={navigationMenuTriggerStyle()}
+										style={{ backgroundColor: "transparent" }}
+									>
 										Docs
 									</NavigationMenuLink>
 								</Link>
 							</NavigationMenuItem>
 							<NavigationMenuItem>
 								<Link href="/pricing" legacyBehavior passHref>
-									<NavigationMenuLink className={navigationMenuTriggerStyle()}>
+									<NavigationMenuLink
+										className={navigationMenuTriggerStyle()}
+										style={{ backgroundColor: "transparent" }}
+									>
 										Pricing
 									</NavigationMenuLink>
 								</Link>
@@ -151,26 +166,30 @@ export const LandingHeader = () => {
 
 			<div className="lg:hidden flex items-center space-x-4">
 				{/* HAMBURGER MENU TRIGGER */}
-				<Button onClick={toggleSheet} variant="ghost" size="icon">
+				<Button onClick={toggleSheet} variant="ghost" size="icon" className="ml-2">
 					<Menu />
 				</Button>
 
 				{/* SHEET CONTENT*/}
 				<Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
-					<SheetContent className="w-64 bg-white shadow-lg dark:bg-gray-800" side="right">
+					<SheetContent
+						className="w-64 bg-white/75 shadow-lg dark:bg-gray-800"
+						side="right"
+						style={{ backdropFilter: "blur(10px)", WebkitBackdropFilter: "blur(10px)" }}
+					>
 						<div className="mt-8 border-t-2 border-gray-200 dark:border-gray-700" />
 						<div className="flex flex-col justify-between h-full">
 							{/* LINKS */}
 							<div className="p-4 space-y-4">
 								<Collapsible className="grid gap-4">
-									<CollapsibleTrigger className="flex items-center gap-2 text-gray-700 hover:bg-gray-100 px-3 py-2 rounded-md dark:text-gray-300 dark:hover:bg-gray-700">
+									<CollapsibleTrigger className="flex items-center gap-2 text-gray-700 hover:bg-gray-100/50 px-3 py-2 rounded-md dark:text-gray-300 dark:hover:bg-gray-700">
 										<span className="text-base font-medium">Products</span>
 										<ChevronRightIcon className="ml-auto h-5 w-5 transition-all" />
 									</CollapsibleTrigger>
 									<CollapsibleContent>
-										<div className="-mx-4 -mt-2 grid gap-2 bg-gray-100 p-4 dark:bg-gray-700 rounded-lg border-2">
+										<div className="-mx-4 -mt-2 grid gap-2 bg-gray-100/50 p-4 dark:bg-gray-700 rounded-lg border-2">
 											<Link
-												className="flex items-center justify-left gap-2 text-gray-700 hover:bg-gray-200 px-3 py-2 rounded-md dark:text-gray-300 dark:hover:bg-gray-600"
+												className="flex items-center justify-left gap-2 text-gray-700 hover:bg-gray-300 px-3 py-2 rounded-md dark:text-gray-300 dark:hover:bg-gray-600"
 												href="#"
 											>
 												<span className="text-base font-medium">
@@ -178,7 +197,7 @@ export const LandingHeader = () => {
 												</span>
 											</Link>
 											<Link
-												className="flex items-center justify-left gap-2 text-gray-700 hover:bg-gray-200 px-3 py-2 rounded-md dark:text-gray-300 dark:hover:bg-gray-600"
+												className="flex items-center justify-left gap-2 text-gray-700 hover:bg-gray-300 px-3 py-2 rounded-md dark:text-gray-300 dark:hover:bg-gray-600"
 												href="#"
 											>
 												<span className="text-base font-medium">
@@ -186,7 +205,7 @@ export const LandingHeader = () => {
 												</span>
 											</Link>
 											<Link
-												className="flex items-center justify-left gap-2 text-gray-700 hover:bg-gray-200 px-3 py-2 rounded-md dark:text-gray-300 dark:hover:bg-gray-600"
+												className="flex items-center justify-left gap-2 text-gray-700 hover:bg-gray-300 px-3 py-2 rounded-md dark:text-gray-300 dark:hover:bg-gray-600"
 												href="#"
 											>
 												<span className="text-base font-medium">
@@ -197,31 +216,31 @@ export const LandingHeader = () => {
 									</CollapsibleContent>
 								</Collapsible>
 								<Link
-									className="flex items-center gap-2 text-gray-700 hover:bg-gray-100 px-3 py-2 rounded-md dark:text-gray-300 dark:hover:bg-gray-700"
+									className="flex items-center gap-2 text-gray-700 hover:bg-gray-100/50 px-3 py-2 rounded-md dark:text-gray-300 dark:hover:bg-gray-700"
 									href="#"
 								>
 									<span className="text-base font-medium">Solution</span>
 								</Link>
 								<Link
-									className="flex items-center gap-2 text-gray-700 hover:bg-gray-100 px-3 py-2 rounded-md dark:text-gray-300 dark:hover:bg-gray-700"
+									className="flex items-center gap-2 text-gray-700 hover:bg-gray-100/50 px-3 py-2 rounded-md dark:text-gray-300 dark:hover:bg-gray-700"
 									href="#"
 								>
 									<span className="text-base font-medium">Enterprise</span>
 								</Link>
 								<Link
-									className="flex items-center gap-2 text-gray-700 hover:bg-gray-100 px-3 py-2 rounded-md dark:text-gray-300 dark:hover:bg-gray-700"
+									className="flex items-center gap-2 text-gray-700 hover:bg-gray-100/50 px-3 py-2 rounded-md dark:text-gray-300 dark:hover:bg-gray-700"
 									href="#"
 								>
 									<span className="text-base font-medium">Docs</span>
 								</Link>
 								<Link
-									className="flex items-center gap-2 text-gray-700 hover:bg-gray-100 px-3 py-2 rounded-md dark:text-gray-300 dark:hover:bg-gray-700"
+									className="flex items-center gap-2 text-gray-700 hover:bg-gray-100/50 px-3 py-2 rounded-md dark:text-gray-300 dark:hover:bg-gray-700"
 									href="#"
 								>
 									<span className="text-base font-medium">Pricing</span>
 								</Link>
 								<Link
-									className="flex items-center gap-2 text-gray-700 hover:bg-gray-100 px-3 py-2 rounded-md dark:text-gray-300 dark:hover:bg-gray-700"
+									className="flex items-center gap-2 text-gray-700 hover:bg-gray-100/50 px-3 py-2 rounded-md dark:text-gray-300 dark:hover:bg-gray-700"
 									href="#"
 								>
 									<span className="text-base font-medium">Support</span>
