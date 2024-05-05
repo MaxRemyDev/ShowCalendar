@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { motion } from "framer-motion";
 import Link from "next/link";
+import SwitchAnimate from "@/components/ui/switchAnimate";
 
 // FEATURE DECORATION COMPONENT
 type FeatureWithDecoration = {
@@ -34,9 +35,9 @@ interface PricingOption {
 // DECORATION ICON COMPONENT
 const getDecorationIcon = (decorationType: "check" | "line" | "x") => {
 	const decorations: { [key: string]: JSX.Element } = {
-		check: <Check className="text-green-500" />,
-		line: <Minus className="text-orange-300" />,
-		x: <X className="text-red-500" />,
+		check: <Check className="text-greenColor" />,
+		line: <Minus className="text-orangeColor" />,
+		x: <X className="text-redColor" />,
 	};
 	return decorations[decorationType] || null;
 };
@@ -115,12 +116,12 @@ const PricingCard: React.FC<PricingOption> = ({
 	<motion.div
 		whileHover={{ scale: 1.05 }}
 		className={`relative flex flex-col border-4 p-6 rounded-2xl text-center transition-all duration-300 ${
-			mostPopular ? "border-red-500 shadow-lg" : "border-gray-200"
+			mostPopular ? "border-primary shadow-lg" : "border-gray-200"
 		} h-full`}
 	>
 		{/* FAKE MOST POPULAR CARD */}
 		{mostPopular && (
-			<span className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-gray-100 px-3 py-1 text-red-500 text-sm font-bold mb-4 inline-block rounded-full border-2 border-red-500">
+			<span className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-gray-100 px-3 py-1 text-primary text-sm font-bold mb-4 inline-block rounded-full border-2 border-primary">
 				Most Popular
 			</span>
 		)}
@@ -146,7 +147,7 @@ const PricingCard: React.FC<PricingOption> = ({
 		<ul className="flex-1 ">
 			{features.map((feature) => (
 				<li key={feature.text} className="my-2 ml-5 text-left flex items-center">
-					{feature.decoration}
+					<div className="h-5">{feature.decoration}</div>
 					<span className="ml-2">{feature.text}</span>
 				</li>
 			))}
@@ -155,10 +156,14 @@ const PricingCard: React.FC<PricingOption> = ({
 		{/* SELECT BUTTON */}
 		<Button
 			variant={`${mostPopular ? "secondary" : "outline"}`}
-			className={`mt-auto py-2 my-5 px-4 rounded-3xl border-[3px] border-red-500 hover:bg-red-600 hover:text-white ${
-				mostPopular ? "bg-red-500 hover:bg-red-600 border-none text-white" : "text-red-500"
+			className={`w-[177px] h-[45px] mx-auto mt-auto py-2 my-5 px-4 border-[3px] border-primary hover:bg-primary hover:text-white ${
+				mostPopular
+					? "bg-primary hover:bg-secondary border-none text-white"
+					: "text-primary"
 			}`}
 			asChild
+			shadow={`${mostPopular ? "primary" : "default"}`}
+			borderRadius="full"
 		>
 			<Link href="/">{buttonText}</Link>
 		</Button>
@@ -204,8 +209,8 @@ export const PricingSection = () => {
 				</TooltipProvider>
 				<div className="flex items-center space-x-2">
 					<Label htmlFor="pricing-mode">Monthly</Label>
-					<Switch
-						id="pricing-mode"
+					<SwitchAnimate
+						id="pricing-mode-animate"
 						checked={isYearly}
 						onCheckedChange={handleSwitchChange}
 					/>
