@@ -69,11 +69,17 @@ export const BenefitsSection = () => {
 				))}
 			</div>
 			<div className="flex justify-center pt-20 pb-10">
-				<Button size="lg" className="bg-red-600 text-white">
-					<Link href="/get-started" legacyBehavior>
-						Get Started
-					</Link>
-				</Button>
+				<motion.div
+					whileHover={{ scale: 1.05 }}
+					whileTap={{ scale: 0.95 }}
+					transition={{ type: "spring", stiffness: 400, damping: 17 }}
+				>
+					<Button size="xl" borderRadius="xxxl" textSize="md" shadow="primary">
+						<Link href="/get-started" legacyBehavior>
+							Get Started
+						</Link>
+					</Button>
+				</motion.div>
 			</div>
 		</Section>
 	);
