@@ -12,6 +12,13 @@ export const HeroSection = () => {
 	const images = ["/assets/landing/hero/AppointmentsScreenshot.png", "/assets/placeholder.svg"];
 
 	const [[page, direction], setPage] = useState([0, 0]); // STATE FOR CURRENT PAGE AND DIRECTION
+	const [imageLoaded, setImageLoaded] = useState(Array(images.length).fill(false));
+
+	const handleLoad = (index: number) => {
+		const newLoadedState = [...imageLoaded];
+		newLoadedState[index] = true;
+		setImageLoaded(newLoadedState);
+	};
 
 	// BUTTON CLICK HANDLER
 	const paginate = useCallback(
@@ -100,11 +107,23 @@ export const HeroSection = () => {
 							Simplify your daily life, maximize productivity across all fronts.
 						</p>
 						<div className="mt-12 relative">
-							<Button size="lg" className="bg-red-600 text-white">
-								<Link href="/get-started" legacyBehavior>
-									Get Started
-								</Link>
-							</Button>
+							<motion.div
+								whileHover={{ scale: 1.05 }}
+								whileTap={{ scale: 0.95 }}
+								transition={{ type: "spring", stiffness: 400, damping: 17 }}
+							>
+								<Button
+									size="xxxl"
+									borderRadius="xxxl"
+									textSize="lg"
+									shadow="primary"
+								>
+									<Link href="/get-started" legacyBehavior>
+										Get Started
+									</Link>
+								</Button>
+							</motion.div>
+
 							<div className="top-1/2 transform -translate-y-1/2 max-sm:ml-40 md:left-80 md:ml-80">
 								<Image
 									src="/assets/landing/hero/HeroShape.svg"
@@ -119,7 +138,7 @@ export const HeroSection = () => {
 				</div>
 
 				{/* IMAGE SECTION */}
-				<div className="flex-1 lg:relative lg:w-1/2 max-w-screen-lg py-5 px-5 max-sm:p-5">
+				<div className="flex-1 lg:relative lg:w-1/2 max-w-screen-lg py-5 px-5 sm:py-0 max-sm:p-5">
 					{/* IMAGE CAROUSEL */}
 					<div className="relative h-[555px] flex flex-col justify-end">
 						<AnimatePresence initial={false} custom={direction}>
@@ -152,9 +171,17 @@ export const HeroSection = () => {
 									alt="Hero Screenshot"
 									sizes="100%"
 									fill={true}
-									priority
 									onDragStart={(e) => e.preventDefault()}
-									style={{ objectFit: "contain", width: "100%", height: "100%" }}
+									style={{
+										display: imageLoaded[page] ? "block" : "none",
+										transition: "opacity 1s ease-in-out",
+										objectFit: "contain",
+										width: "100%",
+										height: "100%",
+										filter: "drop-shadow(0px 0px 50px rgba(0, 0, 0, 0.25))",
+									}}
+									onLoadingComplete={() => handleLoad(page)}
+									priority
 								/>
 							</motion.div>
 						</AnimatePresence>
@@ -170,7 +197,7 @@ export const HeroSection = () => {
 								animate={{ opacity: page === index ? 1 : 0.75 }}
 								className={`mx-2 cursor-pointer ${
 									page === index
-										? "h-4 w-12 bg-red-500 rounded-full"
+										? "h-4 w-12 bg-primary shadow-lg shadow-secondary rounded-full"
 										: "h-4 w-4 bg-gray-300 rounded-full"
 								}`}
 								whileHover={{ scale: 1.25 }}
