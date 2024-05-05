@@ -19,6 +19,7 @@ import {
 	NavigationMenuTrigger,
 	navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
+import { ModeToggle } from "../theme/ModeToggle";
 
 export const LandingHeader = () => {
 	const [isSheetOpen, setIsSheetOpen] = useState(false);
@@ -57,7 +58,7 @@ export const LandingHeader = () => {
 										<li className="row-span-3">
 											<NavigationMenuLink asChild>
 												<a
-													className="flex h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 no-underline outline-none focus:shadow-md"
+													className="flex h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-muted to-muted p-6 no-underline outline-none focus:shadow-md"
 													href="/"
 												>
 													<CalendarCheck className="w-10 h-10 m-auto" />
@@ -146,20 +147,17 @@ export const LandingHeader = () => {
 
 			{/* ACTION BUTTONS VISIBLE UP TO 'MD' MIDDLE SCREENS */}
 			<div className="hidden md:flex items-center space-x-4">
+				<ModeToggle />
 				<Button variant="link" asChild>
 					<Link href="/login">Support</Link>
 				</Button>
 				<Button
-					variant="secondary"
 					asChild
-					className="bg-white hover:bg-gray-100 text-gray-800 px-4 py-2 rounded border border-gray-300"
+					className="bg-white hover:bg-gray-100 text-gray-800 px-4 py-2 border border-gray-300"
 				>
 					<Link href="/login">Login</Link>
 				</Button>
-				<Button
-					asChild
-					className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded"
-				>
+				<Button asChild>
 					<Link href="/signup">Sign up</Link>
 				</Button>
 			</div>
@@ -250,17 +248,17 @@ export const LandingHeader = () => {
 							{/* ACTION BUTTONS */}
 							<div className="p-4 mb-4 border-t-2 border-gray-200 dark:border-gray-700">
 								<div className="flex flex-col space-y-4">
+									<ModeToggle />
 									<Button
 										variant="secondary"
 										asChild
-										className="bg-white hover:bg-gray-100 text-gray-800 px-4 py-2 rounded border border-gray-300"
+										borderRadius="xl"
+										shadow="lg"
+										className="bg-white hover:bg-gray-100 text-gray-800 px-4 py-2 border border-gray-300"
 									>
 										<Link href="/login">Login</Link>
 									</Button>
-									<Button
-										asChild
-										className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded"
-									>
+									<Button asChild className="px-4 py-2" borderRadius="xl">
 										<Link href="/signup">Sign up</Link>
 									</Button>
 								</div>
