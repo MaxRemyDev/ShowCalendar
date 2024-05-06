@@ -3,6 +3,19 @@
 import { Section } from "./Section";
 import { motion } from "framer-motion";
 import React, { useCallback, useEffect, useRef, useState } from "react";
+import { useMediaQuery } from "react-responsive";
+
+type FeatureCategory = {
+	category: string;
+	items: FeatureItem[];
+};
+
+type FeatureItem = {
+	title: string;
+	description: string;
+	image?: string;
+	disableOnMobile: boolean;
+};
 
 type Coordinate = { x: number; y: number }; // TYPE FOR COORDINATES
 
@@ -19,7 +32,10 @@ const calcRotate = (x: number, y: number, rect: DOMRect): Coordinate => {
 };
 
 export const FeaturesSection = () => {
+	const isDesktopOrLaptop = useMediaQuery({ query: "(min-width: 768px)" }); // MEDIA QUERY FOR DESKTOP
 	const cardRefs = useRef<Array<HTMLDivElement | null>>(features.map(() => null)); // CREATE REFS FOR EACH FEATURE CARD
+
+	const [isClient, setIsClient] = useState(false);
 
 	// DEBOUNCING STATE FOR ANIMATION
 	const [debouncedPosition, setDebouncedPosition] = useState({ x: 0, y: 0 });
@@ -41,18 +57,6 @@ export const FeaturesSection = () => {
 		};
 	}, [debouncedPosition, activeCard]);
 
-	// MOUSE MOVEMENT MANAGEMENT WITH DEBOUNCING
-	const handleMouseMove = (index: number) => (e: React.MouseEvent<HTMLDivElement>) => {
-		const cardRef = cardRefs.current?.[index];
-		if (cardRef) {
-			const rect = cardRef.getBoundingClientRect();
-			const rotate = calcRotate(e.clientX, e.clientY, rect);
-
-			setDebouncedPosition(rotate);
-			setActiveCard(index);
-		}
-	};
-
 	const requestRef = useRef<number | null>(null); // REFERENCE FOR ANIMATION FRAME
 
 	// ANIMATION FUNCTION
@@ -66,62 +70,106 @@ export const FeaturesSection = () => {
 		requestRef.current = requestAnimationFrame(animate);
 	}, [activeCard, debouncedPosition]);
 
+	// HANDLE MOUSE AND TOUCH MOVEMENT
+	const handleMovement = (index: number, clientX: number, clientY: number) => {
+		const cardRef = cardRefs.current?.[index];
+		if (cardRef) {
+			const rect = cardRef.getBoundingClientRect();
+			const rotate = calcRotate(clientX, clientY, rect);
+			setDebouncedPosition(rotate);
+			setActiveCard(index);
+		}
+	};
+
+	// HANDLE CARD CLICK
+	const handleMouseMove = (index: number) => (e: React.MouseEvent<HTMLDivElement>) => {
+		handleMovement(index, e.clientX, e.clientY);
+	};
+
+	// HANDLE TOUCH MOVEMENT
+	const handleTouchMove = (index: number) => (e: React.TouchEvent<HTMLDivElement>) => {
+		// Prevent window from being scrolled
+		e.preventDefault();
+		const touch = e.touches[0];
+		handleMovement(index, touch.clientX, touch.clientY);
+	};
+
+	// HANDLE MOVING END
+	const handleMoveLeave = (cardIndex: number) => {
+		const cardRef = cardRefs.current?.[cardIndex];
+		if (cardRef) {
+			cardRef.style.transform = "rotateX(0deg) rotateY(0deg)";
+		}
+	};
+
 	// REQUEST ANIMATION FRAME
 	useEffect(() => {
 		requestRef.current = requestAnimationFrame(animate);
 		return () => cancelAnimationFrame(requestRef.current!);
 	}, [animate]);
 
+	// CLEANUP ON UNMOUNT
+	useEffect(() => {
+		setIsClient(true);
+	}, []);
+
 	return (
 		<Section>
 			<div className="container mx-auto">
 				<h2 className="text-3xl font-semibold text-center mb-12">
-					WHAT&apos;S IN SHOWCALENDAR ?
+					WHAT&apos;S IN SHOWCALENDAR?
 				</h2>
 
 				{/* GRID OF FEATURE CARDS */}
-				<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+				<div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
 					{features.map((category, categoryIndex) => (
 						<div key={category.category} className="flex flex-col space-y-8">
 							{category.items.map((feature, featureIndex) => {
 								const cardIndex = categoryIndex * 100 + featureIndex;
-								const handleMouseLeave = () => {
-									const cardRef = cardRefs.current?.[cardIndex];
-									if (cardRef) {
-										cardRef.style.transform = "rotateX(0deg) rotateY(0deg)";
-									}
-								};
 
-								// RETURN FEATURE CARD
-								return (
-									<motion.div
-										key={`${feature.title}-${feature.description}`}
-										className="border-solid border-[2px] border-neutral-300 feature-card p-6 rounded-3xl shadow-xl flex flex-col items-center justify-center"
-										style={{ minHeight: "165px" }}
-									>
-										{/* DISPLAY IMAGE IF AVAILABLE WITH 3D EFFECT ANIMATION*/}
-										{feature.image && (
-											<motion.img
-												src={feature.image}
-												alt={`${feature.title} image`}
-												width={400}
-												height={400}
-												className="shadow-2xl rounded-3xl mb-6 items-center justify-center"
-												ref={(el: HTMLDivElement | null) =>
-													(cardRefs.current[cardIndex] = el)
-												}
-												onMouseMove={handleMouseMove(cardIndex)}
-												onMouseLeave={handleMouseLeave}
-											/>
-										)}
-										<div className="flex-1 flex flex-col pt-3">
-											<h3 className="text-xl font-semibold mb-2">
-												{feature.title}
-											</h3>
-											<p className="flex-1">{feature.description}</p>
-										</div>
-									</motion.div>
-								);
+								// CHECK IF CLIENT IS ON WHICH DEVICE RENDERING AND RETURNING IT IF FUNCTION OF CARDS SHOULD BE DISPLAYED ON MOBILE OR DESKTOP
+								if (isClient && (!feature.disableOnMobile || isDesktopOrLaptop)) {
+									// RETURN FEATURE CARD
+									return (
+										<motion.div
+											key={feature.title}
+											className="border-solid border-[2px] border-neutral-300 feature-card p-6 rounded-3xl shadow-xl flex flex-col items-center justify-center"
+											style={{ minHeight: "165px" }}
+										>
+											{/* DISPLAY IMAGE IF AVAILABLE WITH 3D EFFECT ANIMATION*/}
+											{feature.image && (
+												<motion.img
+													src={feature.image}
+													alt={`${feature.title} image`}
+													width={400}
+													height={400}
+													className="rounded-3xl mb-6 items-center justify-center"
+													style={{
+														filter: "drop-shadow(0px 0px 25px rgba(0, 0, 0, 0.25))",
+													}}
+													ref={(el: HTMLDivElement | null) =>
+														(cardRefs.current[cardIndex] = el)
+													}
+													// MOUSE INTERACTIONS FOR 3D EFFECT
+													onMouseMove={handleMouseMove(cardIndex)}
+													onMouseLeave={handleMoveLeave}
+													// TOUCH INTERACTIONS FOR 3D EFFECT
+													onTouchMove={handleTouchMove(cardIndex)}
+													onTouchStart={handleTouchMove(cardIndex)}
+													onTouchEnd={handleMoveLeave}
+												/>
+											)}
+											<div className="flex-1 flex flex-col pt-3">
+												<h3 className="text-xl font-semibold mb-2">
+													{feature.title}
+												</h3>
+												<p className="flex-1">{feature.description}</p>
+											</div>
+										</motion.div>
+									);
+								} else {
+									return null;
+								}
 							})}
 						</div>
 					))}
@@ -131,7 +179,7 @@ export const FeaturesSection = () => {
 	);
 };
 
-const features = [
+const features: FeatureCategory[] = [
 	// FIRST VERTICAL COLUMN
 	{
 		category: "Organize and Collaborate",
@@ -141,21 +189,25 @@ const features = [
 				image: "/assets/placeholder.svg",
 				description:
 					"Streamline your planning and collaboration with easy scheduling, real-time updates, and integration with the tools you love.",
+				disableOnMobile: false,
 			},
 			{
 				title: "Intuitive Scheduling",
 				description:
 					"Organize your day with ease using a simple drag-and-drop interface and customizable calendar views.",
+				disableOnMobile: true,
 			},
 			{
 				title: "Real-Time Collaboration",
 				description:
 					"Invite colleagues to events, share your availability, and schedule together effortlessly.",
+				disableOnMobile: true,
 			},
 			{
 				title: "Sync with Your Favorite Tools",
 				description:
 					"Connect ShowCalendar with other apps for seamless synchronization and enhanced productivity.",
+				disableOnMobile: true,
 			},
 		],
 	},
@@ -169,21 +221,25 @@ const features = [
 				image: "/assets/placeholder.svg",
 				description:
 					"Get timely reminders, tailor your experience to fit your style, and enjoy the convenience of accessing your calendar wherever you are.",
+				disableOnMobile: false,
 			},
 			{
 				title: "Automatic Reminders",
 				description:
 					"Never miss an important appointment with custom reminders and push notifications.",
+				disableOnMobile: true,
 			},
 			{
 				title: "Advanced Customization",
 				description:
 					"Create a calendar that reflects your style with customizable themes and flexible settings.",
+				disableOnMobile: true,
 			},
 			{
 				title: "Access Anywhere, Anytime",
 				description:
 					"Manage your schedule from any device, at any time, with secure cloud syncing.",
+				disableOnMobile: true,
 			},
 		],
 	},
@@ -197,21 +253,25 @@ const features = [
 				image: "/assets/placeholder.svg",
 				description:
 					"Rely on our dedicated support team, trust in our robust security measures, and gain valuable insights from comprehensive reports.",
+				disableOnMobile: false,
 			},
 			{
 				title: "Dedicated Customer Support",
 				description:
 					"Our team is always on hand to help you make the most of ShowCalendar.",
+				disableOnMobile: true,
 			},
 			{
 				title: "Data Protection",
 				description:
 					"We take security seriously with end-to-end encryption for your information and calendars.",
+				disableOnMobile: true,
 			},
 			{
 				title: "Insights and Reports",
 				description:
 					"Make informed decisions with detailed reports on your time management and activities.",
+				disableOnMobile: true,
 			},
 		],
 	},
