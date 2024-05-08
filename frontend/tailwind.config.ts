@@ -73,10 +73,25 @@ const config = {
 					from: { height: "var(--radix-accordion-content-height)" },
 					to: { height: "0" },
 				},
+				shimmer: {
+					"0%, 90%, 100%": {
+						"background-position": "calc(-100% - var(--shimmer-width)) 0",
+					},
+					"30%, 60%": {
+						"background-position": "calc(100% + var(--shimmer-width)) 0",
+					},
+				},
+				gradient: {
+					"0%": { backgroundPosition: "0% 50%" },
+					"50%": { backgroundPosition: "100% 50%" },
+					"100%": { backgroundPosition: "0% 50%" },
+				},
 			},
 			animation: {
 				"accordion-down": "accordion-down 0.2s ease-out",
 				"accordion-up": "accordion-up 0.2s ease-out",
+				shimmer: "shimmer 8s infinite",
+				gradient: "gradient 8s linear infinite",
 			},
 			dropShadow: {
 				all: "0px 0px 50px rgba(0, 0, 0, 0.25)",
