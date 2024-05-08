@@ -18,6 +18,9 @@ const config = {
 			},
 		},
 		extend: {
+			screens: {
+				"lg-custom": "1096px", // 1024px + 72px
+			},
 			colors: {
 				border: "var(--border)",
 				input: "var(--input)",
