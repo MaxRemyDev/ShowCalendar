@@ -3,6 +3,7 @@
 	z-index: 2;
 }
 
+/* DECORATION Z-LINE RED*/
 .zLineRed {
 	position: absolute;
 	bottom: -20px;
@@ -50,4 +51,9 @@
 		width: 100px;
 		bottom: -2px;
 	}
+}
+
+/* LEADING RELAXED FOR TITLE */
+.leadingRelaxed {
+	line-height: 1.625;
 }

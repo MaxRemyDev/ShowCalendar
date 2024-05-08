@@ -66,23 +66,22 @@ export const HeroSection = () => {
 	useEffect(() => {
 		const interval = setInterval(() => {
 			paginate(1);
-		}, 7500); // MILLISECONDS (15 SECONDS)
+		}, 7500); // MILLISECONDS (7.5 SECONDS)
 
 		return () => clearInterval(interval);
 	}, [page, paginate]);
 
 	return (
 		<Section>
-			<div className="flex flex-wrap items-center lg:flex-nowrap">
-				{/* TEXT SECTION */}
-				<div className="lg:flex-1 lg:flex lg:items-center lg:justify-center relative">
-					<div>
-						{/* TODO: REWORK ON LEADING_RELAXED RESPONSIVE */}
+			<div className="container px-0 flex flex-wrap items-center lg:flex-nowrap">
+				{/* TEXT & BUTTON SECTION */}
+				<div className="flex items-center justify-center lg:justify-start lg:flex-2">
+					<div className="flex flex-col items-center lg:items-start lg:flex-2">
+						{/* TEXT */}
 						<h1
 							className={`
-								text-4xl tracking-normal font-medium text-gray-900 md:text-5xl xl:text-6xl max-w-screen-md
-								leading-relaxed sm:leading-relaxed md:leading-relaxed lg:leading-relaxed xl:leading-relaxed 2xl:leading-relaxed
-								${styles.h1Responsive}
+								text-4xl tracking-normal font-medium text-gray-900 max-lg:text-center md:text-5xl xl:text-6xl max-w-screen-md
+								${styles.leadingRelaxed}
 							`}
 						>
 							<span className="font-extrabold">All </span> Your Scheduling{" "}
@@ -101,30 +100,33 @@ export const HeroSection = () => {
 							Place with
 							<span className="font-extrabold"> ShowCalendar.</span>
 						</h1>
-						<p className="mt-12 text-base text-gray-500 sm:text-lg xl:text-xl">
+						<p className="mt-12 text-base lg:text-lg text-gray-500 text-center lg:text-left">
 							Merge personal and professional schedules seamlessly in a unified tool.
 							<br />
 							Simplify your daily life, maximize productivity across all fronts.
 						</p>
-						<div className="mt-12 relative">
+
+						{/* BUTTON */}
+						<div className="mt-12">
 							<motion.div
 								whileHover={{ scale: 1.05 }}
 								whileTap={{ scale: 0.95 }}
 								transition={{ type: "spring", stiffness: 400, damping: 17 }}
+								className="text-left max-sm:text-center z-10 "
 							>
-								<Button
-									size="xxxl"
-									borderRadius="xxxl"
-									textSize="lg"
-									shadow="primary"
-								>
-									<Link href="/get-started" legacyBehavior>
+								<Link href="/get-started" legacyBehavior>
+									<Button
+										size="xxxl"
+										borderRadius="xxxl"
+										textSize="lg"
+										shadow="primary"
+									>
 										Get Started
-									</Link>
-								</Button>
+									</Button>
+								</Link>
 							</motion.div>
 
-							<div className="top-1/2 transform -translate-y-1/2 max-sm:ml-40 md:left-80 md:ml-80">
+							<div className="top-1/2 transform -translate-y-1/2 max-sm:ml-40 md:left-80 md:ml-80 max-md:hidden">
 								<Image
 									src="/assets/landing/hero/HeroShape.svg"
 									alt="Decorative Shape"
@@ -137,10 +139,10 @@ export const HeroSection = () => {
 					</div>
 				</div>
 
-				{/* IMAGE SECTION */}
+				{/* IMAGE CAROUSEL & DOTS NAVIGATION SECTION */}
 				<div className="flex-1 lg:relative lg:w-1/2 max-w-screen-lg py-5 px-5 sm:py-0 max-sm:p-5">
 					{/* IMAGE CAROUSEL */}
-					<div className="relative h-[555px] flex flex-col justify-end">
+					<div className="relative h-[500px] max-sm:h-[250px] flex flex-col justify-end">
 						<AnimatePresence initial={false} custom={direction}>
 							<motion.div
 								key={page}
@@ -164,7 +166,7 @@ export const HeroSection = () => {
 										paginate(newDirection);
 									}
 								}}
-								className="absolute inset-0 flex justify-center items-center cursor-grab"
+								className="absolute inset-0 flex justify-center items-center"
 							>
 								<Image
 									src={images[page]}
@@ -178,9 +180,9 @@ export const HeroSection = () => {
 										objectFit: "contain",
 										width: "100%",
 										height: "100%",
-										filter: "drop-shadow(0px 0px 50px rgba(0, 0, 0, 0.25))",
 									}}
-									onLoadingComplete={() => handleLoad(page)}
+									className="drop-shadow-all max-sm:drop-shadow-none cursor-grab"
+									onLoad={() => handleLoad(page)}
 									priority
 								/>
 							</motion.div>
