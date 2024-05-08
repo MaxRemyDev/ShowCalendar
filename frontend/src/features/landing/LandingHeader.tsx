@@ -162,7 +162,7 @@ export const LandingHeader = () => {
 				</Button>
 			</div>
 
-			<div className="lg:hidden flex items-center space-x-4">
+			<div className="lg-custom:hidden flex items-center space-x-4">
 				{/* HAMBURGER MENU TRIGGER */}
 				<Button onClick={toggleSheet} variant="ghost" size="icon" className="ml-2">
 					<Menu />
