@@ -19,7 +19,7 @@ import {
 	NavigationMenuTrigger,
 	navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
-import { ModeToggle } from "../theme/ModeToggle";
+import { DropDownMenuModeToggle } from "../theme/DropDownMenuModeToggle";
 
 export const LandingHeader = () => {
 	const [isSheetOpen, setIsSheetOpen] = useState(false);
@@ -46,7 +46,7 @@ export const LandingHeader = () => {
 				</Link>
 
 				{/* FULL NAVIGATION MENU, HIDDEN ON 'LG' LARGE SCREENS AND SMALLER */}
-				<motion.nav className="hidden lg:flex items-center gap-4 mr-4">
+				<motion.nav className="hidden lg-custom:flex items-center gap-4 mr-4">
 					<NavigationMenu>
 						<NavigationMenuList>
 							<NavigationMenuItem>
@@ -147,7 +147,7 @@ export const LandingHeader = () => {
 
 			{/* ACTION BUTTONS VISIBLE UP TO 'MD' MIDDLE SCREENS */}
 			<div className="hidden md:flex items-center space-x-4">
-				<ModeToggle />
+				<DropDownMenuModeToggle />
 				<Button variant="link" asChild>
 					<Link href="/login">Support</Link>
 				</Button>
@@ -248,7 +248,7 @@ export const LandingHeader = () => {
 							{/* ACTION BUTTONS */}
 							<div className="p-4 mb-4 border-t-2 border-gray-200 dark:border-gray-700">
 								<div className="flex flex-col space-y-4">
-									<ModeToggle />
+									<DropDownMenuModeToggle />
 									<Button
 										variant="secondary"
 										asChild
