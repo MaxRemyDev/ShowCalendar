@@ -1,4 +1,5 @@
 import { AppDownloadSection } from "@/features/landing/AppDownloadSection";
+import { BannerHero } from "@/features/landing/BannerHero";
 import { BenefitsSection } from "@/features/landing/BenefitsSection";
 import { CompatibleToolsSection } from "@/features/landing/CompatibleToolsSection";
 import { FAQSection } from "@/features/landing/FAQSection";
@@ -12,6 +13,7 @@ export default function Home() {
 	return (
 		<div className="flex flex-col gap-4">
 			<div className="h-16" />
+			<BannerHero />
 			<LandingHeader />
 			<HeroSection />
 			<FeaturesSection />
