@@ -3,7 +3,7 @@ import { useTheme } from "next-themes";
 import { Sun, Monitor, Moon } from "lucide-react";
 import ThreeStateSwitch from "@/components/ui/threeStateSwitch";
 
-export function ModeToggle() {
+const ThreeSwitchModeToggle = () => {
 	const { theme, setTheme } = useTheme();
 	const [switchPosition, setSwitchPosition] = useState<0 | 1 | 2>(0);
 
@@ -46,4 +46,6 @@ export function ModeToggle() {
 			icons={icons}
 		/>
 	);
-}
+};
+
+export default ThreeSwitchModeToggle;
