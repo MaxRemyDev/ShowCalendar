@@ -1,6 +1,6 @@
 import type { Config } from "tailwindcss";
 
-const config = {
+const config: Config = {
 	darkMode: ["class"],
 	content: [
 		"./pages/**/*.{ts,tsx}",
@@ -25,14 +25,48 @@ const config = {
 				border: "var(--border)",
 				input: "var(--input)",
 				ring: "var(--ring)",
-				background: "var(--background)",
-				foreground: "var(--foreground)",
+				background: {
+					DEFAULT: "var(--background)",
+					50: "var(--background-50)",
+					100: "var(--background-100)",
+					200: "var(--background-200)",
+					300: "var(--background-300)",
+					400: "var(--background-400)",
+					500: "var(--background-500)",
+					600: "var(--background-600)",
+					700: "var(--background-700)",
+					800: "var(--background-800)",
+					900: "var(--background-900)",
+				},
+				foreground: {
+					DEFAULT: "var(--foreground)",
+					50: "var(--foreground-50)",
+					100: "var(--foreground-100)",
+					200: "var(--foreground-200)",
+					300: "var(--foreground-300)",
+					400: "var(--foreground-400)",
+					500: "var(--foreground-500)",
+					600: "var(--foreground-600)",
+					700: "var(--foreground-700)",
+					800: "var(--foreground-800)",
+					900: "var(--foreground-900)",
+				},
 				primary: {
 					DEFAULT: "var(--primary)",
+					500: "var(--primary-500)",
+					600: "var(--primary-600)",
+					700: "var(--primary-700)",
+					800: "var(--primary-800)",
+					900: "var(--primary-900)",
 					foreground: "var(--primary-foreground)",
 				},
 				secondary: {
 					DEFAULT: "var(--secondary)",
+					50: "var(--secondary-50)",
+					100: "var(--secondary-100)",
+					200: "var(--secondary-200)",
+					300: "var(--secondary-300)",
+					400: "var(--secondary-400)",
 					foreground: "var(--secondary-foreground)",
 				},
 				destructive: {
@@ -99,6 +133,6 @@ const config = {
 		},
 	},
 	plugins: [require("tailwindcss-animate")],
-} satisfies Config;
+};
 
 export default config;
