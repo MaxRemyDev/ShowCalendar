@@ -6,14 +6,30 @@ import Link from "next/link";
 import { Section } from "./Section";
 import styles from "./modules/HeroSection.module.css";
 import { motion, AnimatePresence } from "framer-motion";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
+import { useThemeBasedImageSrc } from "../theme/useThemeBasedImageSrc";
 
 export const HeroSection = () => {
-	const images = ["/assets/landing/hero/AppointmentsScreenshot.png", "/assets/placeholder.svg"];
+	// IMAGE CAROUSEL IMAGES
+	const imagesLight = useMemo(
+		() => ["/assets/landing/hero/AppointmentsScreenshot.png", "/assets/placeholder.svg"],
+		[]
+	);
+	const imagesDark = useMemo(
+		() => [
+			"/assets/landing/hero/AppointmentsScreenshot-Dark.png",
+			"/assets/placeholder-Dark.svg",
+		],
+		[]
+	);
 
-	const [[page, direction], setPage] = useState([0, 0]); // STATE FOR CURRENT PAGE AND DIRECTION
-	const [imageLoaded, setImageLoaded] = useState(Array(images.length).fill(false));
+	const imageSrc = useThemeBasedImageSrc(imagesLight, imagesDark);
 
+	// IMAGE CAROUSEL STATES
+	const [[page, direction], setPage] = useState([0, 0]);
+	const [imageLoaded, setImageLoaded] = useState(Array(imagesLight.length).fill(false));
+
+	// IMAGE LOAD HANDLER
 	const handleLoad = (index: number) => {
 		const newLoadedState = [...imageLoaded];
 		newLoadedState[index] = true;
@@ -27,8 +43,8 @@ export const HeroSection = () => {
 			const imageIndex = (newDirection: number) => {
 				let newIndex = page + newDirection;
 				if (newIndex < 0) {
-					newIndex = images.length - 1;
-				} else if (newIndex >= images.length) {
+					newIndex = imagesLight.length - 1;
+				} else if (newIndex >= imagesLight.length) {
 					newIndex = 0;
 				}
 				return newIndex;
@@ -38,7 +54,7 @@ export const HeroSection = () => {
 			const newIndex = imageIndex(newDirection);
 			setPage([newIndex, newDirection]);
 		},
-		[images.length, page] // DEPENDENCIES
+		[imagesLight.length, page] // DEPENDENCIES
 	);
 
 	// IMAGE CAROUSEL ANIMATION VARIANTS
@@ -56,9 +72,9 @@ export const HeroSection = () => {
 		},
 		exit: (direction: number) => ({
 			zIndex: 0,
-			opacity: 0.1,
+			opacity: 0.0,
 			scale: 0.5,
-			x: direction > 0 ? -200 : 200,
+			x: direction > 0 ? -250 : 500,
 		}),
 	};
 
@@ -73,76 +89,67 @@ export const HeroSection = () => {
 
 	return (
 		<Section>
-			<div className="container px-0 flex flex-wrap items-center lg:flex-nowrap">
+			<div className="container flex flex-col xl:flex-row items-center max-w-screen-xl mx-auto px-4">
 				{/* TEXT & BUTTON SECTION */}
-				<div className="flex items-center justify-center lg:justify-start lg:flex-2">
-					<div className="flex flex-col items-center lg:items-start lg:flex-2">
-						{/* TEXT */}
-						<h1
-							className={`
-								text-4xl tracking-normal font-medium text-gray-900 max-lg:text-center md:text-5xl xl:text-6xl max-w-screen-md
-								${styles.leadingRelaxed}
-							`}
-						>
-							<span className="font-extrabold">All </span> Your Scheduling{" "}
-							<span className="font-extrabold relative inline-block" id="inOne">
-								in One
-								<div className={styles.zLineRed}>
-									<Image
-										src="/assets/landing/hero/Z-LineRed.svg"
-										alt="Z Line Red"
-										width={300}
-										height={300}
-										priority
-									/>
-								</div>
-							</span>{" "}
-							Place with
-							<span className="font-extrabold"> ShowCalendar.</span>
-						</h1>
-						<p className="mt-12 text-base lg:text-lg text-gray-500 text-center lg:text-left">
-							Merge personal and professional schedules seamlessly in a unified tool.
-							<br />
-							Simplify your daily life, maximize productivity across all fronts.
-						</p>
-
-						{/* BUTTON */}
-						<div className="mt-12">
-							<motion.div
-								whileHover={{ scale: 1.05 }}
-								whileTap={{ scale: 0.95 }}
-								transition={{ type: "spring", stiffness: 400, damping: 17 }}
-								className="text-left max-sm:text-center z-10 "
-							>
-								<Link href="/get-started" legacyBehavior>
-									<Button
-										size="xxxl"
-										borderRadius="xxxl"
-										textSize="lg"
-										shadow="primary"
-									>
-										Get Started
-									</Button>
-								</Link>
-							</motion.div>
-
-							<div className="top-1/2 transform -translate-y-1/2 max-sm:ml-40 md:left-80 md:ml-80 max-md:hidden">
+				<div className="flex flex-col items-center xl:items-start text-center xl:text-left xl:w-1/2 mb-12 xl:mb-0">
+					<h1 className={`text-5xl max-sm:text-4xl font-medium ${styles.leadingRelaxed}`}>
+						<span className="font-extrabold">All </span> Your Scheduling{" "}
+						<span className="font-extrabold relative inline-block" id="inOne">
+							in One
+							<div className={styles.zLineRed}>
 								<Image
-									src="/assets/landing/hero/HeroShape.svg"
-									alt="Decorative Shape"
+									src="/assets/landing/hero/Z-LineRed.svg"
+									alt="Z Line Red"
 									width={300}
 									height={300}
 									priority
 								/>
 							</div>
+						</span>{" "}
+						Place with
+						<span className="font-extrabold"> ShowCalendar.</span>
+					</h1>
+					<p className="mt-6 text-base xl:text-lg text-foreground-400">
+						Merge personal and professional schedules seamlessly in a unified tool.
+						<br className="hidden sm:inline" />
+						Simplify your daily life, maximize productivity across all fronts.
+					</p>
+					<div className="mt-8">
+						<motion.div
+							whileHover={{ scale: 1.05 }}
+							whileTap={{ scale: 0.95 }}
+							transition={{ type: "spring", stiffness: 400, damping: 17 }}
+						>
+							<Link href="/get-started" legacyBehavior>
+								<Button
+									size="xxxl"
+									borderRadius="xxxl"
+									textSize="lg"
+									shadow="primary"
+									className="text-foreground-50"
+								>
+									Get Started
+								</Button>
+							</Link>
+						</motion.div>
+
+						<div className="hidden md:block top-1/2 transform -translate-y-1/2 md:ml-80">
+							<Image
+								src="/assets/landing/hero/HeroShape.svg"
+								alt="Decorative Shape"
+								width={300}
+								height={300}
+								priority
+								className="dark:filter dark:invert dark:brightness dark:opacity-75"
+							/>
 						</div>
 					</div>
 				</div>
 
 				{/* IMAGE CAROUSEL & DOTS NAVIGATION SECTION */}
-				<div className="flex-1 lg:relative lg:w-1/2 max-w-screen-lg py-5 px-5 sm:py-0 max-sm:p-5">
+				<div className="relative xl:w-1/2 w-full xl:pl-12">
 					{/* IMAGE CAROUSEL */}
-					<div className="relative h-[500px] max-sm:h-[250px] flex flex-col justify-end">
+					<div className="relative w-full h-[400px] sm:h-[500px] lg:h-[600px] flex justify-center items-center">
 						<AnimatePresence initial={false} custom={direction}>
 							<motion.div
 								key={page}
@@ -169,7 +176,7 @@ export const HeroSection = () => {
 								className="absolute inset-0 flex justify-center items-center"
 							>
 								<Image
-									src={images[page]}
+									src={imageSrc[page]}
 									alt="Hero Screenshot"
 									sizes="100%"
 									fill={true}
@@ -181,7 +188,7 @@ export const HeroSection = () => {
 										width: "100%",
 										height: "100%",
 									}}
-									className="drop-shadow-all max-sm:drop-shadow-none cursor-grab"
+									className="drop-shadow-all cursor-grab"
 									onLoad={() => handleLoad(page)}
 									priority
 								/>
@@ -190,17 +197,17 @@ export const HeroSection = () => {
 					</div>
 
 					{/* DOTS NAVIGATION CONTAINER */}
-					<div className="flex justify-center mt-5 z-10">
-						{images.map((image, index) => (
+					<div className="flex justify-center z-10">
+						{imagesLight.map((_, index) => (
 							<motion.div
-								key={image}
+								key={index}
 								onClick={() => setPage([index, 0])}
 								initial={{ opacity: 1 }}
 								animate={{ opacity: page === index ? 1 : 0.75 }}
 								className={`mx-2 cursor-pointer ${
 									page === index
 										? "h-4 w-12 bg-primary shadow-lg shadow-secondary rounded-full"
-										: "h-4 w-4 bg-gray-300 rounded-full"
+										: "h-4 w-4 bg-background-300 rounded-full"
 								}`}
 								whileHover={{ scale: 1.25 }}
 								whileTap={{ scale: 0.9 }}
