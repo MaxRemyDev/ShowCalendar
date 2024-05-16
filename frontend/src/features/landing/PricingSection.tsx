@@ -2,15 +2,14 @@
 
 import React from "react";
 import { Section } from "./Section";
-import { Check, Minus, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import SwitchAnimate from "@/components/ui/switchAnimate";
+import getStatusIcon from "@/components/decoration/get-status-icon";
 
 // FEATURE DECORATION COMPONENT
 type FeatureWithDecoration = {
@@ -32,144 +31,6 @@ interface PricingOption {
 	mostPopular?: boolean;
 }
 
-// DECORATION ICON COMPONENT
-const getDecorationIcon = (decorationType: "check" | "line" | "x") => {
-	const decorations: { [key: string]: JSX.Element } = {
-		check: <Check className="text-greenColor" />,
-		line: <Minus className="text-orangeColor" />,
-		x: <X className="text-redColor" />,
-	};
-	return decorations[decorationType] || null;
-};
-
-// PRICING OPTIONS DATA
-const pricingOptions: PricingOption[] = [
-	// FREE CARD
-	{
-		title: "Free",
-		description: "Start with essential scheduling tools at no cost, perfect for personal use.",
-		price: "$0",
-		features: [
-			{ text: "Basic Calendar Integration", decoration: getDecorationIcon("check") },
-			{ text: "Access to Standard Features", decoration: getDecorationIcon("check") },
-			{ text: "Single User Access", decoration: getDecorationIcon("check") },
-			{ text: "Community Support", decoration: getDecorationIcon("check") },
-			{ text: "Limited Feature", decoration: getDecorationIcon("line") },
-		],
-		buttonText: "Select",
-	},
-
-	// PREMIUM CARD
-	{
-		title: "Premium",
-		description: "Enhance your productivity with advanced features and priority support.",
-		price: "$25",
-		priceAnnually: "$180",
-		perMonth: true,
-		paidAnnually: "$15 USD per month, paid annually",
-		paidMonthly: "Instead of $300 per year, paid monthly",
-		features: [
-			{ text: "Multi-Calendar Sync", decoration: getDecorationIcon("check") },
-			{ text: "Advanced Task Management", decoration: getDecorationIcon("check") },
-			{ text: "Custom Event Reminders", decoration: getDecorationIcon("check") },
-			{ text: "Detailed Analytics", decoration: getDecorationIcon("check") },
-			{ text: "Priority Email Support", decoration: getDecorationIcon("check") },
-			{ text: "Unlimited Feature", decoration: getDecorationIcon("check") },
-			{ text: "Access beta functionality", decoration: getDecorationIcon("check") },
-			{ text: "Add 2 Users Access", decoration: getDecorationIcon("check") },
-		],
-		buttonText: "Select",
-		mostPopular: true,
-	},
-
-	// ENTERPRISE CARD
-	{
-		title: "Enterprise",
-		description:
-			"Collaborate effectively with full team integration and exclusive enterprise features.",
-		price: "Contact Us",
-		features: [
-			{ text: "Team Collaboration Tools", decoration: getDecorationIcon("check") },
-			{ text: "Unlimited Calendar Integration", decoration: getDecorationIcon("check") },
-			{ text: "Customizable Team Permissions", decoration: getDecorationIcon("check") },
-			{ text: "Integration with Enterprise Tools", decoration: getDecorationIcon("check") },
-			{ text: "Dedicated Phone Support", decoration: getDecorationIcon("check") },
-			{ text: "Onboarding and Training", decoration: getDecorationIcon("check") },
-		],
-		buttonText: "Select",
-	},
-];
-
-// PRICING CARD COMPONENT
-const PricingCard: React.FC<PricingOption> = ({
-	title,
-	description,
-	price,
-	priceAnnually,
-	perMonth,
-	paidAnnually,
-	paidMonthly,
-	features,
-	buttonText,
-	mostPopular,
-}) => (
-	<motion.div
-		whileHover={{ scale: 1.05 }}
-		className={`relative flex flex-col border-4 p-6 rounded-2xl text-center transition-all duration-300 ${
-			mostPopular ? "border-primary shadow-lg" : "border-gray-200"
-		} h-full`}
-	>
-		{/* FAKE MOST POPULAR CARD */}
-		{mostPopular && (
-			<span className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-gray-100 px-3 py-1 text-primary text-sm font-bold mb-4 inline-block rounded-full border-2 border-primary">
-				Most Popular
-			</span>
-		)}
-
-		{/* TITLE WITH DESCRIPTION */}
-		<h3 className="text-3xl font-semibold mb-4">{title}</h3>
-		<p className="text-sm mb-4">{description}</p>
-
-		{/* PRICING INFORMATION WITH CHANGE STATE */}
-		<div className="flex justify-center items-baseline">
-			<p className="text-4xl font-bold mb-2">
-				{title === "Premium" && !perMonth ? priceAnnually : price}
-			</p>
-			{title === "Premium" && (
-				<span className="text-xl font-sm ml-2 tracking-tighter">
-					{perMonth ? "/Month" : "/Year"}
-				</span>
-			)}
-		</div>
-
-		{/* PRICING AND FEATURE TEXT WITH DECORATION*/}
-		<p className="text-xs text-gray-500 mb-6">{!perMonth ? paidMonthly : paidAnnually}</p>
-		<ul className="flex-1 ">
-			{features.map((feature) => (
-				<li key={feature.text} className="my-2 ml-5 text-left flex items-center">
-					<div className="h-5">{feature.decoration}</div>
-					<span className="ml-2">{feature.text}</span>
-				</li>
-			))}
-		</ul>
-
-		{/* SELECT BUTTON */}
-		<Button
-			variant={`${mostPopular ? "secondary" : "outline"}`}
-			className={`w-[177px] h-[45px] mx-auto mt-auto py-2 my-5 px-4 border-[3px] border-primary hover:bg-primary hover:text-white ${
-				mostPopular
-					? "bg-primary hover:bg-secondary border-none text-white"
-					: "text-primary"
-			}`}
-			asChild
-			shadow={`${mostPopular ? "primary" : "default"}`}
-			borderRadius="full"
-		>
-			<Link href="/">{buttonText}</Link>
-		</Button>
-	</motion.div>
-);
-
 export const PricingSection = () => {
 	const [isYearly, setIsYearly] = React.useState(false); // TRACK STATE OF SWITCH
 
@@ -183,7 +44,7 @@ export const PricingSection = () => {
 			{/* SECTION TITLE */}
 			<div className="text-center">
 				<h2 className="text-4xl font-bold mb-6">PRICING</h2>
-				<p className="mb-10">
+				<p className="mb-10 text-foreground-400">
 					Choose the plan that fits your needs and start optimizing your schedule today.
 					<br />
 					From individual use to team collaboration, ShowCalendar has a solution for
@@ -195,7 +56,7 @@ export const PricingSection = () => {
 				<TooltipProvider>
 					<Tooltip>
 						<TooltipTrigger className="mb-1 ml-28">
-							<Badge variant="default" className="bg-gray-400">
+							<Badge variant="default" className="bg-background-400">
 								40% OFF
 							</Badge>
 						</TooltipTrigger>
@@ -234,3 +95,134 @@ export const PricingSection = () => {
 		</Section>
 	);
 };
+
+// PRICING CARD COMPONENT
+const PricingCard: React.FC<PricingOption> = ({
+	title,
+	description,
+	price,
+	priceAnnually,
+	perMonth,
+	paidAnnually,
+	paidMonthly,
+	features,
+	buttonText,
+	mostPopular,
+}) => (
+	<motion.div
+		whileHover={{ scale: 1.05 }}
+		className={`relative flex flex-col border-4 p-6 rounded-2xl text-center transition-all duration-300 ${
+			mostPopular
+				? "border-primary shadow-lg"
+				: "border-background-200 dark:border-background-300"
+		} h-full`}
+	>
+		{/* FAKE MOST POPULAR CARD */}
+		{mostPopular && (
+			<span className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-background px-3 py-1 text-primary text-sm font-bold mb-4 inline-block rounded-full border-2 border-primary">
+				Most Popular
+			</span>
+		)}
+
+		{/* TITLE WITH DESCRIPTION */}
+		<h3 className="text-3xl font-semibold mb-4">{title}</h3>
+		<p className="text-sm mb-4">{description}</p>
+
+		{/* PRICING INFORMATION WITH CHANGE STATE */}
+		{/* //TODO: ADD POPPING ANIMATION TO TEXT IN ANY CHANGE STATE */}
+		<motion.div className="flex justify-center items-baseline">
+			<p className="text-4xl font-bold mb-2">
+				{title === "Premium" && !perMonth ? priceAnnually : price}
+			</p>
+			{title === "Premium" && (
+				<span className="text-xl font-sm ml-2 tracking-tighter text-foreground-400 dark:text-foreground-100">
+					{perMonth ? "/Month" : "/Year"}
+				</span>
+			)}
+		</motion.div>
+
+		{/* PRICING AND FEATURE TEXT WITH DECORATION*/}
+		<p className="text-xs text-foreground-400 mb-6">{!perMonth ? paidMonthly : paidAnnually}</p>
+		<ul className="flex-1 ">
+			{features.map((feature) => (
+				<li key={feature.text} className="my-2 ml-5 text-left flex items-center">
+					<div className="h-5">{feature.decoration}</div>
+					<span className="ml-2">{feature.text}</span>
+				</li>
+			))}
+		</ul>
+
+		{/* SELECT BUTTON */}
+		<Button
+			variant={`${mostPopular ? "secondary" : "outline"}`}
+			className={`w-[177px] h-[45px] mx-auto mt-auto py-2 my-5 px-4 border-[3px] border-primary hover:bg-primary hover:text-white ${
+				mostPopular
+					? "bg-primary hover:bg-secondary border-none text-white"
+					: "text-primary"
+			}`}
+			asChild
+			shadow={`${mostPopular ? "primary" : "default"}`}
+			borderRadius="full"
+		>
+			<Link href="/">{buttonText}</Link>
+		</Button>
+	</motion.div>
+);
+
+// PRICING OPTIONS DATA
+const pricingOptions: PricingOption[] = [
+	// FREE CARD
+	{
+		title: "Free",
+		description: "Start with essential scheduling tools at no cost, perfect for personal use.",
+		price: "$0",
+		features: [
+			{ text: "Basic Calendar Integration", decoration: getStatusIcon("check") },
+			{ text: "Access to Standard Features", decoration: getStatusIcon("check") },
+			{ text: "Single User Access", decoration: getStatusIcon("check") },
+			{ text: "Community Support", decoration: getStatusIcon("check") },
+			{ text: "Limited Feature", decoration: getStatusIcon("line") },
+		],
+		buttonText: "Select",
+	},
+
+	// PREMIUM CARD
+	{
+		title: "Premium",
+		description: "Enhance your productivity with advanced features and priority support.",
+		price: "$25",
+		priceAnnually: "$180",
+		perMonth: true,
+		paidAnnually: "$15 USD per month, paid annually",
+		paidMonthly: "Instead of $300 per year, paid monthly",
+		features: [
+			{ text: "Multi-Calendar Sync", decoration: getStatusIcon("check") },
+			{ text: "Advanced Task Management", decoration: getStatusIcon("check") },
+			{ text: "Custom Event Reminders", decoration: getStatusIcon("check") },
+			{ text: "Detailed Analytics", decoration: getStatusIcon("check") },
+			{ text: "Priority Email Support", decoration: getStatusIcon("check") },
+			{ text: "Unlimited Feature", decoration: getStatusIcon("check") },
+			{ text: "Access beta functionality", decoration: getStatusIcon("check") },
+			{ text: "Add 2 Users Access", decoration: getStatusIcon("check") },
+		],
+		buttonText: "Select",
+		mostPopular: true,
+	},
+
+	// ENTERPRISE CARD
+	{
+		title: "Enterprise",
+		description:
+			"Collaborate effectively with full team integration and exclusive enterprise features.",
+		price: "Contact Us",
+		features: [
+			{ text: "Team Collaboration Tools", decoration: getStatusIcon("check") },
+			{ text: "Unlimited Calendar Integration", decoration: getStatusIcon("check") },
+			{ text: "Customizable Team Permissions", decoration: getStatusIcon("check") },
+			{ text: "Integration with Enterprise Tools", decoration: getStatusIcon("check") },
+			{ text: "Dedicated Phone Support", decoration: getStatusIcon("check") },
+			{ text: "Onboarding and Training", decoration: getStatusIcon("check") },
+		],
+		buttonText: "Select",
+	},
+];

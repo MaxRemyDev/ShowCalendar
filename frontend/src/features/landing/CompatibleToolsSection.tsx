@@ -10,11 +10,12 @@ export const CompatibleToolsSection = () => {
 		<Section>
 			<div className="mx-auto px-4 text-center md:max-w-screen-md lg:max-w-screen-lg lg:px-36">
 				<h2 className="text-4xl font-bold">COMPATIBLE TOOLS</h2>
-				<div className="mt-8 flex flex-wrap items-center justify-center text-muted-foreground sm:justify-between">
+				<div className="mt-8 flex flex-wrap items-center justify-center text-background-300 sm:justify-between">
 					{/* Apple */}
+
 					<motion.a
 						href="https://www.apple.com/"
-						className="mb-10 mr-10 hover:text-gray-800 dark:hover:text-gray-400 lg:mb-0"
+						className="mb-10 mr-10 hover:text-background-800 lg:mb-0"
 						whileHover={{ scale: 1.2 }}
 						whileTap={{ scale: 0.9 }}
 						transition={{ type: "spring", stiffness: 400, damping: 17 }}
@@ -25,7 +26,7 @@ export const CompatibleToolsSection = () => {
 					{/* Google */}
 					<motion.a
 						href="https://www.google.com/"
-						className="mb-10 mr-10 hover:text-gray-800 dark:hover:text-gray-400 lg:mb-0"
+						className="mb-10 mr-10 hover:text-background-800 lg:mb-0"
 						whileHover={{ scale: 1.2 }}
 						whileTap={{ scale: 0.9 }}
 						transition={{ type: "spring", stiffness: 400, damping: 17 }}
@@ -36,7 +37,7 @@ export const CompatibleToolsSection = () => {
 					{/* Microsoft */}
 					<motion.a
 						href="https://www.microsoft.com/"
-						className="mb-10 mr-10 hover:text-gray-800 dark:hover:text-gray-400 lg:mb-0"
+						className="mb-10 mr-10 hover:text-background-800 lg:mb-0"
 						whileHover={{ scale: 1.2 }}
 						whileTap={{ scale: 0.9 }}
 						transition={{ type: "spring", stiffness: 400, damping: 17 }}
@@ -47,7 +48,7 @@ export const CompatibleToolsSection = () => {
 					{/* Zoom */}
 					{/* <motion.a
 						href="https://zoom.us/"
-						className="mb-10 mr-10 hover:text-gray-800 dark:hover:text-gray-400 lg:mb-0"
+						className="mb-10 mr-10 hover:text-background-800 lg:mb-0"
 						whileHover={{ scale: 1.2 }}
 						whileTap={{ scale: 0.9 }}
 						transition={{ type: "spring", stiffness: 400, damping: 17 }}
@@ -58,7 +59,7 @@ export const CompatibleToolsSection = () => {
 					{/* Discord */}
 					<motion.a
 						href="https://discord.com/"
-						className="mb-10 mr-10 hover:text-gray-800 dark:hover:text-gray-400 lg:mb-0"
+						className="mb-10 mr-10 hover:text-background-800 lg:mb-0"
 						whileHover={{ scale: 1.2 }}
 						whileTap={{ scale: 0.9 }}
 						transition={{ type: "spring", stiffness: 400, damping: 17 }}

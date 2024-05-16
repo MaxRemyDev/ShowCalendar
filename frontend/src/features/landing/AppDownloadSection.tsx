@@ -1,33 +1,40 @@
 "use client";
 
-import React from "react";
+import { useMemo } from "react";
 import { Section } from "./Section";
 import Image from "next/image";
 import { motion } from "framer-motion";
+import { useThemeBasedImageSrc } from "../theme/useThemeBasedImageSrc";
 
 export const AppDownloadSection = () => {
+	const imagesLight = useMemo(() => ["/assets/landing/app-download/Iphone-Screenshot.svg"], []);
+	const imagesDark = useMemo(
+		() => ["/assets/landing/app-download/Iphone-Screenshot-Dark.svg"],
+		[]
+	);
+
+	const imageSrc = useThemeBasedImageSrc(imagesLight, imagesDark);
+
 	return (
-		<Section>
-			<div className="container mx-auto px-4 flex flex-col md:flex-row items-center">
+		<Section className="max-md:pb-0 pb-0">
+			<div className="container mx-auto px-4 flex flex-col-reverse md:flex-row items-center">
 				{/* IPHONE SCREENSHOT */}
-				<motion.div
-					className="relative justify-center flex md:flex-1 mb-8 md:mb-0 md:mr-8"
-					whileHover={{ scale: [null, 1.2, 1.1] }}
-					transition={{ duration: 0.3 }}
-				>
-					<Image
-						src="/assets/landing/app-download/Iphone-Screenshot.svg"
-						alt="iPhone App Screenshot"
-						width={300}
-						height={600}
-						className="rounded-lg shadow-2xl"
-					/>
-				</motion.div>
+				<div className="relative justify-center flex md:flex-1 mb-0 mt-8 md:mr-8">
+					{imageSrc[0] && (
+						<Image
+							src={imageSrc[0]}
+							alt="iPhone App Screenshot"
+							width={300}
+							height={600}
+							className="rounded-lg drop-shadow-2xl"
+						/>
+					)}
+				</div>
 
 				{/* TEXT AND DOWNLOAD BADGES */}
-				<div className="md:flex-1">
+				<div className="md:flex-1 max-md:text-center max-md:items-center">
 					<h2 className="text-4xl font-bold">DOWNLOAD THE MOBILE APP</h2>
-					<p className="my-8">
+					<p className="my-8 text-foreground-400">
 						Stay organized on the go with the{" "}
 						<span className="font-semibold">ShowCalendar mobile app</span>. Download now
 						for instant access to your scheduling and productivity tools. Available on

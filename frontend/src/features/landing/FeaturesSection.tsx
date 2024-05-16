@@ -2,8 +2,9 @@
 
 import { Section } from "./Section";
 import { motion } from "framer-motion";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useMediaQuery } from "react-responsive";
+import { useThemeBasedImageSrc } from "../theme/useThemeBasedImageSrc";
 
 type FeatureCategory = {
 	category: string;
@@ -13,7 +14,8 @@ type FeatureCategory = {
 type FeatureItem = {
 	title: string;
 	description: string;
-	image?: string;
+	imagesLight?: string;
+	imagesDark?: string;
 	disableOnMobile: boolean;
 };
 
@@ -32,8 +34,29 @@ const calcRotate = (x: number, y: number, rect: DOMRect): Coordinate => {
 };
 
 export const FeaturesSection = () => {
-	const isDesktopOrLaptop = useMediaQuery({ query: "(min-width: 768px)" }); // MEDIA QUERY FOR DESKTOP
-	const cardRefs = useRef<Array<HTMLDivElement | null>>(features.map(() => null)); // CREATE REFS FOR EACH FEATURE CARD
+	const imagesLight = useMemo(
+		() =>
+			features
+				.flatMap((category) => category.items.map((item) => item.imagesLight))
+				.filter((image) => image !== undefined),
+		[]
+	);
+	const imagesDark = useMemo(
+		() =>
+			features
+				.flatMap((category) => category.items.map((item) => item.imagesDark))
+				.filter((image) => image !== undefined),
+		[]
+	);
+
+	const imageSrc = useThemeBasedImageSrc(imagesLight, imagesDark);
+
+	const getImageIndex = (image: string | undefined, imagesArray: string[]) => {
+		return image ? imagesArray.indexOf(image) : -1;
+	};
+
+	const isDesktopOrLaptop = useMediaQuery({ query: "(min-width: 768px)" });
+	const cardRefs = useRef<Array<HTMLDivElement | null>>(features.map(() => null));
 
 	const [isClient, setIsClient] = useState(false);
 
@@ -126,20 +149,18 @@ export const FeaturesSection = () => {
 						<div key={category.category} className="flex flex-col space-y-8">
 							{category.items.map((feature, featureIndex) => {
 								const cardIndex = categoryIndex * 100 + featureIndex;
-
+								const imageIndex = getImageIndex(feature.imagesLight, imagesLight);
 								// CHECK IF CLIENT IS ON WHICH DEVICE RENDERING AND RETURNING IT IF FUNCTION OF CARDS SHOULD BE DISPLAYED ON MOBILE OR DESKTOP
 								if (isClient && (!feature.disableOnMobile || isDesktopOrLaptop)) {
 									// RETURN FEATURE CARD
 									return (
 										<motion.div
 											key={feature.title}
-											className="border-solid border-[2px] border-neutral-300 feature-card p-6 rounded-3xl shadow-xl flex flex-col items-center justify-center"
-											style={{ minHeight: "165px" }}
+											className="border-solid border-[2px] border-background-200 feature-card p-6 rounded-3xl shadow-xl flex flex-col items-center justify-center h-full"
 										>
-											{/* DISPLAY IMAGE IF AVAILABLE WITH 3D EFFECT ANIMATION*/}
-											{feature.image && (
+											{(feature.imagesLight || feature.imagesDark) && (
 												<motion.img
-													src={feature.image}
+													src={imageSrc[imageIndex]}
 													alt={`${feature.title} image`}
 													width={400}
 													height={400}
@@ -152,18 +173,20 @@ export const FeaturesSection = () => {
 													}
 													// MOUSE INTERACTIONS FOR 3D EFFECT
 													onMouseMove={handleMouseMove(cardIndex)}
-													onMouseLeave={handleMoveLeave}
+													onMouseLeave={() => handleMoveLeave(cardIndex)}
 													// TOUCH INTERACTIONS FOR 3D EFFECT
 													onTouchMove={handleTouchMove(cardIndex)}
 													onTouchStart={handleTouchMove(cardIndex)}
-													onTouchEnd={handleMoveLeave}
+													onTouchEnd={() => handleMoveLeave(cardIndex)}
 												/>
 											)}
 											<div className="flex-1 flex flex-col pt-3">
 												<h3 className="text-xl font-semibold mb-2">
 													{feature.title}
 												</h3>
-												<p className="flex-1">{feature.description}</p>
+												<p className="flex-1 text-foreground-400">
+													{feature.description}
+												</p>
 											</div>
 										</motion.div>
 									);
@@ -186,7 +209,8 @@ const features: FeatureCategory[] = [
 		items: [
 			{
 				title: "Organize and Collaborate",
-				image: "/assets/placeholder.svg",
+				imagesLight: "/assets/placeholder.svg",
+				imagesDark: "/assets/placeholder-Dark.svg",
 				description:
 					"Streamline your planning and collaboration with easy scheduling, real-time updates, and integration with the tools you love.",
 				disableOnMobile: false,
@@ -218,7 +242,8 @@ const features: FeatureCategory[] = [
 		items: [
 			{
 				title: "Stay Informed and Personalized",
-				image: "/assets/placeholder.svg",
+				imagesLight: "/assets/placeholder.svg",
+				imagesDark: "/assets/placeholder-Dark.svg",
 				description:
 					"Get timely reminders, tailor your experience to fit your style, and enjoy the convenience of accessing your calendar wherever you are.",
 				disableOnMobile: false,
@@ -250,7 +275,8 @@ const features: FeatureCategory[] = [
 		items: [
 			{
 				title: "Support, Security, and Insights",
-				image: "/assets/placeholder.svg",
+				imagesLight: "/assets/placeholder.svg",
+				imagesDark: "/assets/placeholder-Dark.svg",
 				description:
 					"Rely on our dedicated support team, trust in our robust security measures, and gain valuable insights from comprehensive reports.",
 				disableOnMobile: false,

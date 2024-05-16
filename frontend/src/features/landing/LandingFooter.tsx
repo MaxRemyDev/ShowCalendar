@@ -4,6 +4,7 @@ import { faGithub, faXTwitter } from "@fortawesome/free-brands-svg-icons";
 import { SelectScrollingLanguages } from "@/components/ui/SelectScrollingLanguages";
 import { Section } from "./Section";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import ThreeSwitchModeToggle from "../theme/ThreeSwitchModeToggle";
 
 const linkGroups = [
 	{
@@ -56,13 +57,14 @@ export const LandingFooter = () => {
 											width={30}
 											height={30}
 											alt="ShowCalendar logo"
+											className="dark:filter dark:invert"
 										/>
 									</a>
 								</Link>
 
 								{/* COPYRIGHT */}
 								<Link href="https://maxremy.dev/" legacyBehavior>
-									<a className="text-gray-400 hover:text-gray-600">
+									<a className="text-foreground-400 hover:text-foreground-600">
 										<div className="font-medium text-center lg:text-left">
 											©{currentYear} MAX REMY DEV
 											<br />
@@ -96,12 +98,12 @@ export const LandingFooter = () => {
 										href="https://github.com/MaxRemyDev/ShowCalendar"
 										legacyBehavior
 									>
-										<a className="text-gray-400 hover:text-gray-600">
+										<a className="text-foreground-400 hover:text-foreground-600">
 											<FontAwesomeIcon icon={faGithub} className="size-5" />
 										</a>
 									</Link>
 									<Link href="https://twitter.com/showcalendar" legacyBehavior>
-										<a className="text-gray-400 hover:text-gray-600 mx-4">
+										<a className="text-foreground-400 hover:text-foreground-600 mx-4">
 											<FontAwesomeIcon icon={faXTwitter} className="size-5" />
 										</a>
 									</Link>
@@ -114,14 +116,14 @@ export const LandingFooter = () => {
 							<div className="flex justify-evenly space-x-8">
 								{linkGroups.map((group, index) => (
 									<div key={`${group.title}-${index}`}>
-										<h2 className="mb-2 font-bold tracking-widest text-gray-600">
+										<h2 className="mb-2 font-bold tracking-widest text-foreground-600 dark:text-foreground-200">
 											{group.title}
 										</h2>
 										<ul className="space-y-2 text-sm list-none">
 											{group.links.map((link, linkIndex) => (
 												<li key={`${link.name}-${linkIndex}`}>
 													<Link href={link.href} legacyBehavior>
-														<a className="text-gray-400 hover:text-gray-600">
+														<a className="text-foreground-300 hover:text-foreground-600">
 															{link.name}
 														</a>
 													</Link>
@@ -133,9 +135,16 @@ export const LandingFooter = () => {
 							</div>
 						</div>
 
-						{/* LANGUAGE SELECTOR */}
-						<div className="w-full lg:w-auto lg:mt-0 mt-5">
-							<SelectScrollingLanguages />
+						<div className="flex flex-col max-lg:flex-row items-center justify-center">
+							{/* LANGUAGE SELECTOR */}
+							<div className="w-full lg:w-auto my-5 mx-5">
+								<SelectScrollingLanguages />
+							</div>
+
+							{/* THEME MODE TOGGLE */}
+							<div className="w-full lg:w-auto">
+								<ThreeSwitchModeToggle />
+							</div>
 						</div>
 					</div>
 				</div>

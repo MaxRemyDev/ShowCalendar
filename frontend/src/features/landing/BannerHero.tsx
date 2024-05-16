@@ -29,6 +29,7 @@ export const BannerHero = () => {
 								alt="Partying Face"
 								width={32}
 								height={32}
+								className="max-sm:mx-1"
 							/>
 							<span
 								className={cn(
@@ -54,7 +55,7 @@ export const BannerHero = () => {
 								Subscribe
 							</AnimatedShinyText>
 							<div className="group">
-								<ChevronRight className="ml-1 size-4 transition-transform duration-300 ease-in-out group-hover:scale-150" />
+								<ChevronRight className="max-sm:ml-0 ml-1 size-4 transition-transform duration-300 ease-in-out group-hover:scale-150" />
 							</div>
 						</AnimatedGradientText>
 					</Link>

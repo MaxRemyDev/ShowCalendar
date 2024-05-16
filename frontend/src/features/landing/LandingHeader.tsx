@@ -20,6 +20,7 @@ import {
 	navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
 import { DropDownMenuModeToggle } from "../theme/DropDownMenuModeToggle";
+import { OneClickModeToggle } from "../theme/OneClickModeToggle";
 
 export const LandingHeader = () => {
 	const [isSheetOpen, setIsSheetOpen] = useState(false);
@@ -27,19 +28,20 @@ export const LandingHeader = () => {
 
 	return (
 		<motion.header
-			className="fixed inset-x-0 z-50 flex h-20 items-center justify-between px-4 shadow-lg bg-white/30"
+			className="fixed inset-x-0 z-50 flex h-20 max-sm:h-16 items-center justify-between px-4 shadow-lg bg-white/30 dark:bg-black/30"
 			style={{ backdropFilter: "blur(10px)", WebkitBackdropFilter: "blur(10px)" }}
 		>
 			<div className="flex items-center justify-start flex-grow">
 				{/* LOGO AND BRAND NAME */}
 				<Link href="/" legacyBehavior>
-					<a className="flex items-center text-lg font-bold text-gray-800 hover:text-gray-600 mr-8">
+					<a className="flex items-center text-lg font-bold mr-8">
 						<Image
 							src="/ShowCalendarLogo.png"
 							width={0}
 							height={0}
 							alt="ShowCalendar logo"
 							style={{ width: "auto", height: "auto" }}
+							className="dark:filter dark:invert"
 						/>
 						<div className="text-xl font-bold">/ ShowCalendar</div>
 					</a>
@@ -147,22 +149,27 @@ export const LandingHeader = () => {
 
 			{/* ACTION BUTTONS VISIBLE UP TO 'MD' MIDDLE SCREENS */}
 			<div className="hidden md:flex items-center space-x-4">
-				<DropDownMenuModeToggle />
-				<Button variant="link" asChild>
-					<Link href="/login">Support</Link>
+				<OneClickModeToggle />
+				<Button variant="link" asChild className="dark:text-white">
+					<Link href="/support">Support</Link>
 				</Button>
 				<Button
 					asChild
-					className="bg-white hover:bg-gray-100 text-gray-800 px-4 py-2 border border-gray-300"
+					className="bg-white hover:bg-background-100 dark:hover:bg-background-800 text-foreground-900"
 				>
 					<Link href="/login">Login</Link>
 				</Button>
-				<Button asChild>
+				<Button asChild className="dark:text-white">
 					<Link href="/signup">Sign up</Link>
 				</Button>
 			</div>
 
 			<div className="lg-custom:hidden flex items-center space-x-4">
+				{/* ONE CLICK MODE TOGGLE CHANGE THEME */}
+				<div className="md:hidden">
+					<OneClickModeToggle />
+				</div>
+
 				{/* HAMBURGER MENU TRIGGER */}
 				<Button onClick={toggleSheet} variant="ghost" size="icon" className="ml-2">
 					<Menu />
@@ -171,23 +178,23 @@ export const LandingHeader = () => {
 				{/* SHEET CONTENT*/}
 				<Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
 					<SheetContent
-						className="w-64 bg-white/75 shadow-lg dark:bg-gray-800"
+						className="w-64 bg-white/75 dark:bg-black/50 shadow-lg"
 						side="right"
 						style={{ backdropFilter: "blur(10px)", WebkitBackdropFilter: "blur(10px)" }}
 					>
-						<div className="mt-8 border-t-2 border-gray-200 dark:border-gray-700" />
+						<div className="mt-8 border-t-2 border-background-200 dark:border-background-700" />
 						<div className="flex flex-col justify-between h-full">
 							{/* LINKS */}
 							<div className="p-4 space-y-4">
 								<Collapsible className="grid gap-4">
-									<CollapsibleTrigger className="flex items-center gap-2 text-gray-700 hover:bg-gray-100/50 px-3 py-2 rounded-md dark:text-gray-300 dark:hover:bg-gray-700">
+									<CollapsibleTrigger className="flex items-center gap-2 px-3 py-2 rounded-md text-foreground-700 hover:bg-background-100 dark:text-foreground-300">
 										<span className="text-base font-medium">Products</span>
 										<ChevronRightIcon className="ml-auto h-5 w-5 transition-all" />
 									</CollapsibleTrigger>
 									<CollapsibleContent>
-										<div className="-mx-4 -mt-2 grid gap-2 bg-gray-100/50 p-4 dark:bg-gray-700 rounded-lg border-2">
+										<div className="-mx-4 -mt-2 grid gap-2 bg-background-100 p-4 rounded-lg border-2">
 											<Link
-												className="flex items-center justify-left gap-2 text-gray-700 hover:bg-gray-300 px-3 py-2 rounded-md dark:text-gray-300 dark:hover:bg-gray-600"
+												className="flex items-center justify-left gap-2 px-3 py-2 rounded-md text-foreground-700 hover:bg-background-200 dark:text-foreground-300 dark:hover:bg-background-200"
 												href="#"
 											>
 												<span className="text-base font-medium">
@@ -195,7 +202,7 @@ export const LandingHeader = () => {
 												</span>
 											</Link>
 											<Link
-												className="flex items-center justify-left gap-2 text-gray-700 hover:bg-gray-300 px-3 py-2 rounded-md dark:text-gray-300 dark:hover:bg-gray-600"
+												className="flex items-center justify-left gap-2 px-3 py-2 rounded-md text-foreground-700 hover:bg-background-200 dark:text-foreground-300 dark:hover:bg-background-200"
 												href="#"
 											>
 												<span className="text-base font-medium">
@@ -203,7 +210,7 @@ export const LandingHeader = () => {
 												</span>
 											</Link>
 											<Link
-												className="flex items-center justify-left gap-2 text-gray-700 hover:bg-gray-300 px-3 py-2 rounded-md dark:text-gray-300 dark:hover:bg-gray-600"
+												className="flex items-center justify-left gap-2 px-3 py-2 rounded-md text-foreground-700 hover:bg-background-200 dark:text-foreground-300 dark:hover:bg-background-200"
 												href="#"
 											>
 												<span className="text-base font-medium">
@@ -214,31 +221,31 @@ export const LandingHeader = () => {
 									</CollapsibleContent>
 								</Collapsible>
 								<Link
-									className="flex items-center gap-2 text-gray-700 hover:bg-gray-100/50 px-3 py-2 rounded-md dark:text-gray-300 dark:hover:bg-gray-700"
+									className="flex items-center gap-2 px-3 py-2 rounded-md text-foreground-700 hover:bg-background-100 dark:text-foreground-300"
 									href="#"
 								>
 									<span className="text-base font-medium">Solution</span>
 								</Link>
 								<Link
-									className="flex items-center gap-2 text-gray-700 hover:bg-gray-100/50 px-3 py-2 rounded-md dark:text-gray-300 dark:hover:bg-gray-700"
+									className="flex items-center gap-2 px-3 py-2 rounded-md text-foreground-700 hover:bg-background-100 dark:text-foreground-300"
 									href="#"
 								>
 									<span className="text-base font-medium">Enterprise</span>
 								</Link>
 								<Link
-									className="flex items-center gap-2 text-gray-700 hover:bg-gray-100/50 px-3 py-2 rounded-md dark:text-gray-300 dark:hover:bg-gray-700"
+									className="flex items-center gap-2 px-3 py-2 rounded-md text-foreground-700 hover:bg-background-100 dark:text-foreground-300"
 									href="#"
 								>
 									<span className="text-base font-medium">Docs</span>
 								</Link>
 								<Link
-									className="flex items-center gap-2 text-gray-700 hover:bg-gray-100/50 px-3 py-2 rounded-md dark:text-gray-300 dark:hover:bg-gray-700"
+									className="flex items-center gap-2 px-3 py-2 rounded-md text-foreground-700 hover:bg-background-100 dark:text-foreground-300"
 									href="#"
 								>
 									<span className="text-base font-medium">Pricing</span>
 								</Link>
 								<Link
-									className="flex items-center gap-2 text-gray-700 hover:bg-gray-100/50 px-3 py-2 rounded-md dark:text-gray-300 dark:hover:bg-gray-700"
+									className="flex items-center gap-2 px-3 py-2 rounded-md text-foreground-700 hover:bg-background-100 dark:text-foreground-300"
 									href="#"
 								>
 									<span className="text-base font-medium">Support</span>
@@ -252,13 +259,18 @@ export const LandingHeader = () => {
 									<Button
 										variant="secondary"
 										asChild
-										borderRadius="xl"
+										borderRadius="lg"
 										shadow="lg"
-										className="bg-white hover:bg-gray-100 text-gray-800 px-4 py-2 border border-gray-300"
+										className="bg-white hover:bg-background-100 dark:hover:bg-background-800 text-foreground-900"
 									>
 										<Link href="/login">Login</Link>
 									</Button>
-									<Button asChild className="px-4 py-2" borderRadius="xl">
+									<Button
+										asChild
+										className="px-4 py-2"
+										borderRadius="lg"
+										shadow="lg"
+									>
 										<Link href="/signup">Sign up</Link>
 									</Button>
 								</div>
