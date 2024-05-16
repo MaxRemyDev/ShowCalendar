@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import "./globals.css";
+import "./styles/globals.css";
 import { Providers } from "./providers";
 import { cn } from "@/lib/utils";
 
@@ -18,7 +18,7 @@ export default function RootLayout({
 	children: React.ReactNode;
 }>) {
 	return (
-		<html lang="en" className="h-full">
+		<html lang="en">
 			<body className={cn(inter.className, "h-full")}>
 				<Providers>{children}</Providers>
 			</body>
