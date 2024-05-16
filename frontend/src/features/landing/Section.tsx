@@ -18,7 +18,7 @@ export const Section = (props: SectionProps) => {
 		<section id={props.id} className={cn(props.sectionClassName)}>
 			<div
 				className={cn(
-					"flex flex-col justify-center px-20 py-10 border-solid border-b-[3px] border-neutral-300 max-md:px-5 max-md:py-5",
+					"flex flex-col justify-center px-20 py-10 border-solid border-b-[3px] border-background-200 dark:border-background-100 max-md:px-5 max-md:py-5",
 					props.className
 				)}
 			>
