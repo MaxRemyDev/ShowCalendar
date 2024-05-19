@@ -60,14 +60,14 @@ export const LandingHeader = () => {
 										<li className="row-span-3">
 											<NavigationMenuLink asChild>
 												<a
-													className="flex h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-muted to-muted p-6 no-underline outline-none focus:shadow-md"
+													className="flex h-full w-full select-none flex-col justify-end rounded-md p-6 no-underline outline-none focus:shadow-md bg-background-200 dark:bg-background-100 hover:bg-background-300 dark:hover:bg-background-300"
 													href="/"
 												>
 													<CalendarCheck className="w-10 h-10 m-auto" />
 													<div className="mb-2 mt-4 text-xl font-medium">
 														ShowCalendar
 													</div>
-													<p className="text-sm leading-tight text-muted-foreground">
+													<p className="text-sm leading-tight text-foreground-500">
 														Lorem ipsum dolor sit amet consectetur
 														adipisicing elit. Maxime mollitia
 													</p>
@@ -91,7 +91,7 @@ export const LandingHeader = () => {
 									Solutions
 								</NavigationMenuTrigger>
 								<NavigationMenuContent>
-									<ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
+									<ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
 										{components.map((component) => (
 											<ListItem
 												key={component.title}
@@ -109,7 +109,7 @@ export const LandingHeader = () => {
 									Enterprise
 								</NavigationMenuTrigger>
 								<NavigationMenuContent>
-									<ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
+									<ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
 										{components.map((component) => (
 											<ListItem
 												key={component.title}
@@ -292,7 +292,7 @@ const ListItem = React.forwardRef<React.ElementRef<"a">, React.ComponentPropsWit
 					<a
 						ref={ref}
 						className={cn(
-							"block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
+							"block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-background-200 hover:text-foreground focus:bg-background focus:text-foreground",
 							className
 						)}
 						{...props}
