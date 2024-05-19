@@ -8,14 +8,16 @@ import { HeroSection } from "@/features/landing/HeroSection";
 import { LandingFooter } from "@/features/landing/LandingFooter";
 import { LandingHeader } from "@/features/landing/LandingHeader";
 import { PricingSection } from "@/features/landing/PricingSection";
+import { RoadmapSection } from "@/features/landing/RoadmapSection";
 
 export default function Home() {
 	return (
 		<div className="flex flex-col gap-4">
-			<div className="h-16" />
+			<div className="h-16 max-sm:h-12" />
 			<BannerHero />
 			<LandingHeader />
 			<HeroSection />
+			<RoadmapSection />
 			<FeaturesSection />
 			<CompatibleToolsSection />
 			<BenefitsSection />
