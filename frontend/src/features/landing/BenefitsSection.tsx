@@ -44,7 +44,7 @@ export const BenefitsSection = () => {
 				MAXIMIZE YOUR PRODUCTIVITY WITH SHOWCALENDAR
 			</h2>
 			<p className="text-xl text-center mb-12 text-foreground-400">
-				Streamline scheduling, task management, and gain insights—all in one place.
+				Streamline planning, task management and gain insights, all in one place.
 			</p>
 			<div className="container mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-8">
 				{benefits.map((benefit) => (
@@ -79,8 +79,8 @@ export const BenefitsSection = () => {
 					transition={{ type: "spring", stiffness: 400, damping: 17 }}
 				>
 					<Button size="xl" borderRadius="xxxl" textSize="md" shadow="primary">
-						<Link href="/get-started" legacyBehavior>
-							Get Started
+						<Link href="/waitlist" legacyBehavior>
+							Join the waitlist
 						</Link>
 					</Button>
 				</motion.div>

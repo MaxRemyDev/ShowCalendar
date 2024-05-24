@@ -105,24 +105,6 @@ export const LandingHeader = () => {
 								</NavigationMenuContent>
 							</NavigationMenuItem>
 							<NavigationMenuItem>
-								<NavigationMenuTrigger className="bg-transparent">
-									Enterprise
-								</NavigationMenuTrigger>
-								<NavigationMenuContent>
-									<ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
-										{components.map((component) => (
-											<ListItem
-												key={component.title}
-												title={component.title}
-												href={component.href}
-											>
-												{component.description}
-											</ListItem>
-										))}
-									</ul>
-								</NavigationMenuContent>
-							</NavigationMenuItem>
-							<NavigationMenuItem>
 								<Link href="/docs" legacyBehavior passHref>
 									<NavigationMenuLink
 										className={navigationMenuTriggerStyle()}
@@ -220,18 +202,40 @@ export const LandingHeader = () => {
 										</div>
 									</CollapsibleContent>
 								</Collapsible>
-								<Link
-									className="flex items-center gap-2 px-3 py-2 rounded-md text-foreground-700 hover:bg-background-100 dark:text-foreground-300"
-									href="#"
-								>
-									<span className="text-base font-medium">Solution</span>
-								</Link>
-								<Link
-									className="flex items-center gap-2 px-3 py-2 rounded-md text-foreground-700 hover:bg-background-100 dark:text-foreground-300"
-									href="#"
-								>
-									<span className="text-base font-medium">Enterprise</span>
-								</Link>
+								<Collapsible className="grid gap-4">
+									<CollapsibleTrigger className="flex items-center gap-2 px-3 py-2 rounded-md text-foreground-700 hover:bg-background-100 dark:text-foreground-300">
+										<span className="text-base font-medium">Solutions</span>
+										<ChevronRightIcon className="ml-auto h-5 w-5 transition-all" />
+									</CollapsibleTrigger>
+									<CollapsibleContent>
+										<div className="-mx-4 -mt-2 grid gap-2 bg-background-100 p-4 rounded-lg border-2">
+											<Link
+												className="flex items-center justify-left gap-2 px-3 py-2 rounded-md text-foreground-700 hover:bg-background-200 dark:text-foreground-300 dark:hover:bg-background-200"
+												href="#"
+											>
+												<span className="text-base font-medium">
+													Lorem ipsum
+												</span>
+											</Link>
+											<Link
+												className="flex items-center justify-left gap-2 px-3 py-2 rounded-md text-foreground-700 hover:bg-background-200 dark:text-foreground-300 dark:hover:bg-background-200"
+												href="#"
+											>
+												<span className="text-base font-medium">
+													Lorem ipsum
+												</span>
+											</Link>
+											<Link
+												className="flex items-center justify-left gap-2 px-3 py-2 rounded-md text-foreground-700 hover:bg-background-200 dark:text-foreground-300 dark:hover:bg-background-200"
+												href="#"
+											>
+												<span className="text-base font-medium">
+													Lorem ipsum
+												</span>
+											</Link>
+										</div>
+									</CollapsibleContent>
+								</Collapsible>
 								<Link
 									className="flex items-center gap-2 px-3 py-2 rounded-md text-foreground-700 hover:bg-background-100 dark:text-foreground-300"
 									href="#"
@@ -312,13 +316,13 @@ ListItem.displayName = "ListItem";
 // DUMMY DATA
 const components: { title: string; href: string; description: string }[] = [
 	{
-		title: "Alert Dialog",
-		href: "/docs/primitives/alert-dialog",
+		title: "Lorem ipsum",
+		href: "/",
 		description: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime mollitia",
 	},
 	{
-		title: "Hover Card",
-		href: "/docs/primitives/hover-card",
+		title: "Lorem ipsum",
+		href: "/",
 		description: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime mollitia",
 	},
 ];

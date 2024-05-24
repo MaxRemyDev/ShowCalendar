@@ -109,31 +109,33 @@ export const HeroSection = () => {
 						Place with
 						<span className="font-extrabold"> ShowCalendar.</span>
 					</h1>
-					<p className="mt-6 text-base xl:text-lg text-foreground-400">
-						Merge personal and professional schedules seamlessly in a unified tool.
+					<p className=" mt-6 text-base xl:text-lg text-foreground-400">
+						Merge personal and professional schedules seamlessly in a unified tool.{" "}
 						<br className="hidden sm:inline" />
 						Simplify your daily life, maximize productivity across all fronts.
 					</p>
+
 					<div className="mt-8">
 						<motion.div
 							whileHover={{ scale: 1.05 }}
 							whileTap={{ scale: 0.95 }}
 							transition={{ type: "spring", stiffness: 400, damping: 17 }}
+							className="z-10 w-fit"
 						>
-							<Link href="/get-started" legacyBehavior>
+							<Link href="/waitlist" legacyBehavior>
 								<Button
 									size="xxxl"
 									borderRadius="xxxl"
 									textSize="lg"
 									shadow="primary"
-									className="text-foreground-50"
+									className="text-foreground-50 z-10 h-16 px-28"
 								>
-									Get Started
+									JOIN WAITLIST
 								</Button>
 							</Link>
 						</motion.div>
 
-						<div className="hidden md:block top-1/2 transform -translate-y-1/2 md:ml-80">
+						<div className="hidden md:block z-0 pointer-events-none top-1/2 transform -translate-y-1/2 md:ml-80">
 							<Image
 								src="/assets/landing/hero/HeroShape.svg"
 								alt="Decorative Shape"

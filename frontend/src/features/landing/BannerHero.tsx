@@ -20,23 +20,30 @@ export const BannerHero = () => {
 					whileTap={{ scale: 0.95 }}
 					transition={{ type: "spring", stiffness: 400, damping: 17 }}
 				>
-					<Link href="/pricing">
+					<Link href="/waitlist">
 						<AnimatedGradientText>
-							<Badge className="bg-[#D4F7F0] text-[#067A6E]">NEW</Badge>
+							{/* <Badge className="bg-[#D4F7F0] text-[#067A6E]">NEW</Badge> */}
+							<Badge className="bg-secondary-200 dark:bg-primary-800 text-primary dark:text-secondary max-sm:mr-1">
+								WIP
+							</Badge>
 							<hr className="mx-2 h-4 w-[1px] shrink-0 bg-gray-300 hidden md:inline" />
-							<Image
+							{/* <Image
 								src="/assets/landing/hero/partying-face.webp"
 								alt="Partying Face"
 								width={32}
 								height={32}
 								className="max-sm:mx-1"
-							/>
+							/> */}
 							<span
 								className={cn(
 									"inline animate-gradient bg-gradient-to-r from-[#ffaa40] via-[#9c40ff] to-[#ffaa40] bg-[length:var(--bg-size)_100%] bg-clip-text text-transparent"
 								)}
 							>
-								<span className="inline sm:hidden">
+								<strong className="capitalize">
+									<span className="inline max-sm:hidden">ShowCalendar is </span>
+									currently under development
+								</strong>
+								{/* <span className="inline sm:hidden">
 									Enjoy <strong>40% OFF</strong> paid Annually
 								</span>
 								<span className="hidden sm:inline lg-custom:hidden">
@@ -48,11 +55,12 @@ export const BannerHero = () => {
 									Annual Subscription, now only{" "}
 									<strong className="text-lg">$15 USD per month</strong> instead
 									of $25 USD
-								</span>
+								</span> */}
 							</span>
 							<hr className="mx-2 h-4 w-[1px] shrink-0 bg-gray-300 hidden md:inline" />
 							<AnimatedShinyText className="hidden md:inline">
-								Subscribe
+								{/* Subscribe */}
+								Join Waitlist
 							</AnimatedShinyText>
 							<div className="group">
 								<ChevronRight className="max-sm:ml-0 ml-1 size-4 transition-transform duration-300 ease-in-out group-hover:scale-150" />
