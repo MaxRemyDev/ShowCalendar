@@ -9,7 +9,7 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
-import languagesData from "@/data/languages";
+import languagesData from "@/components/data/languages";
 
 export function SelectScrollingLanguages() {
 	const [selectedLanguage, setSelectedLanguage] = useState("en");

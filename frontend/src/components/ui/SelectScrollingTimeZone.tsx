@@ -8,7 +8,7 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
-import timeZoneData from "@/data/time-zone";
+import timeZoneData from "../data/time-zone";
 
 export function SelectScrollableTimeZone() {
 	return (
