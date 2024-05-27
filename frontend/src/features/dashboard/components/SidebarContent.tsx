@@ -29,7 +29,7 @@ export function SidebarContent({ links, isCollapsed }: SidebarProps) {
 							<TooltipTrigger asChild>
 								<>
 									<Link
-										href="href"
+										href={link.href}
 										className={cn(
 											buttonVariants({ variant: link.variant, size: "icon" }),
 											"h-9 w-9",
@@ -53,9 +53,8 @@ export function SidebarContent({ links, isCollapsed }: SidebarProps) {
 							</TooltipContent>
 						</Tooltip>
 					) : (
-						<>
+						<React.Fragment key={index}>
 							<Link
-								key={index}
 								href={link.href}
 								className={cn(
 									buttonVariants({ variant: link.variant, size: "sm" }),
@@ -74,7 +73,7 @@ export function SidebarContent({ links, isCollapsed }: SidebarProps) {
 								)}
 							</Link>
 							<div>{link.separator}</div>
-						</>
+						</React.Fragment>
 					)
 				)}
 			</nav>
