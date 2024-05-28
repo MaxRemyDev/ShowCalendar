@@ -56,7 +56,7 @@ const DashboardHeader = () => {
 						href={route.href}
 						className={cn(
 							"transition-colors hover:text-foreground",
-							pathname === route.href
+							pathname.startsWith(route.href)
 								? "text-foreground font-bold"
 								: "text-muted-foreground"
 						)}
@@ -84,7 +84,7 @@ const DashboardHeader = () => {
 								href={route.href}
 								className={cn(
 									"hover:text-foreground",
-									pathname === route.href
+									pathname.startsWith(route.href)
 										? "text-foreground font-bold"
 										: "text-muted-foreground"
 								)}
