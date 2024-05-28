@@ -1,9 +1,3 @@
-import DashboardPage from "@/features/dashboard/pages/DashboardPage";
+import OverviewPage from "@/features/dashboard/pages/contents/dashboard/OverviewsPage";
 
-export default function Dashboard() {
-	return (
-		<div className="flex flex-col gap-4 h-screen overflow-hidden">
-			<DashboardPage />
-		</div>
-	);
-}
+export default OverviewPage;
