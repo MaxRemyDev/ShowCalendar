@@ -8,7 +8,7 @@ import {
 	CheckSquareIcon,
 	FileTextIcon,
 	HelpCircleIcon,
-	HomeIcon,
+	LayoutDashboard,
 	LogOutIcon,
 	MailIcon,
 	PieChartIcon,
@@ -17,7 +17,7 @@ import {
 } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 
-const DashboardPage = () => {
+const DashboardPage = ({ contents }: { contents?: React.ReactNode }) => {
 	return (
 		<div className="dashboard-container h-screen overflow-hidden">
 			<DashboardSection
@@ -26,44 +26,40 @@ const DashboardPage = () => {
 						isCollapsed={false}
 						links={[
 							{
-								title: "Dashboard",
+								title: "Overviews",
 								href: "/dashboard",
 								label: "",
-								icon: HomeIcon,
+								icon: LayoutDashboard,
 								variant: "default",
 							},
 							{
 								title: "Messages",
-								href: "/messages",
+								href: "/dashboard/messages",
 								label: "128",
 								icon: MailIcon,
 								variant: "ghost",
 							},
 							{
 								title: "Tasks",
-								href: "/tasks",
+								href: "/dashboard/tasks",
 								label: "9",
 								icon: CheckSquareIcon,
 								variant: "ghost",
 							},
 							{
 								title: "Files",
-								href: "/files",
+								href: "/dashboard/files",
 								label: "",
 								icon: FileTextIcon,
 								variant: "ghost",
 							},
 							{
 								title: "Settings",
-								href: "/settings",
+								href: "/dashboard/settings",
 								label: "",
 								icon: SettingsIcon,
 								variant: "ghost",
-								separator: (
-									<div className="py-5 ">
-										<Separator className="w-full" />
-									</div>
-								),
+								separator: <div />,
 							},
 							{
 								title: "Analytics",
@@ -71,6 +67,11 @@ const DashboardPage = () => {
 								label: "972",
 								icon: BarChartIcon,
 								variant: "ghost",
+								separator: (
+									<div className="py-5">
+										<Separator className="w-full" />
+									</div>
+								),
 							},
 							{
 								title: "Contacts",
@@ -103,7 +104,7 @@ const DashboardPage = () => {
 						]}
 					/>
 				}
-				content={<div>Content</div>}
+				content={contents}
 				direction="horizontal"
 				defaultCollapsed={false}
 			/>
