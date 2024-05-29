@@ -11,13 +11,13 @@ import {
 } from "@/components/ui/select";
 import languagesData from "@/components/data/languages";
 
-export function SelectScrollingLanguages() {
+export function SelectScrollingLanguages({ iconDisable = false }) {
 	const [selectedLanguage, setSelectedLanguage] = useState("en");
 
 	return (
 		<Select value={selectedLanguage} onValueChange={setSelectedLanguage}>
 			<SelectTrigger className="w-[150px] flex justify-between items-center">
-				<Globe className="mr-2" />
+				{!iconDisable && <Globe className="mr-2" />}
 				<SelectValue placeholder="Select language" />
 			</SelectTrigger>
 			<SelectContent>
