@@ -1,5 +1,3 @@
-"use client";
-
 import Link from "next/link";
 import { LucideIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -7,6 +5,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 import { buttonVariants } from "@/components/ui/button";
 import React from "react";
 import { usePathname } from "next/navigation";
+import { DashboardRoutes } from "./utils/DashboardRoutes";
 
 interface SidebarProps {
 	isCollapsed: boolean;
@@ -17,6 +16,7 @@ interface SidebarProps {
 		icon: LucideIcon;
 		variant?: "default" | "ghost";
 		separator?: React.ReactNode;
+		mainLink?: boolean;
 	}[];
 }
 
@@ -25,6 +25,31 @@ export function SidebarContent({ links, isCollapsed }: SidebarProps) {
 
 	const upperLinks = links.slice(0, links.findIndex((link) => link.separator) + 1);
 	const lowerLinks = links.slice(links.findIndex((link) => link.separator) + 1);
+
+	const isLinkActive = (linkHref: string, mainLink?: boolean) => {
+		const isDashboardRoute = DashboardRoutes.some((route) => pathname.startsWith(route.href));
+
+		if (isDashboardRoute && linkHref === pathname.split("/").slice(0, 2).join("/")) {
+			return false;
+		}
+
+		if (pathname === linkHref) {
+			return true;
+		}
+
+		if (!mainLink && pathname.startsWith(linkHref)) {
+			return true;
+		}
+
+		if (mainLink && pathname.startsWith(linkHref)) {
+			const remainingPath = pathname.replace(linkHref, "");
+			if (remainingPath === "" || remainingPath.startsWith("/")) {
+				return true;
+			}
+		}
+
+		return false;
+	};
 
 	return (
 		<div
@@ -36,25 +61,23 @@ export function SidebarContent({ links, isCollapsed }: SidebarProps) {
 			<nav className={cn("grid gap-1", isCollapsed ? "justify-center" : "px-2")}>
 				{upperLinks.map((link, index) =>
 					isCollapsed ? (
-						<Tooltip key={index} delayDuration={0}>
+						<Tooltip key={`${link.title}-${index}`} delayDuration={0}>
 							<TooltipTrigger asChild>
-								<>
-									<Link
-										href={link.href}
-										className={cn(
-											buttonVariants({
-												variant:
-													pathname === link.href ? "default" : "ghost",
-												size: "icon",
-											}),
-											"h-9 w-9"
-										)}
-									>
-										<link.icon className="h-4 w-4" />
-										<span className="sr-only">{link.title}</span>
-									</Link>
-									{link.separator}
-								</>
+								<Link
+									href={link.href}
+									className={cn(
+										buttonVariants({
+											variant: isLinkActive(link.href, link.mainLink)
+												? "default"
+												: "ghost",
+											size: "icon",
+										}),
+										"h-9 w-9"
+									)}
+								>
+									<link.icon className="h-4 w-4" />
+									<span className="sr-only">{link.title}</span>
+								</Link>
 							</TooltipTrigger>
 							<TooltipContent side="right" className="flex items-center gap-4">
 								{link.title}
@@ -66,12 +89,14 @@ export function SidebarContent({ links, isCollapsed }: SidebarProps) {
 							</TooltipContent>
 						</Tooltip>
 					) : (
-						<React.Fragment key={index}>
+						<React.Fragment key={`${link.title}-${index}`}>
 							<Link
 								href={link.href}
 								className={cn(
 									buttonVariants({
-										variant: pathname === link.href ? "default" : "ghost",
+										variant: isLinkActive(link.href, link.mainLink)
+											? "default"
+											: "ghost",
 										size: "sm",
 									}),
 									"justify-start flex items-center"
@@ -87,7 +112,7 @@ export function SidebarContent({ links, isCollapsed }: SidebarProps) {
 									</span>
 								)}
 							</Link>
-							<div>{link.separator}</div>
+							{link.separator}
 						</React.Fragment>
 					)
 				)}
@@ -95,25 +120,23 @@ export function SidebarContent({ links, isCollapsed }: SidebarProps) {
 			<nav className={cn("grid gap-1", isCollapsed ? "justify-center" : "px-2")}>
 				{lowerLinks.map((link, index) =>
 					isCollapsed ? (
-						<Tooltip key={index} delayDuration={0}>
+						<Tooltip key={`${link.title}-${index}`} delayDuration={0}>
 							<TooltipTrigger asChild>
-								<>
-									<Link
-										href={link.href}
-										className={cn(
-											buttonVariants({
-												variant:
-													pathname === link.href ? "default" : "ghost",
-												size: "icon",
-											}),
-											"h-9 w-9"
-										)}
-									>
-										<link.icon className="h-4 w-4" />
-										<span className="sr-only">{link.title}</span>
-									</Link>
-									{link.separator}
-								</>
+								<Link
+									href={link.href}
+									className={cn(
+										buttonVariants({
+											variant: isLinkActive(link.href, link.mainLink)
+												? "default"
+												: "ghost",
+											size: "icon",
+										}),
+										"h-9 w-9"
+									)}
+								>
+									<link.icon className="h-4 w-4" />
+									<span className="sr-only">{link.title}</span>
+								</Link>
 							</TooltipTrigger>
 							<TooltipContent side="right" className="flex items-center gap-4">
 								{link.title}
@@ -125,13 +148,15 @@ export function SidebarContent({ links, isCollapsed }: SidebarProps) {
 							</TooltipContent>
 						</Tooltip>
 					) : (
-						<React.Fragment key={index}>
-							<div>{link.separator}</div>
+						<React.Fragment key={`${link.title}-${index}`}>
+							{link.separator}
 							<Link
 								href={link.href}
 								className={cn(
 									buttonVariants({
-										variant: pathname === link.href ? "default" : "ghost",
+										variant: isLinkActive(link.href, link.mainLink)
+											? "default"
+											: "ghost",
 										size: "sm",
 									}),
 									"justify-start flex items-center"

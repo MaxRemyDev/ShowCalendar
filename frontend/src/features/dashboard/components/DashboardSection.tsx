@@ -4,6 +4,8 @@ import React, { useEffect, useState } from "react";
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { DashboardBreadcrumb } from "./DashboardBreadcrumb";
 
 const DashboardSection = ({
 	sidebarContent,
@@ -28,17 +30,14 @@ const DashboardSection = ({
 		document.cookie = `react-resizable-panels:collapsed=${JSON.stringify(!isCollapsed)}`;
 	};
 
-	//TODO: NEED MORE RESPONSIVE SIDEBAR COLLAPSED TO ADD LOGIC FOR DIFFERENT SCREEN SIZE TO COLLAPSE TO SAME LOCATION WITH PANELSIZE
-	//INFO: FOR EXAMPLE IF SIZE IS 15 ON "XL SCREEN", SIDEBAR WILL NORMALLY COLLAPSE TO RIGHT PLACE
-	//INFO: BUT IF SCREEN IS "MD", SIDEBAR IS SET TO 10, PANEL SIZE IT DOES NOT REDUCE TO SAME LOCATION AS ON “XL SCREEN”
 	useEffect(() => {
 		setIsCollapsed(panelSize < 10);
 		console.log(panelSize);
 	}, [panelSize]);
 
 	return (
-		<TooltipProvider delayDuration={0}>
-			<div className="main-content w-full h-full overflow-hidden">
+		<TooltipProvider delayDuration={1}>
+			<div className="main-content w-full h-full overflow-hidden fixed">
 				<ResizablePanelGroup
 					direction={direction}
 					onLayout={(sizes: number[]) => {
@@ -64,7 +63,16 @@ const DashboardSection = ({
 					</ResizablePanel>
 					<ResizableHandle withHandle />
 					<ResizablePanel defaultSize={defaultLayout[1]}>
-						<div className="flex h-full items-center justify-center p-6">{content}</div>
+						<ScrollArea className="h-screen w-screen pt-20">
+							<div className="flex h-full items-start justify-start">
+								<div className="fixed z-40 bg-background w-screen h-16 border-b-[2px]">
+									<DashboardBreadcrumb className="mt-5 ml-5" />
+								</div>
+								<div className="max-w-screen-sm h-full p-10 pt-20 lg:max-w-screen-lg lg:w-1/2">
+									{content}
+								</div>
+							</div>
+						</ScrollArea>
 					</ResizablePanel>
 				</ResizablePanelGroup>
 			</div>

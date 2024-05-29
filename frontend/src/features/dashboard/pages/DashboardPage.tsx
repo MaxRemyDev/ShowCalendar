@@ -26,11 +26,12 @@ const DashboardPage = ({ contents }: { contents?: React.ReactNode }) => {
 						isCollapsed={false}
 						links={[
 							{
-								title: "Overviews",
+								title: "Overview",
 								href: "/dashboard",
 								label: "",
 								icon: LayoutDashboard,
 								variant: "default",
+								mainLink: true,
 							},
 							{
 								title: "Messages",
@@ -60,6 +61,7 @@ const DashboardPage = ({ contents }: { contents?: React.ReactNode }) => {
 								icon: SettingsIcon,
 								variant: "ghost",
 								separator: <div />,
+								mainLink: true,
 							},
 							{
 								title: "Analytics",
