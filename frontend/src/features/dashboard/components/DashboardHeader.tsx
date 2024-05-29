@@ -17,25 +17,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
-
-const routes = [
-	{
-		label: "Dashboard",
-		href: "/dashboard",
-	},
-	{
-		label: "Calendar",
-		href: "/calendar",
-	},
-	{
-		label: "Appointments",
-		href: "/appointments",
-	},
-	{
-		label: "Notifications",
-		href: "/notifications",
-	},
-];
+import { DashboardRoutes } from "./utils/DashboardRoutes";
 
 const DashboardHeader = () => {
 	const pathname = usePathname();
@@ -50,7 +32,7 @@ const DashboardHeader = () => {
 					<CalendarIcon className="h-6 w-6" />
 					<span className="sr-only">ShowCalendar</span>
 				</Link>
-				{routes.map((route) => (
+				{DashboardRoutes.map((route) => (
 					<Link
 						key={route.href}
 						href={route.href}
@@ -78,7 +60,7 @@ const DashboardHeader = () => {
 							<CalendarIcon className="h-6 w-6" />
 							<span className="sr-only">ShowCalendar</span>
 						</Link>
-						{routes.map((route) => (
+						{DashboardRoutes.map((route) => (
 							<Link
 								key={route.href}
 								href={route.href}
