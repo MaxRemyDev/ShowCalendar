@@ -1,0 +1,186 @@
+interface Appointment {
+	id: number;
+	avatarImage?: string;
+	avatarFallback: string;
+	name: string;
+	email: string;
+	time: Date;
+}
+
+export const recentAppointments: Appointment[] = [
+	{
+		id: 1,
+		avatarFallback: "AB",
+		name: "Alice Brown",
+		email: "alice.brown@email.com",
+		time: new Date(),
+	},
+	{
+		id: 2,
+		avatarFallback: "CD",
+		name: "Charlie Davis",
+		email: "charlie.davis@email.com",
+		time: new Date(Date.now() + 2 * 60 * 60 * 1000),
+	},
+	{
+		id: 3,
+		avatarFallback: "EF",
+		name: "Ella Fitzgerald",
+		email: "ella.fitzgerald@email.com",
+		time: new Date(Date.now() + 24 * 60 * 60 * 1000),
+	},
+	{
+		id: 4,
+		avatarFallback: "GH",
+		name: "George Harris",
+		email: "george.harris@email.com",
+		time: new Date(Date.now() + 26 * 60 * 60 * 1000),
+	},
+	{
+		id: 5,
+		avatarFallback: "IJ",
+		name: "Ivy Johnson",
+		email: "ivy.johnson@email.com",
+		time: new Date(2024, 6, 10),
+	},
+	{
+		id: 6,
+		avatarFallback: "KT",
+		name: "Kevin Thompson",
+		email: "kevin.thompson@email.com",
+		time: new Date(2024, 6, 11),
+	},
+	{
+		id: 7,
+		avatarFallback: "LM",
+		name: "Laura Martinez",
+		email: "laura.martinez@email.com",
+		time: new Date(2024, 6, 12),
+	},
+	{
+		id: 8,
+		avatarFallback: "NP",
+		name: "Nathan Perez",
+		email: "nathan.perez@email.com",
+		time: new Date(2024, 6, 13),
+	},
+	{
+		id: 9,
+		avatarFallback: "QR",
+		name: "Quinn Roberts",
+		email: "quinn.roberts@email.com",
+		time: new Date(2024, 6, 14),
+	},
+	{
+		id: 10,
+		avatarFallback: "ST",
+		name: "Sophia Turner",
+		email: "sophia.turner@email.com",
+		time: new Date(2024, 6, 15),
+	},
+	{
+		id: 11,
+		avatarFallback: "UW",
+		name: "Uma Watson",
+		email: "uma.watson@email.com",
+		time: new Date(2024, 6, 16),
+	},
+	{
+		id: 12,
+		avatarFallback: "VX",
+		name: "Victor Xu",
+		email: "victor.xu@email.com",
+		time: new Date(2024, 6, 17),
+	},
+	{
+		id: 13,
+		avatarFallback: "YZ",
+		name: "Yara Zane",
+		email: "yara.zane@email.com",
+		time: new Date(2024, 6, 18),
+	},
+	{
+		id: 14,
+		avatarFallback: "AA",
+		name: "Aaron Anderson",
+		email: "aaron.anderson@email.com",
+		time: new Date(2024, 6, 19),
+	},
+	{
+		id: 15,
+		avatarFallback: "BB",
+		name: "Bella Bennett",
+		email: "bella.bennett@email.com",
+		time: new Date(2024, 6, 20),
+	},
+	{
+		id: 16,
+		avatarFallback: "CC",
+		name: "Caleb Carter",
+		email: "caleb.carter@email.com",
+		time: new Date(2024, 6, 21),
+	},
+	{
+		id: 17,
+		avatarFallback: "DD",
+		name: "Daisy Douglas",
+		email: "daisy.douglas@email.com",
+		time: new Date(2024, 6, 22),
+	},
+	{
+		id: 18,
+		avatarFallback: "EE",
+		name: "Ethan Edwards",
+		email: "ethan.edwards@email.com",
+		time: new Date(2024, 6, 23),
+	},
+	{
+		id: 19,
+		avatarFallback: "FF",
+		name: "Fiona Foster",
+		email: "fiona.foster@email.com",
+		time: new Date(2024, 6, 24),
+	},
+	{
+		id: 20,
+		avatarFallback: "GG",
+		name: "Gavin Green",
+		email: "gavin.green@email.com",
+		time: new Date(2024, 6, 25),
+	},
+	{
+		id: 21,
+		avatarFallback: "HH",
+		name: "Hannah Hill",
+		email: "hannah.hill@email.com",
+		time: new Date(2024, 6, 26),
+	},
+	{
+		id: 22,
+		avatarFallback: "II",
+		name: "Ian Iverson",
+		email: "ian.iverson@email.com",
+		time: new Date(2024, 6, 27),
+	},
+	{
+		id: 23,
+		avatarFallback: "JJ",
+		name: "Julia Johnson",
+		email: "julia.johnson@email.com",
+		time: new Date(2024, 6, 28),
+	},
+	{
+		id: 24,
+		avatarFallback: "KK",
+		name: "Kyle King",
+		email: "kyle.king@email.com",
+		time: new Date(2024, 6, 29),
+	},
+	{
+		id: 25,
+		avatarFallback: "LL",
+		name: "Lily Lewis",
+		email: "lily.lewis@email.com",
+		time: new Date(2024, 6, 30),
+	},
+];
