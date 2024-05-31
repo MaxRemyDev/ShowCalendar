@@ -1,3 +1,4 @@
+// DashboardHeader.tsx
 "use client";
 
 import React from "react";
@@ -6,18 +7,10 @@ import { usePathname } from "next/navigation";
 import { Menu, CalendarIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { OneClickModeToggle } from "@/features/theme/OneClickModeToggle";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import {
-	DropdownMenu,
-	DropdownMenuContent,
-	DropdownMenuItem,
-	DropdownMenuLabel,
-	DropdownMenuSeparator,
-	DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
 import { DashboardRoutes } from "./utils/DashboardRoutes";
+import DashboardDropMenuAccount from "./DashboardDropMenuAccount";
 
 const DashboardHeader = () => {
 	const pathname = usePathname();
@@ -79,25 +72,7 @@ const DashboardHeader = () => {
 			</Sheet>
 			<div className="flex w-full items-center justify-end gap-4 md:ml-auto md:gap-2 lg:gap-4">
 				<OneClickModeToggle />
-				<DropdownMenu>
-					<DropdownMenuTrigger asChild>
-						<Button variant="secondary" size="icon" className="rounded-full">
-							<Avatar>
-								<AvatarImage src="" alt="@username" />
-								<AvatarFallback>UN</AvatarFallback>
-							</Avatar>
-							<span className="sr-only">Toggle user menu</span>
-						</Button>
-					</DropdownMenuTrigger>
-					<DropdownMenuContent align="end">
-						<DropdownMenuLabel>My Account</DropdownMenuLabel>
-						<DropdownMenuSeparator />
-						<DropdownMenuItem>Settings</DropdownMenuItem>
-						<DropdownMenuItem>Support</DropdownMenuItem>
-						<DropdownMenuSeparator />
-						<DropdownMenuItem>Logout</DropdownMenuItem>
-					</DropdownMenuContent>
-				</DropdownMenu>
+				<DashboardDropMenuAccount />
 			</div>
 		</header>
 	);
