@@ -37,7 +37,7 @@ export function DashboardBreadcrumb({ className }: DashboardBreadcrumbProps) {
 
 	return (
 		<Breadcrumb className={className}>
-			<BreadcrumbList>
+			<BreadcrumbList className="capitalize">
 				<BreadcrumbItem>
 					<BreadcrumbLink href="/">Home</BreadcrumbLink>
 				</BreadcrumbItem>
