@@ -63,14 +63,12 @@ const DashboardSection = ({
 					</ResizablePanel>
 					<ResizableHandle withHandle />
 					<ResizablePanel defaultSize={defaultLayout[1]}>
-						<ScrollArea className="h-screen w-screen pt-20">
-							<div className="flex h-full items-start justify-start">
-								<div className="fixed z-40 bg-background w-screen h-16 border-b-[2px]">
+						<ScrollArea className="h-full w-full pt-20 overflow-auto">
+							<div className="h-full w-full flex items-start justify-start">
+								<div className="fixed z-40 bg-background w-full h-16 border-b-[2px]">
 									<DashboardBreadcrumb className="mt-5 ml-5" />
 								</div>
-								<div className="max-w-screen-sm h-full p-10 pt-20 lg:max-w-screen-lg lg:w-1/2">
-									{content}
-								</div>
+								<div className="p-10 pt-20 w-full">{content}</div>
 							</div>
 						</ScrollArea>
 					</ResizablePanel>
