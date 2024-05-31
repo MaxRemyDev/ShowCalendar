@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Tooltip } from "recharts";
 import { monthlyData } from "./data/monthlyData";
 import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
 
 interface CustomTooltipProps {
 	active?: boolean;
@@ -15,6 +16,7 @@ const CustomTooltip: React.FC<CustomTooltipProps> = ({ active, payload }) => {
 		return (
 			<div className="bg-white text-black p-2 border border-gray-300 rounded-lg shadow-lg">
 				<p className="font-semibold">{`${payload[0].payload.fullName}`}</p>
+				<Separator className="my-2" />
 				<p>{`Number of appointments: ${payload[0].value}`}</p>
 			</div>
 		);
