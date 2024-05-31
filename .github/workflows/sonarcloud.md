@@ -1,61 +1,58 @@
 #INFO: OLD VERSION OF SONARCLOUD ANALYSIS (GIT HASH: 116431d4111df8e501858039f9712bfbcf0f641c)
 #WARN: THIS VERSION OF WORKFLOW IS WORKING BUT NOT HAVE ALL FEATURE NEED TO WORKING WITH SONARCLOUD ANALYSIS
-name: SonarCloud
+name: SonarCloud C#
 on:
-  push:
-    branches:
-      - main
-  pull_request:
-    types: [opened, synchronize, reopened]
+    push:
+        branches:
+            - main
+    pull_request:
+        types: [opened, synchronize, reopened]
 jobs:
-  build:
-    name: Build and analyze
-    runs-on: windows-latest
-    steps:
-      - name: Set up JDK 17
-        uses: actions/setup-java@v3
-        with:
-          java-version: 17
-          distribution: 'zulu'
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-      - name: Cache SonarCloud packages
-        uses: actions/cache@v3
-        with:
-          path: ~\sonar\cache
-          key: ${{ runner.os }}-sonar
-          restore-keys: ${{ runner.os }}-sonar
-      - name: Cache SonarCloud scanner
-        id: cache-sonar-scanner
-        uses: actions/cache@v3
-        with:
-          path: .\.sonar\scanner
-          key: ${{ runner.os }}-sonar-scanner
-          restore-keys: ${{ runner.os }}-sonar-scanner
-      - name: Install SonarCloud scanner
-        if: steps.cache-sonar-scanner.outputs.cache-hit != 'true'
-        shell: powershell
-        run: |
-          New-Item -Path .\.sonar\scanner -ItemType Directory
-          dotnet tool update dotnet-sonarscanner --tool-path .\.sonar\scanner
-      - name: Test and collect coverage
-        shell: powershell
-        run: |
-          dotnet tool install --global dotnet-reportgenerator-globaltool
-          dotnet test Backend/Backend.sln --no-build --logger "trx" /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:CoverletOutput=./TestResults/Coverage/
-          reportgenerator -reports:./TestResults/Coverage/*.cobertura.xml -targetdir:./TestResults/Coverage/Reports -reporttypes:"HtmlInline_AzurePipelines;Cobertura"
-          .\.sonar\scanner\dotnet-sonarscanner begin /k:"MaxRemyDev_ShowCalendar" /o:"maxremydev" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.cs.opencover.reportsPaths="./TestResults/Coverage/Reports/Cobertura.xml"
-      - name: Build
-        shell: powershell
-        run: dotnet build Backend/Backend.sln
-      - name: SonarCloud analysis
-        shell: powershell
-        run: |
-          .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
-
-
-
+    build:
+        name: Build and analyze
+        runs-on: windows-latest
+        steps:
+            - name: Set up JDK 17
+              uses: actions/setup-java@v3
+              with:
+                  java-version: 17
+                  distribution: "zulu"
+            - uses: actions/checkout@v3
+              with:
+                  fetch-depth: 0
+            - name: Cache SonarCloud packages
+              uses: actions/cache@v3
+              with:
+                  path: ~\sonar\cache
+                  key: ${{ runner.os }}-sonar
+                  restore-keys: ${{ runner.os }}-sonar
+            - name: Cache SonarCloud scanner
+              id: cache-sonar-scanner
+              uses: actions/cache@v3
+              with:
+                  path: .\.sonar\scanner
+                  key: ${{ runner.os }}-sonar-scanner
+                  restore-keys: ${{ runner.os }}-sonar-scanner
+            - name: Install SonarCloud scanner
+              if: steps.cache-sonar-scanner.outputs.cache-hit != 'true'
+              shell: powershell
+              run: |
+                  New-Item -Path .\.sonar\scanner -ItemType Directory
+                  dotnet tool update dotnet-sonarscanner --tool-path .\.sonar\scanner
+            - name: Test and collect coverage
+              shell: powershell
+              run: |
+                  dotnet tool install --global dotnet-reportgenerator-globaltool
+                  dotnet test Backend/Backend.sln --no-build --logger "trx" /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:CoverletOutput=./TestResults/Coverage/
+                  reportgenerator -reports:./TestResults/Coverage/*.cobertura.xml -targetdir:./TestResults/Coverage/Reports -reporttypes:"HtmlInline_AzurePipelines;Cobertura"
+                  .\.sonar\scanner\dotnet-sonarscanner begin /k:"MaxRemyDev_ShowCalendar" /o:"maxremydev" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.cs.opencover.reportsPaths="./TestResults/Coverage/Reports/Cobertura.xml"
+            - name: Build
+              shell: powershell
+              run: dotnet build Backend/Backend.sln
+            - name: SonarCloud analysis
+              shell: powershell
+              run: |
+                  .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
 
 #INFO: RUNNER WORKFLOW TO LOCAL MACHINE WITH NEKTOS/ACT WITH DOCKER (WIP)
 #WARN: THIS WORKFLOW IS SEMI-WORKING WITH ACT, THERE ARE BUGS WITH "BEGIN, TEST AND END SONARCLOUD ANALYSIS” STEPS
