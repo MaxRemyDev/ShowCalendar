@@ -1,20 +1,7 @@
-import CalendarView from "../components/CalendarView";
-import DashboardSection from "../components/DashboardSection";
+import OverviewPage from "./contents/calendar/overview/OverviewPage";
 
 const CalendarPage = () => {
-	return (
-		<div className="Calendar-container">
-			<div className="main-content">
-				<DashboardSection
-					sidebarContent={"Sidebar"}
-					content={<CalendarView />}
-					sidebarSize={25}
-					contentSize={75}
-					direction="horizontal"
-				/>
-			</div>
-		</div>
-	);
+	return <OverviewPage />;
 };
 
 export default CalendarPage;

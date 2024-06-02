@@ -1,9 +1,9 @@
+import React from "react";
 import Link from "next/link";
 import { LucideIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { buttonVariants } from "@/components/ui/button";
-import React from "react";
 import { usePathname } from "next/navigation";
 import { DashboardRoutes } from "./utils/DashboardRoutes";
 
@@ -23,8 +23,13 @@ interface SidebarProps {
 export function SidebarContent({ links, isCollapsed }: SidebarProps) {
 	const pathname = usePathname();
 
-	const upperLinks = links.slice(0, links.findIndex((link) => link.separator) + 1);
-	const lowerLinks = links.slice(links.findIndex((link) => link.separator) + 1);
+	if (!links || links.length === 0) {
+		return null;
+	}
+
+	const separatorIndex = links.findIndex((link) => link.separator);
+	const upperLinks = links.slice(0, separatorIndex + 1);
+	const lowerLinks = links.slice(separatorIndex + 1);
 
 	const isLinkActive = (linkHref: string, mainLink?: boolean) => {
 		const isDashboardRoute = DashboardRoutes.some((route) => pathname.startsWith(route.href));

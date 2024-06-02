@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 
-export default function ContentsError({
+export default function CalendarError({
 	error,
 	reset,
 }: {
@@ -16,7 +16,7 @@ export default function ContentsError({
 
 	return (
 		<div>
-			<h2>Something went wrong with Contents!</h2>
+			<h2>Something went wrong with Calendar!</h2>
 			<button
 				onClick={
 					// ATTEMPT TO RECOVER BY TRYING TO RE-RENDER SEGMENT

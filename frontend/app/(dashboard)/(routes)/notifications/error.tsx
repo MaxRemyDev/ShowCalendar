@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 
-export default function DashboardRoutesError({
+export default function NotificationsError({
 	error,
 	reset,
 }: {
@@ -16,7 +16,7 @@ export default function DashboardRoutesError({
 
 	return (
 		<div>
-			<h2>Something went wrong with Dashboard Routes!</h2>
+			<h2>Something went wrong with Notifications!</h2>
 			<button
 				onClick={
 					// ATTEMPT TO RECOVER BY TRYING TO RE-RENDER SEGMENT

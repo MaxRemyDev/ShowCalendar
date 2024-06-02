@@ -11,7 +11,7 @@ import Widget6 from "./components/widgets/widget-6";
 
 export const metadata: Metadata = {
 	title: "Dashboard",
-	description: "Example dashboard app built using the components.",
+	description: "Dashboard overview.",
 };
 
 export default function OverviewPage() {
