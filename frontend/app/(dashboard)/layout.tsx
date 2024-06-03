@@ -26,8 +26,6 @@ const DashboardLayout = ({ children, contents, links }: Props) => {
 			<DashboardSection
 				sidebarContent={<SidebarContent isCollapsed={false} links={links} />}
 				content={contents}
-				direction="horizontal"
-				defaultCollapsed={false}
 			/>
 			{children}
 		</div>
