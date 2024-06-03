@@ -1,5 +1,5 @@
 import { Metadata } from "next";
-import { Separator } from "@/components/ui/separator";
+import ContentsTitle from "@/features/dashboard/components/ContentsTitle";
 
 export const metadata: Metadata = {
 	title: "Notifications",
@@ -9,12 +9,11 @@ export const metadata: Metadata = {
 export default function OverviewPage() {
 	return (
 		<div className="flex-col md:flex">
-			<div className="flex items-center justify-between space-y-2">
-				<h2 className="text-3xl font-bold tracking-tight">Notifications Contents</h2>
-			</div>
-			<div className="py-5">
-				<Separator />
-			</div>
+			<ContentsTitle
+				title="Notifications Content"
+				description="This is a Notifications overview page description."
+				addons={<div>Notifications Addons</div>}
+			/>
 		</div>
 	);
 }

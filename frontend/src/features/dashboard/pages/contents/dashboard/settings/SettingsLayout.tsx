@@ -3,6 +3,7 @@
 import { Separator } from "@/components/ui/separator";
 import { Metadata } from "next";
 import { SidebarNav } from "./components/sidebar-nav";
+import ContentsTitle from "@/features/dashboard/components/ContentsTitle";
 
 export const metadata: Metadata = {
 	title: "Settings - Dashboard - ShowCalendar",
@@ -39,14 +40,10 @@ interface SettingsLayoutProps {
 export default function SettingsLayout({ children }: SettingsLayoutProps) {
 	return (
 		<div className="space-y-6 pb-16">
-			<div className="space-y-0.5">
-				<h2 className="text-2xl font-bold tracking-tight">Settings</h2>
-				<p className="text-muted-foreground">
-					Manage your account settings and preferences system.
-				</p>
-			</div>
-
-			<Separator className="my-6" />
+			<ContentsTitle
+				title="Settings"
+				description="Manage your account settings and preferences system."
+			/>
 			<div className="flex flex-col space-y-8 lg:flex-row lg:space-x-12 lg:space-y-0">
 				<aside className="-mx-4 lg:w-1/5 ">
 					<SidebarNav items={sidebarNavItems} />
