@@ -45,7 +45,7 @@ const FixedLayout: React.FC<FixedLayoutProps> = ({
 		} else if (isOpen) {
 			width = `${defaultLayout}%`;
 		} else {
-			width = "50px";
+			width = "75px";
 		}
 		return width;
 	};
@@ -100,12 +100,12 @@ const FixedLayout: React.FC<FixedLayoutProps> = ({
 				<Button
 					onClick={handleCollapse}
 					className={cn(
-						"absolute transform p-2 rounded-l-md",
+						"absolute transform p-2 rounded-l-md -right-5 bg-background z-[51]",
 						isSmallScreen
 							? "top-0 left-1/2 -translate-x-1/2 mt-2"
-							: "top-1/2 right-0 -translate-y-1/2"
+							: "top-1/2 -translate-y-1/2"
 					)}
-					variant="ghost"
+					variant="outline"
 				>
 					{isOpen ? <ChevronLeft /> : <ChevronRight />}
 				</Button>
@@ -122,7 +122,7 @@ const FixedLayout: React.FC<FixedLayoutProps> = ({
 					<div className="h-full w-full flex flex-col items-start justify-start">
 						<div
 							className={cn(
-								"fixed z-40 bg-background w-full h-16 pt",
+								"fixed z-40 bg-background w-full h-16",
 								appliedDirection === "horizontal"
 									? "border-b-[2px] mt-20"
 									: "hidden"
