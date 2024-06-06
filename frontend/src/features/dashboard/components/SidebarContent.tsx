@@ -89,39 +89,45 @@ export function SidebarContent({ links, direction = "horizontal" }: SidebarProps
 	const renderLinks = (links: LinkType[]) => (
 		<nav
 			className={cn(
-				"grid gap-1",
+				"grid gap-2",
 				!isOpen || isSmallScreen ? "justify-center" : "px-2",
-				appliedDirection === "horizontal" ? "flex flex-col" : "flex flex-row"
+				appliedDirection === "horizontal" ? "flex flex-col" : "flex flex-row space-x-2"
 			)}
 		>
-			{links.map((link: LinkType, index: number) =>
-				!isOpen || isSmallScreen ? (
+			{links.map((link: LinkType, index: number) => {
+				const active = isLinkActive(link.href, link.mainLink);
+				return !isOpen || isSmallScreen ? (
 					<Tooltip key={`${link.title}-${index}`} delayDuration={0}>
 						<TooltipTrigger asChild>
 							<Link
 								href={link.href}
 								className={cn(
 									buttonVariants({
-										variant: isLinkActive(link.href, link.mainLink)
-											? "default"
-											: "ghost",
+										variant: active ? "default" : "ghost",
 										size: "icon",
 									}),
-									"h-9 w-9"
+									"relative h-9 w-9"
 								)}
 							>
 								<link.icon className="h-4 w-4" />
 								<span className="sr-only">{link.title}</span>
+								{link.label && (
+									<span
+										className={cn(
+											"absolute top-0 right-0 -mt-1 -mr-2 text-white text-xs rounded-full flex justify-center items-center min-w-[1rem] h-4 px-1 z-[52]",
+											active ? "bg-secondary" : "bg-primary"
+										)}
+									>
+										{link.label}
+									</span>
+								)}
 							</Link>
 						</TooltipTrigger>
 						<TooltipContent
 							side={isSmallScreen ? "bottom" : "right"}
-							className="flex items-center gap-4"
+							className="flex items-center gap-4 z-[51]"
 						>
 							{link.title}
-							{link.label && (
-								<span className="ml-auto text-muted-foreground">{link.label}</span>
-							)}
 						</TooltipContent>
 					</Tooltip>
 				) : (
@@ -131,19 +137,14 @@ export function SidebarContent({ links, direction = "horizontal" }: SidebarProps
 							href={link.href}
 							className={cn(
 								buttonVariants({
-									variant: isLinkActive(link.href, link.mainLink)
-										? "default"
-										: "ghost",
+									variant: active ? "default" : "ghost",
 									size: "sm",
 								}),
-								"justify-start flex items-center transition-transform duration-1000",
-								!isOpen || isSmallScreen
-									? "opacity-0 -translate-x-4"
-									: "opacity-100 translate-x-0"
+								"justify-start flex items-center"
 							)}
 						>
 							<link.icon className="mr-2 h-4 w-4" />
-							<span className="transition-transform duration-1000">{link.title}</span>
+							{link.title}
 							{link.label && (
 								<span className={cn("ml-auto", link.variant === "default" && "")}>
 									{link.label}
@@ -151,19 +152,19 @@ export function SidebarContent({ links, direction = "horizontal" }: SidebarProps
 							)}
 						</Link>
 					</React.Fragment>
-				)
-			)}
+				);
+			})}
 		</nav>
 	);
 
 	return (
 		<div
 			className={cn(
-				"group flex flex-col justify-between gap-4 py-2 px-2 pt-24 h-full",
+				"group flex flex-col justify-between gap-4 py-4  h-full",
 				(!isOpen || isSmallScreen) && "items-center",
 				appliedDirection === "horizontal"
-					? "flex flex-col"
-					: "flex flex-row justify-center gap-0 pt-20"
+					? "flex flex-col pt-24"
+					: "flex flex-row justify-center gap-0 max-sm:pt-20 max-lg:pt-24"
 			)}
 		>
 			{/* SIDEBAR UPPER LINKS */}
