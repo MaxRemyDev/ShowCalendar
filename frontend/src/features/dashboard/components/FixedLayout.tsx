@@ -27,55 +27,66 @@ const FixedLayout: React.FC<FixedLayoutProps> = ({
 
 	useEffect(() => {
 		setHydrated(true);
-		console.log("Component has been hydrated");
 	}, []);
 
 	const handleCollapse = () => {
 		toggle();
 		document.cookie = `fixed-layout:collapsed=${JSON.stringify(!isOpen)}`;
-		console.log("Sidebar toggled:", !isOpen);
 	};
 
-	const appliedDirection = isSmallScreen ? "vertical" : direction;
+	const getAppliedDirection = () => {
+		return isSmallScreen ? "vertical" : direction;
+	};
+
+	const getSidebarWidth = () => {
+		let width;
+		if (isSmallScreen) {
+			width = "100%";
+		} else if (isOpen) {
+			width = `${defaultLayout}%`;
+		} else {
+			width = "50px";
+		}
+		return width;
+	};
+
+	const getSidebarHeight = () => {
+		return isSmallScreen ? "auto" : "100%";
+	};
 
 	if (!hydrated) {
-		console.log("Component not hydrated yet");
 		return null;
 	}
 
 	if (!content) {
-		console.log("Content is not defined");
 		return null;
 	}
 
-	console.log("Rendering FixedLayout with props:", {
-		sidebarContent,
-		content,
-		direction,
-		defaultLayout,
-		isOpen,
-		isSmallScreen,
-		appliedDirection,
-	});
+	const appliedDirection = getAppliedDirection();
+	const sidebarWidth = getSidebarWidth();
+	const sidebarHeight = getSidebarHeight();
 
 	return (
 		<div
 			className={cn(
-				"Fixed-Layout flex h-full w-full",
+				"flex h-full w-full",
 				appliedDirection === "horizontal" ? "flex-row" : "flex-col"
 			)}
 		>
+			{/* SIDEBAR */}
 			<div
 				className={cn(
-					"Sidebar-Content relative transition-all duration-300 ease-in-out bg-background-50",
+					"relative transition-all duration-300 ease-in-out bg-background",
 					isOpen ? `w-[${defaultLayout}%]` : "w-[50px]",
 					"min-w-[50px]",
 					isSmallScreen && "w-full h-auto",
-					appliedDirection === "horizontal" ? "flex-row" : "flex-col"
+					appliedDirection === "horizontal"
+						? "flex-row border-r-[2px]"
+						: "flex-col border-b-[2px]"
 				)}
 				style={{
-					width: isSmallScreen ? "100%" : isOpen ? `${defaultLayout}%` : "50px",
-					height: isSmallScreen ? "auto" : "100%",
+					width: sidebarWidth,
+					height: sidebarHeight,
 				}}
 			>
 				{React.isValidElement(sidebarContent) ? (
@@ -99,6 +110,8 @@ const FixedLayout: React.FC<FixedLayoutProps> = ({
 					{isOpen ? <ChevronLeft /> : <ChevronRight />}
 				</Button>
 			</div>
+
+			{/* CONTENT PAGE */}
 			<div className="flex-grow h-full w-full z-40 overflow-hidden">
 				<ScrollArea
 					className={cn(
@@ -107,13 +120,20 @@ const FixedLayout: React.FC<FixedLayoutProps> = ({
 					)}
 				>
 					<div className="h-full w-full flex flex-col items-start justify-start">
-						<div className="Dashboard-Breadcrumb-class fixed z-40 bg-background w-full h-16 border-b-[2px]">
+						<div
+							className={cn(
+								"fixed z-40 bg-background w-full h-16 pt",
+								appliedDirection === "horizontal"
+									? "border-b-[2px] mt-20"
+									: "hidden"
+							)}
+						>
 							<DashboardBreadcrumb className="mt-5 ml-5 " />
 						</div>
 						<div
 							className={cn(
-								"Content-class p-10 w-full flex-grow",
-								appliedDirection === "horizontal" ? "pt-28" : "pt-20"
+								"p-10 w-full flex-grow",
+								appliedDirection === "horizontal" ? "pt-40" : "pt-5"
 							)}
 						>
 							{content}
