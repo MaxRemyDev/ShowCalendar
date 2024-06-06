@@ -6,9 +6,10 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 import { buttonVariants } from "@/components/ui/button";
 import { usePathname } from "next/navigation";
 import { DashboardRoutes } from "./utils/DashboardRoutes";
+import { useMediaQuery } from "react-responsive";
+import { useSidebar } from "./hooks/useSidebar";
 
 interface SidebarProps {
-	isCollapsed: boolean;
 	links: {
 		title?: string;
 		href: string;
@@ -18,10 +19,25 @@ interface SidebarProps {
 		separator?: React.ReactNode;
 		mainLink?: boolean;
 	}[];
+	direction?: "horizontal" | "vertical";
 }
 
-export function SidebarContent({ links, isCollapsed }: SidebarProps) {
+export function SidebarContent({ links, direction = "horizontal" }: SidebarProps) {
 	const pathname = usePathname();
+	const { isOpen } = useSidebar();
+	const isSmallScreen = useMediaQuery({ maxWidth: 768 });
+
+	const [hydrated, setHydrated] = React.useState(false);
+
+	React.useEffect(() => {
+		setHydrated(true);
+	}, []);
+
+	React.useEffect(() => {}, [isSmallScreen, isOpen, direction, hydrated]);
+
+	if (!hydrated) {
+		return null;
+	}
 
 	if (!links || links.length === 0) {
 		return null;
@@ -56,16 +72,25 @@ export function SidebarContent({ links, isCollapsed }: SidebarProps) {
 		return false;
 	};
 
+	const appliedDirection = isSmallScreen ? "vertical" : direction;
+
 	return (
 		<div
 			className={cn(
 				"group flex flex-col justify-between gap-4 py-2 pt-24 h-full",
-				isCollapsed && "items-center"
+				(!isOpen || isSmallScreen) && "items-center",
+				appliedDirection === "horizontal" ? "flex flex-col" : "flex flex-row"
 			)}
 		>
-			<nav className={cn("grid gap-1", isCollapsed ? "justify-center" : "px-2")}>
+			<nav
+				className={cn(
+					"grid gap-1",
+					!isOpen || isSmallScreen ? "justify-center" : "px-2",
+					appliedDirection === "horizontal" ? "flex flex-col" : "flex flex-row"
+				)}
+			>
 				{upperLinks.map((link, index) =>
-					isCollapsed ? (
+					!isOpen || isSmallScreen ? (
 						<Tooltip key={`${link.title}-${index}`} delayDuration={0}>
 							<TooltipTrigger asChild>
 								<Link
@@ -84,7 +109,10 @@ export function SidebarContent({ links, isCollapsed }: SidebarProps) {
 									<span className="sr-only">{link.title}</span>
 								</Link>
 							</TooltipTrigger>
-							<TooltipContent side="right" className="flex items-center gap-4">
+							<TooltipContent
+								side={isSmallScreen ? "bottom" : "right"}
+								className="flex items-center gap-4"
+							>
 								{link.title}
 								{link.label && (
 									<span className="ml-auto text-muted-foreground">
@@ -104,11 +132,16 @@ export function SidebarContent({ links, isCollapsed }: SidebarProps) {
 											: "ghost",
 										size: "sm",
 									}),
-									"justify-start flex items-center"
+									"justify-start flex items-center transition-transform duration-1000",
+									!isOpen || isSmallScreen
+										? "opacity-0 -translate-x-4"
+										: "opacity-100 translate-x-0"
 								)}
 							>
 								<link.icon className="mr-2 h-4 w-4" />
-								{link.title}
+								<span className="transition-transform duration-1000">
+									{link.title}
+								</span>
 								{link.label && (
 									<span
 										className={cn("ml-auto", link.variant === "default" && "")}
@@ -122,9 +155,15 @@ export function SidebarContent({ links, isCollapsed }: SidebarProps) {
 					)
 				)}
 			</nav>
-			<nav className={cn("grid gap-1", isCollapsed ? "justify-center" : "px-2")}>
+			<nav
+				className={cn(
+					"grid gap-1",
+					!isOpen || isSmallScreen ? "justify-center" : "px-2",
+					appliedDirection === "horizontal" ? "flex flex-col" : "flex flex-row"
+				)}
+			>
 				{lowerLinks.map((link, index) =>
-					isCollapsed ? (
+					!isOpen || isSmallScreen ? (
 						<Tooltip key={`${link.title}-${index}`} delayDuration={0}>
 							<TooltipTrigger asChild>
 								<Link
@@ -143,7 +182,10 @@ export function SidebarContent({ links, isCollapsed }: SidebarProps) {
 									<span className="sr-only">{link.title}</span>
 								</Link>
 							</TooltipTrigger>
-							<TooltipContent side="right" className="flex items-center gap-4">
+							<TooltipContent
+								side={isSmallScreen ? "bottom" : "right"}
+								className="flex items-center gap-4 z-50"
+							>
 								{link.title}
 								{link.label && (
 									<span className="ml-auto text-muted-foreground">
@@ -164,11 +206,16 @@ export function SidebarContent({ links, isCollapsed }: SidebarProps) {
 											: "ghost",
 										size: "sm",
 									}),
-									"justify-start flex items-center"
+									"justify-start flex items-center transition-transform duration-1000",
+									!isOpen || isSmallScreen
+										? "opacity-0 -translate-x-4"
+										: "opacity-100 translate-x-0"
 								)}
 							>
 								<link.icon className="mr-2 h-4 w-4" />
-								{link.title}
+								<span className="transition-transform duration-1000">
+									{link.title}
+								</span>
 								{link.label && (
 									<span
 										className={cn("ml-auto", link.variant === "default" && "")}

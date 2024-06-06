@@ -2,7 +2,7 @@
 
 import React from "react";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import ResizableLayout from "./ResizableLayout";
+import FixedLayout from "./FixedLayout";
 
 const DashboardSection = ({
 	sidebarContent,
@@ -14,13 +14,10 @@ const DashboardSection = ({
 	return (
 		<TooltipProvider delayDuration={1}>
 			<div className="main-content w-full h-full overflow-hidden fixed">
-				<ResizableLayout
+				<FixedLayout
 					sidebarContent={sidebarContent}
 					content={content}
 					direction="horizontal"
-					defaultLayout={[20, 80]}
-					defaultCollapsed={false}
-					navCollapsedSize={5}
 				/>
 			</div>
 		</TooltipProvider>

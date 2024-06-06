@@ -1,5 +1,6 @@
 "use client";
 
+import React from "react";
 import DashboardHeader from "@/features/dashboard/components/DashboardHeader";
 import DashboardSection from "@/features/dashboard/components/DashboardSection";
 import { SidebarContent } from "@/features/dashboard/components/SidebarContent";
@@ -24,7 +25,7 @@ const DashboardLayout = ({ children, contents, links }: Props) => {
 		<div className="h-full relative overflow-hidden">
 			<DashboardHeader />
 			<DashboardSection
-				sidebarContent={<SidebarContent isCollapsed={false} links={links} />}
+				sidebarContent={<SidebarContent links={links} />}
 				content={contents}
 			/>
 			{children}
