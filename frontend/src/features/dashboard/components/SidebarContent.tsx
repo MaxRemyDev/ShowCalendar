@@ -5,7 +5,6 @@ import { cn } from "@/lib/utils";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { buttonVariants } from "@/components/ui/button";
 import { usePathname } from "next/navigation";
-import { DashboardRoutes } from "./utils/DashboardRoutes";
 import { useMediaQuery } from "react-responsive";
 import { useSidebar } from "./hooks/useSidebar";
 
@@ -48,14 +47,12 @@ export function SidebarContent({ links, direction = "horizontal" }: SidebarProps
 	const lowerLinks = links.slice(separatorIndex + 1);
 
 	const isLinkActive = (linkHref: string, mainLink?: boolean) => {
-		const isDashboardRoute = DashboardRoutes.some((route) => pathname.startsWith(route.href));
-
-		if (isDashboardRoute && linkHref === pathname.split("/").slice(0, 2).join("/")) {
-			return false;
-		}
-
 		if (pathname === linkHref) {
 			return true;
+		}
+
+		if (pathname.startsWith(linkHref) && pathname !== linkHref) {
+			return false;
 		}
 
 		if (!mainLink && pathname.startsWith(linkHref)) {
@@ -77,11 +74,14 @@ export function SidebarContent({ links, direction = "horizontal" }: SidebarProps
 	return (
 		<div
 			className={cn(
-				"group flex flex-col justify-between gap-4 py-2 pt-24 h-full",
+				"group flex flex-col justify-between gap-4 py-2 px-2 pt-24 h-full",
 				(!isOpen || isSmallScreen) && "items-center",
-				appliedDirection === "horizontal" ? "flex flex-col" : "flex flex-row"
+				appliedDirection === "horizontal"
+					? "flex flex-col"
+					: "flex flex-row justify-center gap-0 pt-20"
 			)}
 		>
+			{/* SIDEBAR UPPER LINKS */}
 			<nav
 				className={cn(
 					"grid gap-1",
@@ -155,6 +155,8 @@ export function SidebarContent({ links, direction = "horizontal" }: SidebarProps
 					)
 				)}
 			</nav>
+
+			{/* SIDEBAR LOWER LINKS*/}
 			<nav
 				className={cn(
 					"grid gap-1",
