@@ -65,27 +65,18 @@ export function SidebarContent({ links, direction = "horizontal" }: SidebarProps
 	const upperLinks = combinedLinks.filter((link) => link.position !== "lower");
 	const lowerLinks = combinedLinks.filter((link) => link.position === "lower");
 
+	// CHECK IF LINK IS ACTIVE OR CHILD IS ACTIVE TO HIGHLIGHT
 	const isLinkActive = (linkHref: string, mainLink?: boolean) => {
-		if (pathname === linkHref) {
-			return true;
-		}
+		const isCurrentPath = pathname === linkHref;
+		const isChildPath = pathname.startsWith(linkHref) && pathname !== linkHref;
 
-		if (pathname.startsWith(linkHref) && pathname !== linkHref) {
+		// DO NOT ACTIVATE PARENT LINK IF A CHILD IS ACTIVE
+		if (mainLink && isChildPath) {
 			return false;
 		}
 
-		if (!mainLink && pathname.startsWith(linkHref)) {
-			return true;
-		}
-
-		if (mainLink && pathname.startsWith(linkHref)) {
-			const remainingPath = pathname.replace(linkHref, "");
-			if (remainingPath === "" || remainingPath.startsWith("/")) {
-				return true;
-			}
-		}
-
-		return false;
+		// ENABLE LINK IF IT IS CURRENT PATH OR A CHILD PATH
+		return isCurrentPath || isChildPath;
 	};
 
 	const appliedDirection = isSmallScreen ? "vertical" : direction;
