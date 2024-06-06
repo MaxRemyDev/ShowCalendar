@@ -8,18 +8,10 @@ import { usePathname } from "next/navigation";
 import { useMediaQuery } from "react-responsive";
 import { useSidebar } from "./hooks/useSidebar";
 import { SidebarDefaultLinks } from "./utils/SidebarDefaultLinks";
+import { motion } from "framer-motion";
 
 interface SidebarProps {
-	links: {
-		title?: string;
-		href: string;
-		label?: string;
-		icon: LucideIcon;
-		variant?: "default" | "ghost";
-		separator?: React.ReactNode;
-		mainLink?: boolean;
-		position?: "upper" | "lower";
-	}[];
+	links: LinkType[];
 	direction?: "horizontal" | "vertical";
 }
 
@@ -40,12 +32,24 @@ export function SidebarContent({ links, direction = "horizontal" }: SidebarProps
 	const isSmallScreen = useMediaQuery({ maxWidth: 768 });
 
 	const [hydrated, setHydrated] = React.useState(false);
+	const [shouldShowTooltip, setShouldShowTooltip] = React.useState(false);
 
 	React.useEffect(() => {
 		setHydrated(true);
 	}, []);
 
-	React.useEffect(() => {}, [isSmallScreen, isOpen, direction, hydrated]);
+	// DELEY ONLY WHEN SIDEBAR IS CLOSING
+	React.useEffect(() => {
+		if (!isOpen) {
+			const delayTimeout = setTimeout(() => {
+				setShouldShowTooltip(!isOpen || isSmallScreen);
+			}, 300); // 300 ms delay
+
+			return () => clearTimeout(delayTimeout);
+		} else {
+			setShouldShowTooltip(isSmallScreen);
+		}
+	}, [isOpen, isSmallScreen]);
 
 	if (!hydrated) {
 		return null;
@@ -90,14 +94,15 @@ export function SidebarContent({ links, direction = "horizontal" }: SidebarProps
 		<nav
 			className={cn(
 				"grid gap-2",
-				!isOpen || isSmallScreen ? "justify-center" : "px-2",
+				shouldShowTooltip ? "justify-center" : "px-2",
 				appliedDirection === "horizontal" ? "flex flex-col" : "flex flex-row space-x-2"
 			)}
 		>
 			{links.map((link: LinkType, index: number) => {
 				const active = isLinkActive(link.href, link.mainLink);
-				return !isOpen || isSmallScreen ? (
+				return shouldShowTooltip ? (
 					<Tooltip key={`${link.title}-${index}`} delayDuration={0}>
+						{link.separator}
 						<TooltipTrigger asChild>
 							<Link
 								href={link.href}
@@ -109,18 +114,19 @@ export function SidebarContent({ links, direction = "horizontal" }: SidebarProps
 									"relative h-9 w-9"
 								)}
 							>
-								<link.icon className="h-4 w-4" />
-								<span className="sr-only">{link.title}</span>
-								{link.label && (
-									<span
-										className={cn(
-											"absolute top-0 right-0 -mt-1 -mr-2 text-white text-xs rounded-full flex justify-center items-center min-w-[1rem] h-4 px-1 z-[52]",
-											active ? "bg-secondary" : "bg-primary"
-										)}
-									>
-										{link.label}
-									</span>
-								)}
+								<div>
+									<link.icon className="h-4 w-4" />
+									{link.label && (
+										<span
+											className={cn(
+												"absolute top-0 right-0 -mt-1 -mr-2 text-white text-xs rounded-full flex justify-center items-center min-w-[1rem] h-4 px-1 z-[52]",
+												active ? "bg-secondary" : "bg-primary"
+											)}
+										>
+											{link.label}
+										</span>
+									)}
+								</div>
 							</Link>
 						</TooltipTrigger>
 						<TooltipContent
@@ -140,16 +146,27 @@ export function SidebarContent({ links, direction = "horizontal" }: SidebarProps
 									variant: active ? "default" : "ghost",
 									size: "sm",
 								}),
-								"justify-start flex items-center"
+								"justify-start flex items-center overflow-hidden"
 							)}
 						>
-							<link.icon className="mr-2 h-4 w-4" />
-							{link.title}
-							{link.label && (
-								<span className={cn("ml-auto", link.variant === "default" && "")}>
-									{link.label}
-								</span>
-							)}
+							<div className="-ml-[0.11rem]">
+								<link.icon className="h-4 w-4" />
+							</div>
+
+							<motion.div
+								initial={{ opacity: 0 }}
+								animate={{ opacity: 1 }}
+								exit={{ opacity: 0 }}
+								transition={{ duration: 1 }}
+								className="flex w-full justify-between mx-4"
+							>
+								<span className="truncate">{link.title}</span>
+								{link.label && (
+									<span className={cn("", link.variant === "default" && "")}>
+										{link.label}
+									</span>
+								)}
+							</motion.div>
 						</Link>
 					</React.Fragment>
 				);
@@ -160,8 +177,8 @@ export function SidebarContent({ links, direction = "horizontal" }: SidebarProps
 	return (
 		<div
 			className={cn(
-				"group flex flex-col justify-between gap-4 py-4  h-full",
-				(!isOpen || isSmallScreen) && "items-center",
+				"group flex flex-col justify-between gap-4 py-4 h-full",
+				shouldShowTooltip && "items-start pl-2",
 				appliedDirection === "horizontal"
 					? "flex flex-col pt-24"
 					: "flex flex-row justify-center gap-0 max-sm:pt-20 max-lg:pt-24"
