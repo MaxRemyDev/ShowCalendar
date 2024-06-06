@@ -6,19 +6,18 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useMediaQuery } from "react-responsive";
 import { useSidebar } from "./hooks/useSidebar";
+import { motion } from "framer-motion";
 
 interface FixedLayoutProps {
 	sidebarContent: React.ReactNode;
 	content: React.ReactNode;
 	direction?: "horizontal" | "vertical";
-	defaultLayout?: number;
 }
 
 const FixedLayout: React.FC<FixedLayoutProps> = ({
 	sidebarContent,
 	content,
 	direction = "horizontal",
-	defaultLayout = 15,
 }) => {
 	const { isOpen, toggle } = useSidebar();
 	const isSmallScreen = useMediaQuery({ maxWidth: 768 });
@@ -38,22 +37,6 @@ const FixedLayout: React.FC<FixedLayoutProps> = ({
 		return isSmallScreen ? "vertical" : direction;
 	};
 
-	const getSidebarWidth = () => {
-		let width;
-		if (isSmallScreen) {
-			width = "100%";
-		} else if (isOpen) {
-			width = `${defaultLayout}%`;
-		} else {
-			width = "75px";
-		}
-		return width;
-	};
-
-	const getSidebarHeight = () => {
-		return isSmallScreen ? "auto" : "100%";
-	};
-
 	if (!hydrated) {
 		return null;
 	}
@@ -63,8 +46,11 @@ const FixedLayout: React.FC<FixedLayoutProps> = ({
 	}
 
 	const appliedDirection = getAppliedDirection();
-	const sidebarWidth = getSidebarWidth();
-	const sidebarHeight = getSidebarHeight();
+	const sidebarClasses = isSmallScreen
+		? "w-full h-auto"
+		: isOpen
+		? "w-[250px] min-w-[250px]"
+		: "w-[50px] min-w-[50px]";
 
 	return (
 		<div
@@ -76,18 +62,10 @@ const FixedLayout: React.FC<FixedLayoutProps> = ({
 			{/* SIDEBAR */}
 			<div
 				className={cn(
-					"relative transition-all duration-300 ease-in-out bg-background",
-					isOpen ? `w-[${defaultLayout}%]` : "w-[50px]",
-					"min-w-[50px]",
-					isSmallScreen && "w-full h-auto",
-					appliedDirection === "horizontal"
-						? "flex-row border-r-[2px]"
-						: "flex-col border-b-[2px]"
+					"relative transition-all duration-500 ease-in-out bg-background",
+					sidebarClasses,
+					appliedDirection === "horizontal" ? "border-r-2" : "border-b-2"
 				)}
-				style={{
-					width: sidebarWidth,
-					height: sidebarHeight,
-				}}
 			>
 				{React.isValidElement(sidebarContent) ? (
 					React.cloneElement(sidebarContent as React.ReactElement<any>, {
@@ -100,10 +78,10 @@ const FixedLayout: React.FC<FixedLayoutProps> = ({
 				<Button
 					onClick={handleCollapse}
 					className={cn(
-						"absolute transform p-2 rounded-l-md -right-5 bg-background z-[51]",
+						"absolute transform p-2 rounded-l-md bg-background z-[51]",
 						isSmallScreen
 							? "top-0 left-1/2 -translate-x-1/2 mt-2"
-							: "top-1/2 -translate-y-1/2"
+							: "top-1/2 -translate-y-1/2 -right-5"
 					)}
 					variant="outline"
 				>
@@ -123,9 +101,7 @@ const FixedLayout: React.FC<FixedLayoutProps> = ({
 						<div
 							className={cn(
 								"fixed z-40 bg-background w-full h-16",
-								appliedDirection === "horizontal"
-									? "border-b-[2px] mt-20"
-									: "hidden"
+								appliedDirection === "horizontal" ? "border-b-2 mt-20" : "hidden"
 							)}
 						>
 							<DashboardBreadcrumb className="mt-5 ml-5 " />
