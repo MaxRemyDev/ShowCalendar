@@ -8,6 +8,7 @@ import {
 	BreadcrumbSeparator,
 	BreadcrumbPage,
 } from "@/components/ui/breadcrumb";
+import Link from "next/link";
 
 interface DashboardBreadcrumbProps {
 	className?: string;
@@ -27,7 +28,9 @@ export function DashboardBreadcrumb({ className }: DashboardBreadcrumbProps) {
 					{isLast ? (
 						<BreadcrumbPage>{segment}</BreadcrumbPage>
 					) : (
-						<BreadcrumbLink href={href}>{segment}</BreadcrumbLink>
+						<Link className="transition-colors hover:text-foreground" href={href}>
+							{segment}
+						</Link>
 					)}
 				</BreadcrumbItem>
 				{!isLast && <BreadcrumbSeparator />}
