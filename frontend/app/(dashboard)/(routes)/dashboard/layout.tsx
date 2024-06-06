@@ -49,7 +49,6 @@ const dashboardLinks = [
 		label: "",
 		icon: SettingsIcon,
 		variant: "ghost" as const,
-		separator: <div />,
 		position: "upper",
 	},
 ];
