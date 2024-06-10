@@ -153,7 +153,7 @@ export function WaitListSection() {
 				)}
 			</Card>
 
-			<BackgroundBeams className="hidden sm:block" />
+			{/* <BackgroundBeams className="hidden sm:block" /> */}
 
 			{/* <ShaderGradientComponent
 				color1="#ff7f50"
