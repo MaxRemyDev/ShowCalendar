@@ -4,6 +4,7 @@ import { Separator } from "@/components/ui/separator";
 import { Metadata } from "next";
 import { SidebarNav } from "./components/sidebar-nav";
 import ContentsTitle from "@/features/dashboard/components/ContentsTitle";
+import { Tabs, TabsContent } from "@/components/ui/tabs";
 
 export const metadata: Metadata = {
 	title: "Settings - Dashboard - ShowCalendar",
@@ -44,13 +45,17 @@ export default function SettingsLayout({ children }: SettingsLayoutProps) {
 				title="Settings"
 				description="Manage your account settings and preferences system."
 			/>
-			<div className="flex flex-col space-y-8 lg:flex-row lg:space-x-12 lg:space-y-0">
-				<aside className="-mx-4 lg:w-1/5 ">
-					<SidebarNav items={sidebarNavItems} />
-				</aside>
+			<Tabs defaultValue="setting-layout" className="space-y-4">
+				<TabsContent value="setting-layout" className="space-y-4">
+					<div className="flex flex-col space-y-8 lg:flex-row lg:space-x-12 lg:space-y-0">
+						<aside className="lg:w-1/5 ">
+							<SidebarNav items={sidebarNavItems} />
+						</aside>
 
-				<div className="flex-1 lg:max-w-2xl">{children}</div>
-			</div>
+						<div className="flex-1 lg:max-w-2xl">{children}</div>
+					</div>
+				</TabsContent>
+			</Tabs>
 		</div>
 	);
 }
