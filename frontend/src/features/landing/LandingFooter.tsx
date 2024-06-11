@@ -42,7 +42,7 @@ export const LandingFooter = () => {
 	const currentYear = new Date().getFullYear();
 
 	return (
-		<Section className="border-none">
+		<Section className="border-none" disableAnimations={true}>
 			<footer>
 				<div className="container mx-auto px-4">
 					<div className="flex flex-col lg:flex-row justify-between items-center">
