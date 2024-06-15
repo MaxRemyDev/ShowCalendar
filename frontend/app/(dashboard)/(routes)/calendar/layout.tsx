@@ -21,6 +21,20 @@ const calendarLinks = [
 		icon: CalendarRange,
 		variant: "default" as const,
 	},
+	{
+		title: "Weekly View",
+		href: "/calendar/weekly-view",
+		label: "",
+		icon: CalendarRange,
+		variant: "default" as const,
+	},
+	{
+		title: "Daily View",
+		href: "/calendar/daily-view",
+		label: "",
+		icon: CalendarRange,
+		variant: "default" as const,
+	},
 ];
 
 const CalendarPageLayout = ({
