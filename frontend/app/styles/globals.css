@@ -5,6 +5,7 @@
 @layer base {
 	:root {
 		--background: #f4f4f4;
+		--background-50: #f9f9f9;
 		--background-100: #efefef;
 		--background-200: #dcdcdc;
 		--background-300: #bdbdbd;
@@ -73,6 +74,7 @@
 
 	.dark {
 		--background: #181818;
+		--background-50: #292929;
 		--background-100: #2c2c2c;
 		--background-200: #434343;
 		--background-300: #595959;
