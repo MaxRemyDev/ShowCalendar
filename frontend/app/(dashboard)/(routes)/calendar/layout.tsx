@@ -1,6 +1,6 @@
 "use client";
 
-import { CalendarIcon } from "lucide-react";
+import { CalendarIcon, CalendarRange } from "lucide-react";
 import DashboardLayout from "../../layout";
 import React from "react";
 
@@ -13,6 +13,13 @@ const calendarLinks = [
 		variant: "default" as const,
 		mainLink: true,
 		separator: <div />,
+	},
+	{
+		title: "Monthly View",
+		href: "/calendar/monthly-view",
+		label: "",
+		icon: CalendarRange,
+		variant: "default" as const,
 	},
 ];
 
