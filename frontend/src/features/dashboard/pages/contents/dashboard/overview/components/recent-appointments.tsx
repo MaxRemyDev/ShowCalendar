@@ -7,7 +7,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 
 export function RecentAppointments() {
 	return (
-		<ScrollArea className="h-80 w-full">
+		<ScrollArea className="h-[350px] w-full">
 			<div className="space-y-8">
 				{recentAppointments.map((appointment) => (
 					<Link
