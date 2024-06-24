@@ -59,10 +59,10 @@
 		--popover: #ffffff;
 		--popover-foreground: #090909;
 
-		--muted: #f5f5f5;
+		--muted: #e7e7e7;
 		--muted-foreground: #737373;
 
-		--destructive: #ed6a5e;
+		--destructive: #f53838;
 		--destructive-foreground: #fcfcfc;
 
 		--border: #e5e5e5;
@@ -124,7 +124,7 @@
 		--muted: #4f4f4f;
 		--muted-foreground: #b3b3b3;
 
-		--destructive: #752422;
+		--destructive: #f53838;
 		--destructive-foreground: #fcfcfc;
 
 		--border: #262626;
