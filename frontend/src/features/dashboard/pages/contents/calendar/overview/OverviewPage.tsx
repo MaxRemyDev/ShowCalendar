@@ -1,19 +1,29 @@
+"use client";
+
 import { Metadata } from "next";
-import ContentsTitle from "@/features/dashboard/components/ContentsTitle";
+import OverviewSection from "@/features/dashboard/components/overview/OverviewSection";
+import { listWidgets } from "@/features/dashboard/components/overview/widget/utils/list-widgets";
+import { WidgetManagerProvider } from "@/features/dashboard/components/overview/widget/WidgetManagerContext";
 
 export const metadata: Metadata = {
 	title: "Calendar",
-	description: "Calendar overview",
+	description: "Calendar overview.",
 };
+
+const calendarWidgets =
+	listWidgets.find((category) => category.category === "Calendar-Overview")?.widgets || [];
 
 export default function OverviewPage() {
 	return (
-		<div className="flex-col md:flex">
-			<ContentsTitle
-				title="Calendar Content"
-				description="This is a Calendar overview page description."
-				addons={<div>Calendar Addons</div>}
+		<WidgetManagerProvider>
+			<OverviewSection
+				title="Calendar"
+				description="Here you can see the overview of your Calendar."
+				layoutsTabs={calendarWidgets}
+				addons={""}
+				enableEditButtons={true}
+				category="Calendar"
 			/>
-		</div>
+		</WidgetManagerProvider>
 	);
 }
