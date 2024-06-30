@@ -20,7 +20,7 @@ import { Input } from "@/components/ui/input";
 
 const eventSchema = z.object({
 	eventTitle: z.string().min(1, "Event title is required"),
-	eventTheme: z.string().min(1, "Event theme is required"), // Make eventTheme required
+	eventTheme: z.string().min(1, "Event theme is required"),
 });
 
 interface CreateNewEventDialogProps {
