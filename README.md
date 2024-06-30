@@ -53,20 +53,6 @@ This project is currently under development (WIP - Work In Progress).
 - **Backend** : Xunit
 - **Frontend** : Jest
 
-## Development Stages
-
-1. **Setup and Preparation** : Configuring the development environment and creating the GitHub repository.
-
-2. **Initial Backend and Frontend Development** : Building the base architecture and developing minimal features.
-
-3. **Documentation Writing and Preparation for Contribution** : Technical documentation and user guides.
-
-4. **Testing and Continuous Integration** : Setting up CI/CD and advanced testing.
-
-5. **Continuous Improvements and Maintenance** : Regular updates and integration of user feedback.
-
-6. **Expansion and Diversification** : Adding new features and collaborations.
-
 ## Documentation
 
 Detailed documentation of the project is under development. It will include information on usage, customization, and contributions to the project.
