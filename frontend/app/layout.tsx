@@ -7,7 +7,10 @@ import { cn } from "@/lib/utils";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-	title: "ShowCalendar",
+	title: {
+		template: "%s | ShowCalendar",
+		default: "ShowCalendar",
+	},
 	description:
 		"Merge personal and professional schedules seamlessly in a unified tool. Simplify your daily life, maximize productivity across all fronts.",
 };
