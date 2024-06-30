@@ -1,11 +1,13 @@
 import { useRef, useState, useCallback } from "react";
 import { CalendarEvent, DragEndParams } from "./types";
 import { calculateNewDate, calculateNewConsecutiveDate } from "./utils";
+import { startOfWeek } from "date-fns";
 
 const useDragAndDrop = (
 	showConsecutiveDays: boolean,
 	startDate: Date,
-	updateEventPosition: (event: CalendarEvent, date: Date) => void
+	updateEventPosition: (event: CalendarEvent, date: Date) => void,
+	setSelectedDay: (date: Date | null) => void
 ) => {
 	const [draggingEvent, setDraggingEvent] = useState<string | null>(null);
 	const dragItemRef = useRef<HTMLDivElement | null>(null);
@@ -27,19 +29,23 @@ const useDragAndDrop = (
 				return;
 			}
 
+			const relativeX = clientX - rect.left;
+			const relativeY = clientY - rect.top;
+
 			let newDate;
 			if (showConsecutiveDays) {
+				const adjustedStartDate = startOfWeek(startDate, { weekStartsOn: 1 });
 				newDate = calculateNewConsecutiveDate(
-					clientX - rect.left,
-					clientY - rect.top,
+					relativeX,
+					relativeY,
 					rect.width,
 					rect.height,
-					startDate
+					adjustedStartDate
 				);
 			} else {
 				newDate = calculateNewDate(
-					clientX - rect.left,
-					clientY - rect.top,
+					relativeX,
+					relativeY,
 					rect.width,
 					rect.height,
 					startDate
@@ -48,8 +54,9 @@ const useDragAndDrop = (
 
 			updateEventPosition(event, newDate);
 			setDraggingEvent(null);
+			setSelectedDay(newDate);
 		},
-		[showConsecutiveDays, startDate, updateEventPosition]
+		[showConsecutiveDays, startDate, updateEventPosition, setSelectedDay]
 	);
 
 	return {

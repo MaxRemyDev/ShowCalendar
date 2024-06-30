@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useRef } from "react";
-import { format, isSameDay } from "date-fns";
+import { format, isSameDay, startOfDay, startOfWeek } from "date-fns";
 import { CalendarEvent, CalendarProps } from "./helpers/types";
 import {
 	isPastDate,
@@ -41,7 +41,7 @@ const CalendarViewSection: React.FC<CalendarProps> = ({
 
 	const updateEventPosition = (event: CalendarEvent, date: Date) => {
 		const updatedEvents = events.map((e) =>
-			e.id === event.id ? { ...e, event_date: date } : e
+			e.id === event.id ? { ...e, event_date: startOfDay(date) } : e
 		);
 		setEvents(updatedEvents);
 	};
@@ -92,6 +92,10 @@ const CalendarViewSection: React.FC<CalendarProps> = ({
 		lastHoveredDay.current = null;
 	};
 
+	const startDateForConsecutiveDays = showConsecutiveDays
+		? startOfWeek(currentDate, { weekStartsOn: 1 })
+		: currentDate;
+
 	return (
 		<div id="calendar-grid" className="-mx-1 -mb-1">
 			<CreateNewEventDialog
@@ -114,7 +118,7 @@ const CalendarViewSection: React.FC<CalendarProps> = ({
 				isDragging={isDragging}
 				setSelectedDay={setSelectedDay}
 				showConsecutiveDays={showConsecutiveDays}
-				startDate={currentDate}
+				startDate={startDateForConsecutiveDays}
 				showEventModal={showEventModalInternal}
 			/>
 		</div>

@@ -2,11 +2,13 @@ import React from "react";
 import {
 	eachDayOfInterval,
 	format,
-	isLastDayOfMonth,
 	isSameDay,
 	startOfMonth,
 	endOfMonth,
 	addDays,
+	startOfWeek,
+	addWeeks,
+	getDay,
 } from "date-fns";
 import { CalendarEvent } from "./helpers/types";
 import { getBlankDaysInMonth, DAYS_NAMES, isPastDate, isToday } from "./helpers/utils";
@@ -56,92 +58,79 @@ const CalendarGrid: React.FC<CalendarGridProps> = ({
 	startDate,
 	showEventModal,
 }) => {
-	const month = currentDate.getMonth();
-	const year = currentDate.getFullYear();
-
-	const firstDayOfMonth = startOfMonth(currentDate);
-	const lastDayOfMonth = endOfMonth(currentDate);
-	const daysArray = eachDayOfInterval({ start: firstDayOfMonth, end: lastDayOfMonth });
-
 	const getConsecutiveDaysArray = () => {
-		const startDate = currentDate;
-		const endDate = addDays(startDate, 29);
-		return eachDayOfInterval({ start: startDate, end: endDate });
+		const start = startOfWeek(startDate, { weekStartsOn: 1 });
+		const end = addDays(startDate, 29);
+		return eachDayOfInterval({ start, end });
 	};
 
-	const renderDayContent = (date: Date) => {
-		const isEndOfMonth = isLastDayOfMonth(date);
-		return (
-			<div
-				style={{ width: "100%", height: "100%" }}
-				className={cn("px-4 pt-2 relative border-2 rounded-lg shadow-sm", {
-					"border-dashed border-primary":
-						selectedDay && isSameDay(date, selectedDay) && !isDragging,
-					"border-dashed border-secondary":
-						isDragging && hoveredDay && isSameDay(date, hoveredDay),
-					"border-dashed border-background-700":
-						hoveredDay &&
-						isSameDay(date, hoveredDay) &&
-						!isDragging &&
-						!(selectedDay && isSameDay(date, selectedDay)),
-				})}
-				onMouseOver={() => onDayHover(date)}
-				onDragOver={() => onDayHover(date)}
-				onFocus={() => onDayHover(date)}
-				onClick={() => onDayClick(date)}
-				tabIndex={0}
-				role="button"
+	const getMonthlyDaysArray = () => {
+		const firstDayOfMonth = startOfMonth(currentDate);
+		const lastDayOfMonth = endOfMonth(currentDate);
+		return eachDayOfInterval({ start: firstDayOfMonth, end: lastDayOfMonth });
+	};
+
+	const renderDayContent = (date: Date) => (
+		<div
+			style={{ width: "100%", height: "100%" }}
+			className={cn("px-4 pt-2 relative border-2 rounded-lg shadow-sm", {
+				"border-dashed border-primary": selectedDay && isSameDay(date, selectedDay),
+				"border-dashed border-secondary":
+					isDragging && hoveredDay && isSameDay(date, hoveredDay),
+				"border-dashed border-background-700":
+					hoveredDay &&
+					isSameDay(date, hoveredDay) &&
+					!isDragging &&
+					!(selectedDay && isSameDay(date, selectedDay)),
+			})}
+			onMouseOver={() => onDayHover(date)}
+			onDragOver={() => onDayHover(date)}
+			onFocus={() => onDayHover(date)}
+			onClick={() => onDayClick(date)}
+			tabIndex={0}
+			role="button"
+			aria-pressed={selectedDay ? "true" : "false"}
+		>
+			<PastDateIndicator date={date} />
+			<Button
+				onClick={() => showEventModal(date)}
+				onKeyDown={(e) => e.key === "Enter" && showEventModal(date)}
+				variant="ghost"
+				disabled={isPastDate(date)}
+				className={cn(
+					"inline-flex items-center justify-center cursor-pointer text-center leading-none rounded-full transition ease-in-out duration-100 w-8 h-8",
+					{
+						"bg-primary hover:bg-secondary text-primary-foreground": isToday(date),
+					}
+				)}
 				aria-pressed={selectedDay ? "true" : "false"}
 			>
-				<PastDateIndicator date={date} />
-				<Button
-					onClick={() => showEventModal(date)}
-					onKeyDown={(e) => e.key === "Enter" && showEventModal(date)}
-					variant="ghost"
-					disabled={isPastDate(date)}
-					className={cn(
-						"inline-flex items-center justify-center cursor-pointer text-center leading-none rounded-full transition ease-in-out duration-100 w-8 h-8",
-						{
-							"bg-primary hover:bg-secondary text-primary-foreground":
-								isToday(date) && !isEndOfMonth,
-							"-ml-3 w-16 border-4 border-background-200":
-								isEndOfMonth && !isToday(date) && showConsecutiveDays,
-							"-ml-3 w-16 bg-primary hover:bg-secondary text-primary-foreground":
-								isToday(date) && isEndOfMonth,
-						}
-					)}
-					aria-pressed={selectedDay ? "true" : "false"}
-				>
-					{date.getDate()}
-					{isEndOfMonth && showConsecutiveDays && (
-						<div className="ml-1">{format(date, "MMM")}</div>
-					)}
-				</Button>
-				<DragAndDropEvent
-					date={date.getDate()}
-					month={date.getMonth()}
-					year={date.getFullYear()}
-					events={events.filter((event) => isSameDay(new Date(event.event_date), date))}
-					updateEventPosition={updateEventPosition}
-					onDayHover={onDayHover}
-					onDayClick={onDayClick}
-					handleDragEnd={handleDragEnd}
-					selectedDay={selectedDay}
-					hoveredDay={hoveredDay}
-					setIsDragging={setIsDragging}
-					handleDragStart={handleDragStart}
-					isDragging={isDragging}
-					setSelectedDay={setSelectedDay}
-					showConsecutiveDays={showConsecutiveDays}
-					startDate={currentDate}
-					showEventModal={showEventModal}
-				/>
-			</div>
-		);
-	};
+				{date.getDate()}
+			</Button>
+			<DragAndDropEvent
+				date={date.getDate()}
+				month={date.getMonth()}
+				year={date.getFullYear()}
+				events={events.filter((event) => isSameDay(new Date(event.event_date), date))}
+				updateEventPosition={updateEventPosition}
+				onDayHover={onDayHover}
+				onDayClick={onDayClick}
+				handleDragEnd={handleDragEnd}
+				selectedDay={selectedDay}
+				hoveredDay={hoveredDay}
+				setIsDragging={setIsDragging}
+				handleDragStart={handleDragStart}
+				isDragging={isDragging}
+				setSelectedDay={setSelectedDay}
+				showConsecutiveDays={showConsecutiveDays}
+				startDate={currentDate}
+				showEventModal={showEventModal}
+			/>
+		</div>
+	);
 
 	const renderDays = () => {
-		const days = showConsecutiveDays ? getConsecutiveDaysArray() : daysArray;
+		const days = showConsecutiveDays ? getConsecutiveDaysArray() : getMonthlyDaysArray();
 		return days.map((date, index) => {
 			const dayContent = renderDayContent(date);
 			return (
@@ -156,6 +145,16 @@ const CalendarGrid: React.FC<CalendarGridProps> = ({
 		});
 	};
 
+	const renderBlankDays = () => {
+		const blankDays = getBlankDaysInMonth(currentDate.getFullYear(), currentDate.getMonth());
+		return blankDays.map((_, index) => (
+			<div
+				key={index}
+				className="w-[14.28%] h-[120px] text-center border-r border-b px-4 pt-2"
+			/>
+		));
+	};
+
 	return (
 		<div id="calendar-grid" className="flex flex-wrap -mx-1 -mb-1">
 			<div className="flex flex-wrap w-full mb-8">
@@ -168,12 +167,7 @@ const CalendarGrid: React.FC<CalendarGridProps> = ({
 				))}
 			</div>
 			<div className="flex flex-wrap w-full">
-				{getBlankDaysInMonth(year, month).map((_, index) => (
-					<div
-						key={index}
-						className="w-[14.28%] h-[120px] text-center border-r border-b px-4 pt-2"
-					/>
-				))}
+				{!showConsecutiveDays && renderBlankDays()}
 				{renderDays()}
 			</div>
 		</div>

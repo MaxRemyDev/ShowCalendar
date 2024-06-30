@@ -9,6 +9,7 @@ import {
 	addDays,
 	startOfToday,
 	subDays,
+	startOfDay,
 } from "date-fns";
 
 export const getHeaderTitle = (currentDate: Date, showConsecutiveDays: boolean): string => {
@@ -89,19 +90,17 @@ export const calculateNewConsecutiveDate = (
 	startDate: Date
 ): Date => {
 	const dayWidth = calendarWidth / 7;
-	const weekHeight = calendarHeight / 5;
+	const dayHeight = calendarHeight / 5;
 
-	if (x < 0) x = 0;
-	if (x > calendarWidth) x = calendarWidth;
-	if (y < 0) y = 0;
-	if (y > calendarHeight) y = calendarHeight;
+	x = Math.max(0, Math.min(x, calendarWidth - 1));
+	y = Math.max(0, Math.min(y, calendarHeight - 1));
 
 	const col = Math.floor(x / dayWidth);
-	const row = Math.floor(y / weekHeight);
+	const row = Math.floor(y / dayHeight);
 
 	const newDay = row * 7 + col;
 
-	return addDays(startDate, newDay);
+	return startOfDay(addDays(startDate, newDay));
 };
 
 export const throttle = (func: Function, delay: number) => {

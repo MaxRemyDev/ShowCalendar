@@ -29,7 +29,8 @@ const DragAndDropEvent: React.FC<
 	const { draggingEvent, onDragStart, onDragEnd, dragItemRef } = useDragAndDrop(
 		showConsecutiveDays,
 		startDate,
-		updateEventPosition
+		updateEventPosition,
+		setSelectedDay
 	);
 
 	const isSelected = selectedDay && isSameDay(new Date(year, month, date), selectedDay);
