@@ -14,7 +14,17 @@ export interface CalendarProps {
 	currentDate: Date;
 	events: CalendarEvent[];
 	setEvents: (events: CalendarEvent[]) => void;
-	addEvent: (title: string, date: string, theme: string) => void;
+	addEvent: (
+		title: string,
+		date: string,
+		theme: string,
+		description: string,
+		location: string,
+		startTime: string,
+		endTime: string,
+		participants: any[],
+		notes: string
+	) => void;
 	hoveredDay: Date | null;
 	setHoveredDay: (date: Date | null) => void;
 	selectedDay: Date | null;
@@ -48,6 +58,20 @@ export interface CalendarEvent {
 	event_date: Date;
 	event_title: string;
 	event_theme: string;
+	event_description?: string;
+	event_location?: string;
+	participants?: {
+		name: string;
+		avatarImage?: string;
+		avatarFallback?: string;
+		role?: string;
+		notes?: string;
+		email?: string;
+		phone?: string;
+	}[];
+	event_notes?: string;
+	start_time?: string;
+	end_time?: string;
 }
 
 export interface DragEndParams {

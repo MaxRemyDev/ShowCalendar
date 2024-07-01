@@ -22,7 +22,7 @@ export const getHeaderTitle = (currentDate: Date, showConsecutiveDays: boolean):
 		const endDate = consecutiveDays[consecutiveDays.length - 1];
 		return `${format(startDate, "MMMM d, yyyy")} - ${format(endDate, "MMMM d, yyyy")}`;
 	} else {
-		return `${MONTH_NAMES[currentDate.getMonth()]} ${currentDate.getFullYear()}`;
+		return `${MONTH_NAMES[currentDate.getMonth()]}`;
 	}
 };
 
@@ -129,4 +129,12 @@ const MONTH_NAMES: string[] = [
 	"November",
 	"December",
 ];
-export const DAYS_NAMES: string[] = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+export const DAYS_NAMES: string[] = [
+	"Monday",
+	"Tuesday",
+	"Wednesday",
+	"Thursday",
+	"Friday",
+	"Saturday",
+	"Sunday",
+];

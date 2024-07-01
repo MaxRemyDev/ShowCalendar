@@ -1,14 +1,11 @@
 import React from "react";
 import {
 	eachDayOfInterval,
-	format,
 	isSameDay,
 	startOfMonth,
 	endOfMonth,
 	addDays,
 	startOfWeek,
-	addWeeks,
-	getDay,
 } from "date-fns";
 import { CalendarEvent } from "./helpers/types";
 import { getBlankDaysInMonth, DAYS_NAMES, isPastDate, isToday } from "./helpers/utils";
@@ -58,6 +55,10 @@ const CalendarGrid: React.FC<CalendarGridProps> = ({
 	startDate,
 	showEventModal,
 }) => {
+	if (!currentDate) {
+		return <div>Loading...</div>;
+	}
+
 	const getConsecutiveDaysArray = () => {
 		const start = startOfWeek(startDate, { weekStartsOn: 1 });
 		const end = addDays(startDate, 29);

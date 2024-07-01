@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useRef } from "react";
+import React, { useState } from "react";
 import { format, isSameDay, startOfDay, startOfWeek } from "date-fns";
 import { CalendarEvent, CalendarProps } from "./helpers/types";
 import {
@@ -11,6 +11,9 @@ import {
 } from "./helpers/utils";
 import CreateNewEventDialog from "./ui/create-new-event-dialog";
 import CalendarGrid from "./CalendarGrid";
+import CollapsibleDayDetails from "./ui/collapsible-day-details";
+import clsx from "clsx";
+import { Separator } from "@/components/ui/separator";
 
 const CalendarViewSection: React.FC<CalendarProps> = ({
 	currentDate,
@@ -35,9 +38,6 @@ const CalendarViewSection: React.FC<CalendarProps> = ({
 			setEventDate(format(date, "yyyy-MM-dd"));
 		}
 	};
-
-	const month = currentDate.getMonth();
-	const year = currentDate.getFullYear();
 
 	const updateEventPosition = (event: CalendarEvent, date: Date) => {
 		const updatedEvents = events.map((e) =>
@@ -97,30 +97,81 @@ const CalendarViewSection: React.FC<CalendarProps> = ({
 		: currentDate;
 
 	return (
-		<div id="calendar-grid" className="-mx-1 -mb-1">
-			<CreateNewEventDialog
-				open={openEventModal}
-				onOpenChange={setOpenEventModal}
-				eventDate={eventDate}
-				addEvent={addEvent}
-			/>
-			<CalendarGrid
-				currentDate={currentDate}
-				events={events}
-				updateEventPosition={updateEventPosition}
-				onDayHover={handleDayHover}
-				onDayClick={handleDayClick}
-				handleDragEnd={handleDragEnd}
-				selectedDay={selectedDay}
-				hoveredDay={hoveredDay}
-				setIsDragging={setIsDragging}
-				handleDragStart={handleDragStart}
-				isDragging={isDragging}
-				setSelectedDay={setSelectedDay}
-				showConsecutiveDays={showConsecutiveDays}
-				startDate={startDateForConsecutiveDays}
-				showEventModal={showEventModalInternal}
-			/>
+		<div className="flex">
+			<div
+				id="calendar-grid"
+				className={clsx("-mx-1 -mb-1", {
+					"w-full": !selectedDay,
+					"w-3/4": selectedDay,
+				})}
+			>
+				<CreateNewEventDialog
+					open={openEventModal}
+					onOpenChange={setOpenEventModal}
+					eventDate={eventDate}
+					addEvent={(
+						title: string,
+						date: string,
+						theme: string,
+						description: string,
+						location: string,
+						startTime: Date | undefined,
+						endTime: Date | undefined,
+						participants: any[] = [],
+						notes: string = ""
+					) => {
+						addEvent(
+							title,
+							date,
+							theme,
+							description,
+							location,
+							startTime ? format(startTime, "HH:mm") : "",
+							endTime ? format(endTime, "HH:mm") : "",
+							participants,
+							notes
+						);
+					}}
+				/>
+
+				<Separator className="h-[4px] rounded" />
+
+				<CalendarGrid
+					currentDate={currentDate}
+					events={events}
+					updateEventPosition={updateEventPosition}
+					onDayHover={handleDayHover}
+					onDayClick={handleDayClick}
+					handleDragEnd={handleDragEnd}
+					selectedDay={selectedDay}
+					hoveredDay={hoveredDay}
+					setIsDragging={setIsDragging}
+					handleDragStart={handleDragStart}
+					isDragging={isDragging}
+					setSelectedDay={setSelectedDay}
+					showConsecutiveDays={showConsecutiveDays}
+					startDate={startDateForConsecutiveDays}
+					showEventModal={showEventModalInternal}
+				/>
+			</div>
+			{selectedDay && (
+				<div className="w-1/4">
+					<CollapsibleDayDetails
+						date={selectedDay}
+						events={events.filter(
+							(event) =>
+								selectedDay && isSameDay(new Date(event.event_date), selectedDay)
+						)}
+						onClose={() => setSelectedDay(null)}
+						onEditEvent={(eventId) => {
+							//TODO: Handle edit event
+						}}
+						onDeleteEvent={(eventId) => {
+							//TODO: Handle delete event
+						}}
+					/>
+				</div>
+			)}
 		</div>
 	);
 };
