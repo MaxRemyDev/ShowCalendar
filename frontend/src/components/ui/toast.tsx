@@ -3,7 +3,7 @@
 import * as React from "react";
 import * as ToastPrimitives from "@radix-ui/react-toast";
 import { cva, type VariantProps } from "class-variance-authority";
-import { X } from "lucide-react";
+import { X, CheckCircle, AlertTriangle, Info, CircleAlert } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 
@@ -30,8 +30,9 @@ const toastVariants = cva(
 		variants: {
 			variant: {
 				default: "border bg-background text-foreground",
-				destructive:
-					"destructive group border-destructive bg-destructive text-destructive-foreground",
+				destructive: "destructive group border-destructive bg-destructive text-foreground",
+				success: "border-green-400 bg-green-400 text-foreground",
+				warning: "border-orange-400 bg-orange-400 text-foreground",
 			},
 		},
 		defaultVariants: {
@@ -40,18 +41,125 @@ const toastVariants = cva(
 	}
 );
 
-const Toast = React.forwardRef<
-	React.ElementRef<typeof ToastPrimitives.Root>,
-	React.ComponentPropsWithoutRef<typeof ToastPrimitives.Root> & VariantProps<typeof toastVariants>
->(({ className, variant, ...props }, ref) => {
-	return (
-		<ToastPrimitives.Root
-			ref={ref}
-			className={cn(toastVariants({ variant }), className)}
-			{...props}
-		/>
-	);
-});
+type ToastProps = React.ComponentPropsWithoutRef<typeof ToastPrimitives.Root> &
+	VariantProps<typeof toastVariants> & {
+		showProgress?: boolean;
+		showIcon?: boolean;
+		icon?: React.ReactNode;
+		onClose?: () => void;
+		persistent?: boolean;
+	};
+
+type ToastDescriptionProps = React.ComponentPropsWithoutRef<typeof ToastPrimitives.Description> & {
+	showProgress?: boolean;
+};
+
+const Toast = React.forwardRef<React.ElementRef<typeof ToastPrimitives.Root>, ToastProps>(
+	(
+		{
+			className,
+			variant,
+			showProgress = true,
+			showIcon = true,
+			icon,
+			onClose,
+			persistent,
+			...props
+		},
+		ref
+	) => {
+		const duration = props.duration ?? 10000; // Provide a default duration if undefined
+		const [remainingTime, setRemainingTime] = React.useState(duration);
+		const [isPaused, setIsPaused] = React.useState(false);
+		const start = React.useRef(performance.now());
+		const pauseStart = React.useRef<number | null>(null);
+		const elapsedBeforePause = React.useRef(0);
+
+		React.useEffect(() => {
+			if (persistent) return;
+
+			let animationFrame: number;
+
+			const animate = (time: number) => {
+				if (isPaused) {
+					pauseStart.current = pauseStart.current || time;
+					animationFrame = requestAnimationFrame(animate);
+					return;
+				}
+
+				const elapsed = time - start.current - elapsedBeforePause.current;
+				const newRemainingTime = Math.max(duration - elapsed, 0);
+				setRemainingTime(newRemainingTime);
+				if (newRemainingTime > 0) {
+					animationFrame = requestAnimationFrame(animate);
+				} else {
+					props.onOpenChange?.(false);
+					onClose?.();
+				}
+			};
+
+			animationFrame = requestAnimationFrame(animate);
+
+			return () => cancelAnimationFrame(animationFrame);
+		}, [duration, isPaused, props, onClose, persistent]);
+
+		React.useEffect(() => {
+			if (!isPaused && pauseStart.current) {
+				elapsedBeforePause.current += performance.now() - pauseStart.current;
+				pauseStart.current = null;
+			}
+		}, [isPaused]);
+
+		const circleProgress = (remainingTime / duration) * 360;
+
+		const getDefaultIcon = () => {
+			switch (variant) {
+				case "success":
+					return <CheckCircle className="size-8 text-foreground" />;
+				case "warning":
+					return <AlertTriangle className="size-8 text-foreground" />;
+				case "destructive":
+					return <CircleAlert className="size-8 text-foreground" />;
+				default:
+					return <Info className="size-8 text-foreground" />;
+			}
+		};
+
+		return (
+			<ToastPrimitives.Root
+				ref={ref}
+				className={cn(toastVariants({ variant }), className)}
+				{...props}
+				onMouseEnter={() => setIsPaused(true)}
+				onMouseLeave={() => setIsPaused(false)}
+				aria-live="assertive"
+			>
+				{showIcon && (icon || getDefaultIcon())}
+				{showProgress && !persistent && (
+					<div className="absolute top-7 right-5 flex items-center justify-center">
+						<div className="relative w-10 h-10 flex items-center justify-center">
+							<div className="absolute w-full h-full rounded-full border-4 border-background-200"></div>
+							<div
+								className="absolute w-full h-full rounded-full border-4 border-black dark:border-white"
+								style={{
+									maskImage: `conic-gradient(transparent ${circleProgress}deg, blue ${circleProgress}deg)`,
+									WebkitMaskImage: `conic-gradient(transparent ${circleProgress}deg, blue ${circleProgress}deg)`,
+									transition:
+										"mask-image 0.1s linear, -webkit-mask-image 0.1s linear",
+								}}
+							></div>
+							<div className="absolute inset-0 flex items-center justify-center text-sm font-semibold">
+								{Math.ceil(remainingTime / 1000)}
+							</div>
+						</div>
+					</div>
+				)}
+				<div className={cn("flex-grow", showProgress ? "pr-12" : "")}>{props.children}</div>
+				<ToastClose />
+			</ToastPrimitives.Root>
+		);
+	}
+);
 Toast.displayName = ToastPrimitives.Root.displayName;
 
 const ToastAction = React.forwardRef<
@@ -101,17 +209,15 @@ ToastTitle.displayName = ToastPrimitives.Title.displayName;
 
 const ToastDescription = React.forwardRef<
 	React.ElementRef<typeof ToastPrimitives.Description>,
-	React.ComponentPropsWithoutRef<typeof ToastPrimitives.Description>
->(({ className, ...props }, ref) => (
+	ToastDescriptionProps
+>(({ className, showProgress, ...props }, ref) => (
 	<ToastPrimitives.Description
 		ref={ref}
-		className={cn("text-sm opacity-90", className)}
+		className={cn("text-sm opacity-90", showProgress ? "pr-12" : "", className)}
 		{...props}
 	/>
 ));
 ToastDescription.displayName = ToastPrimitives.Description.displayName;
-
-type ToastProps = React.ComponentPropsWithoutRef<typeof Toast>;
 
 type ToastActionElement = React.ReactElement<typeof ToastAction>;
 
