@@ -1,19 +1,9 @@
-"use client";
-
 import * as React from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { loginSchema, signupSchema } from "@/components/form/auth/auth-validation";
 import { useAuthStore } from "@/components/form/auth/auth-store";
-import {
-	Form,
-	FormItem,
-	FormLabel,
-	FormControl,
-	FormMessage,
-	FormField,
-} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -23,43 +13,29 @@ import { faApple, faGoogle } from "@fortawesome/free-brands-svg-icons";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { useMutation } from "@tanstack/react-query";
-import axios from "axios";
+import { setCookie } from "cookies-next";
+import { getErrorMessage, handleAuthErrors } from "@/components/form/auth/auth-errors";
+import { useToast } from "@/components/ui/use-toast";
+import AppleEmoji from "@/components/decoration/apple-emoji";
+import {
+	Form,
+	FormItem,
+	FormLabel,
+	FormControl,
+	FormMessage,
+	FormField,
+} from "@/components/ui/form";
+import {
+	loginUser,
+	registerUser,
+	AuthResponse,
+	LoginData,
+	RegisterData,
+} from "@/api/auth/authService";
 
-/*
-	INFO: REUSABLE COMPONENT FOR USER AUTHENTICATION FORM
-	INFO: USES REACT HOOK FORM FOR STATE MANAGEMENT AND ZOD FOR VALIDATION
-	INFO: HANDLES LOGIN AND SIGNUP VIA USEAUTHSTORE TO DETERMINE STATE
-	INFO: FORM FIELDS: USERNAME (SIGNUP), EMAIL, PASSWORD, AND "REMEMBER ME" (LOGIN)
-	INFO: FORM SUBMISSIONS VIA USEMUTATION FROM TANSTACK QUERY FOR API CALLS
-	INFO: MANAGES LOADING, SUCCESS, AND ERROR STATES, WITH REDIRECTION TO /DASHBOARD
-	INFO: OAUTH BUTTONS FOR GOOGLE AND APPLE WITH VISUAL LOADING STATES
-	INFO: LINKS TO PRIVACY POLICY, TERMS OF SERVICE, AND PASSWORD RECOVERY
+interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 
-	TODO: FIX THIS ERROR WARNING SHOW AFTER PUT CHARACTER IN INPUT (client side console)
-	!FIX:("Warning: A component is changing an uncontrolled input to be controlled. This is likely caused by the value changing from undefined to a defined value, which should not happen. Decide between using a controlled or uncontrolled input element for the lifetime of the component.")
-*/
-
-interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {} // HTMLAttributes for form element props
-
-// FORM VALIDATION SCHEMA
-interface FormValues {
-	username?: string;
-	email: string;
-	password: string;
-	remember?: boolean;
-}
-
-// FUNCTION TO LOG IN USER VIA API CALL
-const loginUser = async (data: FormValues): Promise<any> => {
-	const response = await axios.post("/api/login", data);
-	return response.data;
-};
-
-// FUNCTION TO SIGN UP USER VIA API CALL
-const signupUser = async (data: FormValues): Promise<any> => {
-	const response = await axios.post("/api/signup", data);
-	return response.data;
-};
+type AuthData = LoginData & Partial<RegisterData>;
 
 export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
 	// USEAUTHSTORE FOR STATE MANAGEMENT
@@ -70,23 +46,71 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
 
 	// USEFORM HOOK FOR FORM MANAGEMENT
 	const router = useRouter();
-	const form = useForm<FormValues>({
+	const { toast } = useToast();
+	const form = useForm<AuthData>({
 		resolver: zodResolver(isLogin ? loginSchema : signupSchema),
+		defaultValues: isLogin
+			? { username: "", password: "", remember: false }
+			: { username: "", email: "", password: "", remember: false },
 	});
 
-	// USEMUTATION FOR API CALLS
-	const mutation = useMutation({
-		mutationFn: isLogin ? loginUser : signupUser,
+	// USEMUTATION HOOK FOR MUTATION MANAGEMENT
+	const mutation = useMutation<AuthResponse, Error, AuthData>({
+		mutationFn: isLogin ? loginUser : (data: AuthData) => registerUser(data as RegisterData),
 		onMutate: () => setIsLoading(true),
-		onSuccess: () => {
-			setIsLoading(false);
+
+		// SUCCESS HANDLING
+		onSuccess: async (data, variables) => {
+			if (data.token && data.refreshToken) {
+				setCookie("token", data.token);
+				setCookie("refreshToken", data.refreshToken);
+			}
+
+			await new Promise((resolve) => setTimeout(resolve, 2000)); // SIMULATE ADDITIONAL OPERATION 2-SECOND DELAY
+
 			router.push("/dashboard");
+			setIsLoading(false);
+
+			// TOAST MESSAGE FOR SUCCESSFUL LOGIN OR REGISTRATION
+			toast({
+				title: isLogin ? "Login successful" : "Registration successful",
+				description: isLogin ? (
+					<>
+						Welcome back, {variables.username || "User"}!
+						<AppleEmoji emojiShortName="wave" size={24} className="ml-1" />
+					</>
+				) : (
+					<>
+						Welcome, {variables.username || "User"}!
+						<AppleEmoji emojiShortName="wave" size={24} className="ml-1" />
+					</>
+				),
+				variant: "success",
+			});
+
+			// TOAST MESSAGE FOR CHECK EMAIL VERIFICATION
+			if (!isLogin && variables.email) {
+				toast({
+					title: "Verify your account",
+					description: `Check your email '${variables.email}' to verify your account`,
+					variant: "default",
+					showIcon: false,
+					persistent: true,
+				});
+			}
 		},
-		onError: () => setIsLoading(false),
+
+		// ERROR HANDLING
+		onError: (error: any) => {
+			setIsLoading(false);
+			const errorMsg = getErrorMessage(error);
+			console.error("Error message:", errorMsg);
+			handleAuthErrors(form, errorMsg);
+		},
 	});
 
 	// SUBMIT HANDLER FOR FORM SUBMISSION
-	const onSubmit: SubmitHandler<FormValues> = (data) => {
+	const onSubmit: SubmitHandler<AuthData> = (data) => {
 		mutation.mutate(data);
 	};
 
@@ -122,21 +146,21 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
 							</div>
 						)}
 
-						{/* USERNAME INPUT (SIGN UP PAGE ONLY) */}
+						{/* EMAIL INPUT (SIGN UP PAGE ONLY) */}
 						{!isLogin && (
 							<FormField
-								name="username"
+								name="email"
 								control={form.control}
 								render={({ field }) => (
 									<FormItem className="space-y-1">
-										<FormLabel className="text-foreground">Username</FormLabel>
+										<FormLabel className="text-foreground">Email</FormLabel>
 										<FormControl>
 											<Input
-												id="username"
-												placeholder="Name"
-												type="text"
+												id="email"
+												placeholder="name@example.com"
+												type="email"
 												autoCapitalize="none"
-												autoComplete="name"
+												autoComplete="email"
 												autoCorrect="off"
 												disabled={isLoading}
 												{...field}
@@ -148,20 +172,20 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
 							/>
 						)}
 
-						{/* EMAIL INPUT */}
+						{/* USERNAME INPUT */}
 						<FormField
-							name="email"
+							name="username"
 							control={form.control}
 							render={({ field }) => (
 								<FormItem className="space-y-1">
-									<FormLabel className="text-foreground">Email</FormLabel>
+									<FormLabel className="text-foreground">Username</FormLabel>
 									<FormControl>
 										<Input
-											id="email"
-											placeholder="name@example.com"
-											type="email"
+											id="username"
+											placeholder="Name"
+											type="text"
 											autoCapitalize="none"
-											autoComplete="email"
+											autoComplete="name"
 											autoCorrect="off"
 											disabled={isLoading}
 											{...field}
@@ -205,9 +229,9 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
 												<Checkbox
 													id="remember"
 													disabled={isLoading}
-													checked={field.value || false}
+													checked={field.value}
 													onCheckedChange={(checked) =>
-														field.onChange(checked)
+														field.onChange(checked as boolean)
 													}
 												/>
 											</FormControl>
@@ -229,7 +253,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
 						{/* LOGIN AND SIGN UP BUTTONS */}
 						<Button disabled={isLoading} type="submit" className="w-full">
 							{isLoading && <Loader className="mr-2 h-4 w-4 animate-spin" />}
-							{isLogin ? "Log In with Email" : "Sign Up with Email"}
+							{isLogin ? "Log In" : "Sign Up with Email"}
 						</Button>
 					</div>
 				</form>
