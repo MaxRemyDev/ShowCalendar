@@ -14,6 +14,7 @@ using AspNetCoreRateLimit;
 using Newtonsoft.Json;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.OpenApi.Models;
+using Newtonsoft.Json.Serialization;
 
 // LOAD ENVIRONMENT VARIABLES FROM .ENV FILE
 DotEnv.Load();
@@ -26,7 +27,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("CorsPolicy", builder =>
     {
-        builder.WithOrigins("https://localhost:7201", "http://localhost:5113", "http://localhost:3000", "https://showcalendar.com")
+        builder.WithOrigins("http://localhost:3000")
                .AllowAnyMethod()
                .AllowAnyHeader()
                .AllowCredentials();
@@ -48,13 +49,17 @@ var connectionString = builder.Environment.IsDevelopment()
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseMySql(connectionString, new MySqlServerVersion(new Version(8, 0, 21))));
 
-
 // CONFIGURE SERVICE AUTHENTICATION
 builder.Services.AddJwtAuthentication(builder.Configuration);
 
 // CONFIGURE SERVICES AUTHORIZATION AND CONTROLLERS WITH AUTOMAPPER
 builder.Services.AddAuthorization();
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddNewtonsoftJson(options =>
+    {
+        options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+    });
+
 builder.Services.AddAutoMapper(typeof(Backend.Mappings.AutoMapperProfile));
 
 // CONFIGURE SERVICES DEPENDENCY INJECTION
@@ -75,6 +80,9 @@ builder.Services.AddSwaggerGen(c =>
 
 // BUILD WEB APPLICATION
 var app = builder.Build();
+
+// ENABLE CORS POLICY
+app.UseCors("CorsPolicy");
 
 // CONFIGURE DEVELOPMENT ENVIRONMENT SWAGGER AND SWAGGER UI
 if (app.Environment.IsDevelopment())
@@ -99,7 +107,7 @@ if (app.Environment.IsDevelopment() || app.Environment.IsEnvironment("Test"))
 
         if (dbContext.Database.IsRelational())
         {
-            dbContext.Database.Migrate(); // APPLY MIGRATION TO DATABASE
+            await dbContext.Database.MigrateAsync(); // APPLY MIGRATION TO DATABASE
         }
 
         SeedData.Initialize(services); // SEED DATA TO DATABASE
@@ -118,7 +126,6 @@ app.UseHttpsRedirection();
 app.UseRouting();
 
 // CONFIGURE MIDDLEWARES FOR RATE LIMITING, JSON PARSING, SECURITY HEADERS AND ERROR HANDLING
-app.UseCors("CorsPolicy");
 app.UseIpRateLimiting();
 app.UseMiddleware<ErrorHandlerMiddleware>();
 app.UseMiddleware<RequestResponseLoggingMiddleware>();
@@ -133,7 +140,7 @@ app.UseAuthorization();
 app.MapControllers();
 
 // RUN WEB APPLICATION
-app.Run();
+await app.RunAsync();
 
 public partial class Program
 {
