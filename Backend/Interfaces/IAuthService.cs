@@ -9,6 +9,8 @@ namespace Backend.Interfaces
         Task<Result<User>> Register(User user, string password);
         Task<Result<User>> Login(string username, string password);
         string GenerateJwtToken(User user);
-        string RefreshJwtToken(User user);
+        Task<string> GenerateRefreshToken(User user);
+        Task<Result<string>> RefreshJwtToken(string refreshToken);
+        Task<Result<User>> Logout(int userId);
     }
 }

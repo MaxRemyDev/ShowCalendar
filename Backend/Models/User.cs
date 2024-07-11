@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-
 namespace Backend.Models
 {
     // USER MODEL DEFINITION
@@ -40,6 +39,12 @@ namespace Backend.Models
 
         // LAST LOGIN TIMESTAMP
         public DateTime? LastLogin { get; set; }
+
+        // REFRESH TOKEN
+        public string? RefreshToken { get; set; }
+
+        // REFRESH TOKEN EXPIRY TIMESTAMP
+        public DateTime? RefreshTokenExpiryTime { get; set; }
 
         // INFO: Why removed "?" from end of (ICollection<Notification>?) and (ICollection<Calendar>?) for nullable type collection
         // INFO: Because we are using default empty collection for Notifications and Calendars, so no need to use nullable type collection NORMALLY !
