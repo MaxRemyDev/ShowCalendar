@@ -21,28 +21,33 @@ namespace Backend.Middlewares
             _logger = logger;
         }
 
-        public async Task InvokeAsync(HttpContext context)
+        public async Task Invoke(HttpContext context)
         {
             try
             {
+                _logger.LogInformation("Handling request: {method} {url}", context.Request.Method, context.Request.Path);
+
                 // CLONE ORIGINAL RESPONSE BODY STREAM TO INTERCEPT RESPONSE
                 var originalBodyStream = context.Response.Body;
-                using var responseBodyStream = new MemoryStream();
-                context.Response.Body = responseBodyStream;
 
-                await _next(context); // CALL NEXT MIDDLEWARE IN PIPELINE
+                using (var responseBodyStream = new MemoryStream())
+                {
+                    context.Response.Body = responseBodyStream;
 
-                // LOG REQUEST AND RESPONSE
-                responseBodyStream.Seek(0, SeekOrigin.Begin);
-                var responseBodyText = await new StreamReader(responseBodyStream).ReadToEndAsync();
-                responseBodyStream.Seek(0, SeekOrigin.Begin);
-                _logger.LogInformation($"Response: {responseBodyText}");
+                    await _next(context); // CALL NEXT MIDDLEWARE IN PIPELINE
 
-                await responseBodyStream.CopyToAsync(originalBodyStream); // COPY RESPONSE STREAM TO ORIGINAL STREAM
+                    // LOG REQUEST AND RESPONSE
+                    context.Response.Body.Seek(0, SeekOrigin.Begin);
+                    var responseText = await new StreamReader(context.Response.Body).ReadToEndAsync();
+                    context.Response.Body.Seek(0, SeekOrigin.Begin);
+                    _logger.LogInformation("Response: {statusCode} | Body: {responseText}", context.Response.StatusCode, responseText);
+
+                    await responseBodyStream.CopyToAsync(originalBodyStream); // COPY RESPONSE STREAM TO ORIGINAL STREAM
+                }
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "An error occurred while logging the request and response. {ErrorMessage}", ex.Message);
+                _logger.LogError("An unhandled exception occurred while processing the request: {exception}", ex);
                 throw; // PROPAGATE EXCEPTION IF RESPONSE HAS ALREADY STARTED
             }
         }

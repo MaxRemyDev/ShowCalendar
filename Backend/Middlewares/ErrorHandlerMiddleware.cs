@@ -37,12 +37,13 @@ namespace Backend.Middlewares
                 }
 
                 // LOG ERROR MESSAGE
-                _logger.LogError("An unhandled exception has occurred: {ErrorMessage}", error.Message);
+                _logger.LogError("An unhandled exception has occurred while processing the request. Exception: {ErrorMessage}, Type: {ExceptionType}, StackTrace: {StackTrace}, Request: {Method} {Url}",
+                                 error.Message, error.GetType().Name, error.StackTrace, context.Request.Method, context.Request.Path);
                 await HandleExceptionAsync(context, error);
             }
         }
 
-        private Task HandleExceptionAsync(HttpContext context, Exception error)
+        private async Task HandleExceptionAsync(HttpContext context, Exception error)
         {
             // SET RESPONSE STATUS CODE AND CONTENT TYPE
             var response = context.Response;
@@ -57,7 +58,7 @@ namespace Backend.Middlewares
             };
 
             var result = JsonSerializer.Serialize(new { message = error.Message }); // SERIALIZE ERROR MESSAGE
-            return response.WriteAsync(result); // WRITE ERROR MESSAGE TO RESPONSE
+            await response.WriteAsync(result); // WRITE RESPONSE
         }
     }
 }
