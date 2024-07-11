@@ -17,6 +17,7 @@ namespace Backend.Tests.ServicesTests
         private readonly AuthenticationService _authService;
         private readonly ApplicationDbContext _context;
         private readonly Mock<IEnvironmentService> _environmentServiceMock = new Mock<IEnvironmentService>();
+        private readonly Mock<ILogger<AuthenticationService>> _loggerMock = new Mock<ILogger<AuthenticationService>>();
 
         // CONSTRUCTOR FOR "AUTHENTICATIONSERVICETESTS" SETS UP IN-MEMORY DATABASE AND INITIALIZES "AUTHENTICATIONSERVICE" WITH A MOCKED "IENVIRONMENTSERVICE"
         public AuthenticationServiceTests()
@@ -27,7 +28,8 @@ namespace Backend.Tests.ServicesTests
             _context = new ApplicationDbContext(options);
 
             _environmentServiceMock.Setup(m => m.GetJwtSecret()).Returns("BackendTests_ServicesTests_AuthenticationServiceTests_SecretKey");
-            _authService = new AuthenticationService(_context, _environmentServiceMock.Object);
+
+            _authService = new AuthenticationService(_context, _environmentServiceMock.Object, _loggerMock.Object);
         }
 
         // TEST TO VERIFY THAT "REGISTER" METHOD SHOULD ADD USER WHEN USER DOES NOT EXIST
@@ -48,7 +50,9 @@ namespace Backend.Tests.ServicesTests
             Assert.NotNull(registeredUser);
             Assert.NotNull(registeredUser.Value);
             Assert.Equal(user.Username, registeredUser.Value!.Username);
+            Assert.NotNull(registeredUser.Value.PasswordHash);
             Assert.NotEmpty(registeredUser.Value.PasswordHash);
+            Assert.NotNull(registeredUser.Value.PasswordSalt);
             Assert.NotEmpty(registeredUser.Value.PasswordSalt);
         }
 
@@ -97,23 +101,54 @@ namespace Backend.Tests.ServicesTests
 
         // TEST TO VERIFY THAT "REFRESHJWTTOKEN" METHOD SHOULD RETURN TOKEN WHEN USER IS VALID
         [Fact]
-        public async Task RefreshJwtToken_ShouldReturnToken_WhenUserIsValid()
+        public async Task RefreshJwtToken_ShouldReturnToken_WhenRefreshTokenIsValid()
         {
             var user = new User
             {
                 Username = "userRefreshedToken",
                 UserId = 1,
-                Email = "",
+                Email = "userRefreshedToken@exemple.com",
                 PasswordHash = Encoding.UTF8.GetBytes("userRefreshedToken"),
                 PasswordSalt = Encoding.UTF8.GetBytes("userRefreshedToken")
             };
 
             await _authService.Register(user, "password");
 
-            var token = _authService.RefreshJwtToken(user);
+            var refreshToken = await _authService.GenerateRefreshToken(user);
 
-            Assert.NotNull(token);
-            Assert.NotEmpty(token);
+            var result = await _authService.RefreshJwtToken(refreshToken);
+
+            Assert.NotNull(result);
+            Assert.True(result.IsSuccess);
+            Assert.NotNull(result.Value);
+            Assert.NotEmpty(result.Value);
+        }
+
+        // TEst TO VERIFY THAT "LOGOUT" METHOD SHOULD RETURN SUCCESS WHEN USER EXISTS
+        [Fact]
+        public async Task Logout_ShouldReturnSuccess_WhenUserExists()
+        {
+            // ARRANGE
+            var user = new User
+            {
+                UserId = 1,
+                Username = "testUser",
+                Email = "testUser@example.com",
+                RefreshToken = "some-refresh-token",
+                RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(1)
+            };
+
+            await _context.Users.AddAsync(user);
+            await _context.SaveChangesAsync();
+
+            // ACT
+            var result = await _authService.Logout(user.UserId);
+
+            // ASSERT
+            Assert.NotNull(result);
+            Assert.True(result.IsSuccess);
+            Assert.Null(user.RefreshToken);
+            Assert.Null(user.RefreshTokenExpiryTime);
         }
 
         //TODO: ADD A TEST TO VERIFY THAT AN EXCEPTION IS THROWN WHEN REGISTERING AN ALREADY EXISTING USER
