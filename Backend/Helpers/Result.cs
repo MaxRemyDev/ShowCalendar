@@ -18,6 +18,7 @@ namespace Backend.Helpers
 
         // METHODS - SUCCESS, FAILURE
         public static Result<T> Success(T value) => new Result<T>(value, true, null);
+        public static Result<T> Success() => new Result<T>(default!, true, null);
         public static Result<T> Failure(string error) => new Result<T>(default(T), false, error);
     }
 }
