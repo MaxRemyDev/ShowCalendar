@@ -148,11 +148,21 @@ namespace Backend.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<DateTime>("CreatedAt"));
 
+                    b.Property<string>("Details")
+                        .IsRequired()
+                        .HasColumnType("json");
+
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("varchar(255)");
 
+                    b.Property<bool>("IsRememberMe")
+                        .HasColumnType("tinyint(1)");
+
                     b.Property<DateTime?>("LastLogin")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<DateTime?>("LastLogout")
                         .HasColumnType("datetime(6)");
 
                     b.Property<byte[]>("PasswordHash")
@@ -168,6 +178,10 @@ namespace Backend.Migrations
 
                     b.Property<DateTime?>("RefreshTokenExpiryTime")
                         .HasColumnType("datetime(6)");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("json");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime(6)");

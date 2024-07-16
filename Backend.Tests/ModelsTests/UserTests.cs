@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 using Backend.Models;
 using Xunit;
@@ -66,7 +65,7 @@ namespace Backend.Tests.ModelsTests
             var user = new User
             {
                 Username = "testUser",
-                //  Email is missing
+                // Email is missing
                 PasswordHash = Encoding.UTF8.GetBytes("testUser"),
                 PasswordSalt = Encoding.UTF8.GetBytes("testUser"),
                 CreatedAt = DateTime.UtcNow
@@ -113,7 +112,7 @@ namespace Backend.Tests.ModelsTests
             var user = new User
             {
                 Username = "testUser",
-                Email = "testUser@gexemple.com",
+                Email = "test@example.com",
                 PasswordHash = Encoding.UTF8.GetBytes("testUser"),
                 PasswordSalt = Encoding.UTF8.GetBytes("testUser"),
                 CreatedAt = DateTime.UtcNow
@@ -128,7 +127,7 @@ namespace Backend.Tests.ModelsTests
             var isValid = Validator.TryValidateObject(user, context, validationResults, true);
 
             // ASSERT - VERIFY THAT VALIDATION FAILS DUE TO MISSING PASSWORDHASH
-            Assert.False(isValid, "Validation should fail when PasswordHash is missing");
+            Assert.False(isValid);
             Assert.Contains(validationResults, vr => vr.MemberNames.Contains(nameof(User.PasswordHash)));
         }
 
@@ -136,16 +135,17 @@ namespace Backend.Tests.ModelsTests
         [Fact]
         public void User_Validation_Fails_When_PasswordSalt_Is_Missing()
         {
-            // ARRANGE - PREPARE USER OBJECT WITHOUT A "PASSWORDHASH" FOR TESTING
+            // ARRANGE - PREPARE USER OBJECT WITHOUT A "PASSWORDSALT" FOR TESTING
             var user = new User
             {
                 Username = "testUser",
-                Email = "testUser@gexemple.com",
+                Email = "test@example.com",
                 PasswordHash = Encoding.UTF8.GetBytes("testUser"),
                 PasswordSalt = Encoding.UTF8.GetBytes("testUser"),
                 CreatedAt = DateTime.UtcNow
             };
-            // SET PASSWORDHASH TO NULL
+
+            // SET PASSWORDSALT TO NULL
             typeof(User).GetProperty(nameof(User.PasswordSalt))!.SetValue(user, null);
 
             // ACT - PERFORM VALIDATION CHECK ON USER OBJECT
@@ -153,8 +153,8 @@ namespace Backend.Tests.ModelsTests
             var context = new ValidationContext(user);
             var isValid = Validator.TryValidateObject(user, context, validationResults, true);
 
-            // ASSERT - VERIFY THAT VALIDATION FAILS DUE TO MISSING PASSWORDHASH
-            Assert.False(isValid, "Validation should fail when PasswordHash is missing");
+            // ASSERT - VERIFY THAT VALIDATION FAILS DUE TO MISSING PASSWORDSALT
+            Assert.False(isValid);
             Assert.Contains(validationResults, vr => vr.MemberNames.Contains(nameof(User.PasswordSalt)));
         }
 
@@ -166,10 +166,10 @@ namespace Backend.Tests.ModelsTests
             var user = new User
             {
                 Username = "testUser",
-                Email = "testUser@gexemple.com",
+                Email = "test@example.com",
                 PasswordHash = Encoding.UTF8.GetBytes("testUser"),
                 PasswordSalt = Encoding.UTF8.GetBytes("testUser"),
-                CreatedAt = DateTime.UtcNow,
+                CreatedAt = DateTime.UtcNow
             };
 
             // ACT - PERFORM VALIDATION CHECK ON USER OBJECT
@@ -183,14 +183,14 @@ namespace Backend.Tests.ModelsTests
             Assert.Null(user.UpdatedAt);
         }
 
-        // TEST TO VERIFIY IS "UPDATEDAT" FIELD IS WORKING AS EXPECTED
+        // TEST TO VERIFY THAT "UPDATEDAT" FIELD IS WORKING AS EXPECTED
         [Fact]
         public void User_UpdatedAt_Is_Working_As_Expected()
         {
-            var User = new User
+            var user = new User
             {
                 Username = "testUser",
-                Email = "testUser@gexemple.com",
+                Email = "test@example.com",
                 PasswordHash = Encoding.UTF8.GetBytes("testUser"),
                 PasswordSalt = Encoding.UTF8.GetBytes("testUser"),
                 CreatedAt = DateTime.UtcNow,
@@ -199,13 +199,13 @@ namespace Backend.Tests.ModelsTests
 
             // ACT - PERFORM VALIDATION CHECK ON USER OBJECT
             var validationResults = new List<ValidationResult>();
-            var context = new ValidationContext(User);
-            var isValid = Validator.TryValidateObject(User, context, validationResults, true);
+            var context = new ValidationContext(user);
+            var isValid = Validator.TryValidateObject(user, context, validationResults, true);
 
             // ASSERT - VERIFY THAT VALIDATION PASSES WITHOUT ANY ERRORS
             Assert.True(isValid);
             Assert.Empty(validationResults);
-            Assert.NotNull(User.UpdatedAt);
+            Assert.NotNull(user.UpdatedAt);
         }
 
         // TEST TO VERIFY THAT "LASTLOGIN" FIELD IS NULL WHEN NOT SET
@@ -216,10 +216,10 @@ namespace Backend.Tests.ModelsTests
             var user = new User
             {
                 Username = "testUser",
-                Email = "testUser@gexemple.com",
+                Email = "test@example.com",
                 PasswordHash = Encoding.UTF8.GetBytes("testUser"),
                 PasswordSalt = Encoding.UTF8.GetBytes("testUser"),
-                CreatedAt = DateTime.UtcNow,
+                CreatedAt = DateTime.UtcNow
             };
 
             // ACT - PERFORM VALIDATION CHECK ON USER OBJECT
@@ -233,15 +233,15 @@ namespace Backend.Tests.ModelsTests
             Assert.Null(user.LastLogin);
         }
 
-        // TEST TO VERIFY IF "LASTLOGIN" FIELD IS WORKING AS EXPECTED
+        // TEST TO VERIFY THAT "LASTLOGIN" FIELD IS WORKING AS EXPECTED
         [Fact]
         public void User_LastLogin_Is_Working_As_Expected()
         {
-            // ARRANGE - PREPARE USER OBJECT WITHOUT A "LASTLOGIN" FOR TESTING
+            // ARRANGE - PREPARE USER OBJECT WITH "LASTLOGIN" SET FOR TESTING
             var user = new User
             {
                 Username = "testUser",
-                Email = "testUser@gexemple.com",
+                Email = "test@example.com",
                 PasswordHash = Encoding.UTF8.GetBytes("testUser"),
                 PasswordSalt = Encoding.UTF8.GetBytes("testUser"),
                 CreatedAt = DateTime.UtcNow,
@@ -267,10 +267,10 @@ namespace Backend.Tests.ModelsTests
             var user = new User
             {
                 Username = "testUser",
-                Email = "testUser@gexemple.com",
+                Email = "test@example.com",
                 PasswordHash = Encoding.UTF8.GetBytes("testUser"),
                 PasswordSalt = Encoding.UTF8.GetBytes("testUser"),
-                CreatedAt = DateTime.UtcNow,
+                CreatedAt = DateTime.UtcNow
             };
 
             // ACT - PERFORM VALIDATION CHECK ON USER OBJECT
@@ -285,18 +285,18 @@ namespace Backend.Tests.ModelsTests
             Assert.NotNull(user.Calendars);
         }
 
-        // TEST TO VERIFY THAT NOTIFICATIONS AND CALENDARS COLLECTIONS IS EMPTY WHEN NOT SET
+        // TEST TO VERIFY THAT NOTIFICATIONS AND CALENDARS COLLECTIONS ARE EMPTY WHEN NOT SET
         [Fact]
-        public void User_Notifications_And_Calendars_Collections_Is_Empty_When_Not_Set()
+        public void User_Notifications_And_Calendars_Collections_Are_Empty_When_Not_Set()
         {
             // ARRANGE - PREPARE USER OBJECT WITHOUT NOTIFICATIONS AND CALENDARS FOR TESTING
             var user = new User
             {
                 Username = "testUser",
-                Email = "testUser@gexemple.com",
+                Email = "test@example.com",
                 PasswordHash = Encoding.UTF8.GetBytes("testUser"),
                 PasswordSalt = Encoding.UTF8.GetBytes("testUser"),
-                CreatedAt = DateTime.UtcNow,
+                CreatedAt = DateTime.UtcNow
             };
 
             // ACT - PERFORM VALIDATION CHECK ON USER OBJECT
@@ -309,6 +309,150 @@ namespace Backend.Tests.ModelsTests
             Assert.Empty(validationResults);
             Assert.Empty(user.Notifications);
             Assert.Empty(user.Calendars);
+        }
+
+        // TEST TO VERIFY THAT USER DETAILS LIST IS INITIALIZED AND CAN BE MANIPULATED
+        [Fact]
+        public void User_Details_List_Is_Initialized_And_Can_Be_Manipulated()
+        {
+            // ARRANGE - PREPARE USER OBJECT WITH DETAILS
+            var user = new User
+            {
+                Username = "testUser",
+                Email = "test@example.com",
+                PasswordHash = Encoding.UTF8.GetBytes("testUser"),
+                PasswordSalt = Encoding.UTF8.GetBytes("testUser"),
+                CreatedAt = DateTime.UtcNow,
+                Details = new List<UserDetails>
+                {
+                    new UserDetails
+                    {
+                        FullName = "Test User",
+                        Avatar = "https://example.com/avatar.png",
+                        DateOfBirth = new DateOnly(1990, 1, 1),
+                        Language = "English",
+                        Font = "Arial",
+                        Bio = "This is a test user.",
+                        Websites = new List<string> { "https://testuser.com" },
+                        Location = "Test City",
+                        Theme = "light"
+                    }
+                }
+            };
+
+            // ACT - ADD ANOTHER DETAIL
+            user.Details.Add(new UserDetails
+            {
+                FullName = "Test User 2",
+                Avatar = "https://example.com/avatar2.png",
+                DateOfBirth = new DateOnly(1992, 2, 2),
+                Language = "French",
+                Font = "Helvetica",
+                Bio = "This is another test user.",
+                Websites = new List<string> { "https://testuser2.com" },
+                Location = "Test City 2",
+                Theme = "dark"
+            });
+
+            // ASSERT - VERIFY THAT DETAILS LIST IS INITIALIZED AND MANIPULATED CORRECTLY
+            Assert.NotNull(user.Details);
+            Assert.Equal(2, user.Details.Count);
+            Assert.Equal("Test User", user.Details[0].FullName);
+            Assert.Equal("Test User 2", user.Details[1].FullName);
+        }
+
+        // TEST TO VERIFY THAT USER STATUS LIST IS INITIALIZED AND CAN BE MANIPULATED
+        [Fact]
+        public void User_Status_List_Is_Initialized_And_Can_Be_Manipulated()
+        {
+            // ARRANGE - PREPARE USER OBJECT WITH STATUS
+            var user = new User
+            {
+                Username = "testUser",
+                Email = "test@example.com",
+                PasswordHash = Encoding.UTF8.GetBytes("testUser"),
+                PasswordSalt = Encoding.UTF8.GetBytes("testUser"),
+                CreatedAt = DateTime.UtcNow,
+                Status = new List<UserStatus>
+                {
+                    new UserStatus
+                    {
+                        IsOnline = true,
+                        IsEmailVerified = true,
+                        IsPremium = false,
+                        IsEnterprise = false,
+                        IsBanned = false,
+                        IsAdmin = false
+                    }
+                }
+            };
+
+            // ACT - ADD ANOTHER STATUS
+            user.Status.Add(new UserStatus
+            {
+                IsOnline = false,
+                IsEmailVerified = false,
+                IsPremium = true,
+                IsEnterprise = true,
+                IsBanned = true,
+                IsAdmin = true
+            });
+
+            // ASSERT - VERIFY THAT STATUS LIST IS INITIALIZED AND MANIPULATED CORRECTLY
+            Assert.NotNull(user.Status);
+            Assert.Equal(2, user.Status.Count);
+            Assert.True(user.Status[0].IsOnline);
+            Assert.False(user.Status[1].IsOnline);
+        }
+
+        // TEST TO VERIFY THAT USER DETAILS LIST IS EMPTY WHEN NOT SET
+        [Fact]
+        public void User_Details_List_Is_Empty_When_Not_Set()
+        {
+            // ARRANGE - PREPARE USER OBJECT WITHOUT DETAILS FOR TESTING
+            var user = new User
+            {
+                Username = "testUser",
+                Email = "test@example.com",
+                PasswordHash = Encoding.UTF8.GetBytes("testUser"),
+                PasswordSalt = Encoding.UTF8.GetBytes("testUser"),
+                CreatedAt = DateTime.UtcNow
+            };
+
+            // ACT - PERFORM VALIDATION CHECK ON USER OBJECT
+            var validationResults = new List<ValidationResult>();
+            var context = new ValidationContext(user);
+            var isValid = Validator.TryValidateObject(user, context, validationResults, true);
+
+            // ASSERT - VERIFY THAT VALIDATION PASSES WITHOUT ANY ERRORS
+            Assert.True(isValid);
+            Assert.Empty(validationResults);
+            Assert.Empty(user.Details);
+        }
+
+        // TEST TO VERIFY THAT USER STATUS LIST IS EMPTY WHEN NOT SET
+        [Fact]
+        public void User_Status_List_Is_Empty_When_Not_Set()
+        {
+            // ARRANGE - PREPARE USER OBJECT WITHOUT STATUS FOR TESTING
+            var user = new User
+            {
+                Username = "testUser",
+                Email = "test@example.com",
+                PasswordHash = Encoding.UTF8.GetBytes("testUser"),
+                PasswordSalt = Encoding.UTF8.GetBytes("testUser"),
+                CreatedAt = DateTime.UtcNow
+            };
+
+            // ACT - PERFORM VALIDATION CHECK ON USER OBJECT
+            var validationResults = new List<ValidationResult>();
+            var context = new ValidationContext(user);
+            var isValid = Validator.TryValidateObject(user, context, validationResults, true);
+
+            // ASSERT - VERIFY THAT VALIDATION PASSES WITHOUT ANY ERRORS
+            Assert.True(isValid);
+            Assert.Empty(validationResults);
+            Assert.Empty(user.Status);
         }
     }
 }

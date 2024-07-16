@@ -69,7 +69,7 @@ namespace Backend.Services
         // UPDATE AN EXISTING USER IN DATABASE WITH RESULT HELPER (PUT)
         public async Task<Result<User>> UpdateUser(int id, User user)
         {
-            var userToUpdate = await _context.Users.FindAsync(id);
+            var userToUpdate = await _context.Users.FirstOrDefaultAsync(u => u.UserId == id);
             if (userToUpdate == null)
             {
                 return Result<User>.Failure("User not found");
@@ -78,6 +78,20 @@ namespace Backend.Services
             // UPDATING USER DETAILS WITH UPDATED USER DETAILS
             userToUpdate.Username = user.Username;
             userToUpdate.Email = user.Email;
+
+            if (user.Details.Count > 0)
+            {
+                userToUpdate.Details = user.Details;
+            }
+
+            // UPDATING USER STATUS WITH UPDATED USER STATUS
+            if (user.Status.Count > 0)
+            {
+                userToUpdate.Status = user.Status;
+            }
+
+            userToUpdate.RefreshToken = user.RefreshToken;
+            userToUpdate.RefreshTokenExpiryTime = user.RefreshTokenExpiryTime;
             userToUpdate.UpdatedAt = DateTime.UtcNow;
 
             _context.Entry(userToUpdate).State = EntityState.Modified;
