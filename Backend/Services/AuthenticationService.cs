@@ -206,6 +206,10 @@ namespace Backend.Services
             user.RefreshTokenExpiryTime = null;
 
             _context.Users.Update(user);
+
+            // UPDATE LAST LOGOUT TIME
+            user.LastLogout = DateTime.UtcNow;
+            _context.Entry(user).State = EntityState.Modified;
             await _context.SaveChangesAsync();
 
             _logger.LogInformation("User {UserId} logged out successfully", userId);
