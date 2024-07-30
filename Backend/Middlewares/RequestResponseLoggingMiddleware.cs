@@ -42,6 +42,9 @@ namespace Backend.Middlewares
                     context.Response.Body.Seek(0, SeekOrigin.Begin);
                     _logger.LogInformation("Response: {statusCode} | Body: {responseText}", context.Response.StatusCode, responseText);
 
+                    // ENSURE LENGTH OF RESPONSE BODY MATCHES CONTENT-LENGTH HEADER
+                    context.Response.ContentLength = responseBodyStream.Length;
+
                     await responseBodyStream.CopyToAsync(originalBodyStream); // COPY RESPONSE STREAM TO ORIGINAL STREAM
                 }
             }

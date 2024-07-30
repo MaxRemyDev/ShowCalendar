@@ -75,23 +75,36 @@ namespace Backend.Services
                 return Result<User>.Failure("User not found");
             }
 
-            // UPDATING USER DETAILS WITH UPDATED USER DETAILS
-            userToUpdate.Username = user.Username;
-            userToUpdate.Email = user.Email;
+            if (!string.IsNullOrEmpty(user.Username))
+            {
+                userToUpdate.Username = user.Username;
+            }
 
-            if (user.Details.Count > 0)
+            if (!string.IsNullOrEmpty(user.Email))
+            {
+                userToUpdate.Email = user.Email;
+            }
+
+            if (user.Details != null && user.Details.Count > 0)
             {
                 userToUpdate.Details = user.Details;
             }
 
-            // UPDATING USER STATUS WITH UPDATED USER STATUS
-            if (user.Status.Count > 0)
+            if (user.Status != null && user.Status.Count > 0)
             {
                 userToUpdate.Status = user.Status;
             }
 
-            userToUpdate.RefreshToken = user.RefreshToken;
-            userToUpdate.RefreshTokenExpiryTime = user.RefreshTokenExpiryTime;
+            if (!string.IsNullOrEmpty(user.RefreshToken))
+            {
+                userToUpdate.RefreshToken = user.RefreshToken;
+            }
+
+            if (user.RefreshTokenExpiryTime.HasValue)
+            {
+                userToUpdate.RefreshTokenExpiryTime = user.RefreshTokenExpiryTime.Value;
+            }
+
             userToUpdate.UpdatedAt = DateTime.UtcNow;
 
             _context.Entry(userToUpdate).State = EntityState.Modified;

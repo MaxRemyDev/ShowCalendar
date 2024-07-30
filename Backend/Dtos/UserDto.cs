@@ -45,12 +45,12 @@ namespace Backend.Dtos
 
     public class UserUpdateDto
     {
-        public string Username { get; set; } = string.Empty;
-        public string Email { get; set; } = string.Empty;
-        public string Password { get; set; } = string.Empty;
-        public bool IsRememberMe { get; set; } = false;
-        public List<UserDetailsDto> Details { get; set; } = new List<UserDetailsDto>();
-        public List<UserStatusDto> Status { get; set; } = new List<UserStatusDto>();
+        public string? Username { get; set; }
+        public string? Email { get; set; }
+        public string? Password { get; set; }
+        public bool? IsRememberMe { get; set; }
+        public List<UserDetailsDto>? Details { get; set; }
+        public List<UserStatusDto>? Status { get; set; }
     }
 
     public class UserRegistrationDto

@@ -26,18 +26,24 @@ namespace Backend.Services.Extensions
                         IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(jwtSecret)), // SET KEY USED TO SIGN TOKEN
                         ValidateIssuer = false, // DO NOT VALIDATE TOKEN ISSUER //!(RECOMMENDED TO CHANGE IN PRODUCTION)
                         ValidateAudience = false, // DO NOT VALIDATE AUDIENCE //!(RECOMMENDED TO CHANGE IN PRODUCTION)
+                        ClockSkew = TimeSpan.Zero // REMOVE DEFAULT CLOCK SKEW
                     };
                     options.Events = new JwtBearerEvents
                     {
                         // CUSTOMIZE RESPONSE ON AUTHENTICATION FAILURE
                         OnAuthenticationFailed = context =>
                         {
-                            // SET RESPONSE STATUS CODE AND CONTENT TYPE
+                            if (context.Exception.GetType() == typeof(SecurityTokenExpiredException))
+                            {
+                                context.Response.StatusCode = 401;
+                                context.Response.ContentType = "application/json";
+                                return context.Response.WriteAsync(JsonConvert.SerializeObject(new
+                                {
+                                    error = "Token expired"
+                                }));
+                            }
                             context.Response.StatusCode = 401;
                             context.Response.ContentType = "application/json";
-
-                            // RETURN A CUSTOM JSON ERROR MESSAGE
-                            // INFO: CUSTOMIZING ERROR RESPONSE ALLOWS FOR MORE USER-FRIENDLY ERROR HANDLING
                             return context.Response.WriteAsync(JsonConvert.SerializeObject(new
                             {
                                 error = "An authentication error has occurred"

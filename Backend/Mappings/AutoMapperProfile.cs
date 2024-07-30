@@ -12,7 +12,7 @@ namespace Backend.Mappings
             CreateMap<UserRegistrationDto, User>().ReverseMap();
             CreateMap<UserLoginDto, User>().ReverseMap();
             CreateMap<UserDto, User>().ReverseMap();
-            CreateMap<UserUpdateDto, User>().ReverseMap();
+            CreateMap<UserUpdateDto, User>().ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
             CreateMap<UserDetailsDto, UserDetails>().ReverseMap();
             CreateMap<UserStatusDto, UserStatus>().ReverseMap();
 
