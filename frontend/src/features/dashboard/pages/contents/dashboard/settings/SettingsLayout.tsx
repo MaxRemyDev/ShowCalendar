@@ -1,6 +1,5 @@
 "use client";
 
-import { Separator } from "@/components/ui/separator";
 import { Metadata } from "next";
 import { SidebarNav } from "./components/sidebar-nav";
 import ContentsTitle from "@/features/dashboard/components/ContentsTitle";
@@ -13,24 +12,26 @@ export const metadata: Metadata = {
 
 const sidebarNavItems = [
 	{
-		title: "Profile",
-		href: "/dashboard/settings",
-	},
-	{
 		title: "Account",
-		href: "/dashboard/settings/account",
+		href: "account",
 	},
 	{
 		title: "Appearance",
-		href: "/dashboard/settings/appearance",
+		href: "appearance",
+	},
+
+	{
+		title: "Display",
+		href: "display",
 	},
 	{
 		title: "Notifications",
-		href: "/dashboard/settings/notifications",
+		href: "notifications",
 	},
 	{
-		title: "Display",
-		href: "/dashboard/settings/display",
+		title: "Danger Zone",
+		href: "danger-zone",
+		color: "text-red-500 hover:text-red-500",
 	},
 ];
 
@@ -52,7 +53,7 @@ export default function SettingsLayout({ children }: SettingsLayoutProps) {
 							<SidebarNav items={sidebarNavItems} />
 						</aside>
 
-						<div className="flex-1 lg:max-w-2xl">{children}</div>
+						<div className="flex-1 lg:max-w-5xl">{children}</div>
 					</div>
 				</TabsContent>
 			</Tabs>

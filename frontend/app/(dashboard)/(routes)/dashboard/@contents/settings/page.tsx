@@ -1,3 +1,3 @@
-import SettingsPage from "@/features/dashboard/pages/contents/dashboard/SettingsPage";
+import SettingsSection from "@/features/dashboard/pages/contents/dashboard/SettingsSection";
 
-export default SettingsPage;
+export default SettingsSection;
