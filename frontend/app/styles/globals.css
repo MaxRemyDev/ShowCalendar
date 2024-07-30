@@ -56,7 +56,7 @@
 		--card: #ffffff;
 		--card-foreground: #090909;
 
-		--popover: #ffffff;
+		--popover: #f4f4f4;
 		--popover-foreground: #090909;
 
 		--muted: #e7e7e7;
@@ -70,6 +70,42 @@
 		--ring: #090909;
 
 		--radius: 0.5rem;
+
+		/* Error Colors */
+		--error-50: #fef2f2;
+		--error-100: #fee2e2;
+		--error-200: #fecaca;
+		--error-300: #fca5a5;
+		--error-400: #f87171;
+		--error-500: #ef4444;
+		--error-600: #dc2626;
+		--error-700: #b91c1c;
+		--error-800: #991b1b;
+		--error-900: #7f1d1d;
+
+		/* Warning Colors */
+		--warning-50: #fefce8;
+		--warning-100: #fef9c3;
+		--warning-200: #fef08a;
+		--warning-300: #fde047;
+		--warning-400: #facc15;
+		--warning-500: #eab308;
+		--warning-600: #ca8a04;
+		--warning-700: #a16207;
+		--warning-800: #854d0e;
+		--warning-900: #713f12;
+
+		/* Success Colors */
+		--success-50: #f0fdf4;
+		--success-100: #dcfce7;
+		--success-200: #bbf7d0;
+		--success-300: #86efac;
+		--success-400: #4ade80;
+		--success-500: #22c55e;
+		--success-600: #16a34a;
+		--success-700: #15803d;
+		--success-800: #166534;
+		--success-900: #14532d;
 	}
 
 	.dark {
@@ -118,7 +154,7 @@
 		--card: #2c2c2c;
 		--card-foreground: #f4f4f4;
 
-		--popover: #434343;
+		--popover: #181818;
 		--popover-foreground: #fcfcfc;
 
 		--muted: #4f4f4f;
