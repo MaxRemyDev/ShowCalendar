@@ -4,6 +4,7 @@ import { cn } from "@/lib/utils";
 interface ContentsTitleProps {
 	title?: string;
 	titleSize?: string;
+	titleColor?: string;
 
 	description?: string;
 	descriptionSize?: string;
@@ -19,6 +20,7 @@ interface ContentsTitleProps {
 export default function ContentsTitle({
 	title,
 	titleSize = "text-3xl",
+	titleColor = "",
 
 	description,
 	descriptionSize = "text-base",
@@ -35,7 +37,9 @@ export default function ContentsTitle({
 			<div className="flex items-center justify-between space-y-2">
 				<div className={cn(classNameOfTitleDescription)}>
 					{title && (
-						<h2 className={cn("font-bold tracking-tight", titleSize)}>{title}</h2>
+						<h2 className={cn("font-bold tracking-tight", titleSize, titleColor)}>
+							{title}
+						</h2>
 					)}
 					{description && (
 						<p className={cn(descriptionSize, descriptionColor)}>{description}</p>

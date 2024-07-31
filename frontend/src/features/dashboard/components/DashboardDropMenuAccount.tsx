@@ -31,12 +31,6 @@ import {
 	Loader,
 } from "lucide-react";
 
-const fakeUserData = {
-	name: "Name",
-	email: "name@example.com",
-	avatarUrl: "",
-};
-
 export default function DashboardDropMenuAccount() {
 	const { user } = useUser();
 
@@ -45,10 +39,10 @@ export default function DashboardDropMenuAccount() {
 			<DropdownMenuTrigger asChild>
 				{user ? (
 					<Button variant="secondary" size="icon" className="rounded-full">
-						<Avatar>
+						<Avatar className="border-2">
 							<AvatarImage
-								src={fakeUserData.avatarUrl}
-								alt={`@${fakeUserData.name}`}
+								src={user?.details?.[0]?.avatar || ""}
+								alt={user?.username || "User"}
 							/>
 							<AvatarFallback>
 								{user.username ? user.username.slice(0, 2).toUpperCase() : <User />}
