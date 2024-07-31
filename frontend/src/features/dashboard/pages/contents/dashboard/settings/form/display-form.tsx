@@ -16,6 +16,8 @@ import {
 	FormMessage,
 } from "@/components/ui/form";
 import { toast } from "@/components/ui/use-toast";
+import { Separator } from "@/components/ui/separator";
+import { useState } from "react";
 
 const sidebarItems = [
 	{ id: "messages", label: "Messages" },
@@ -56,6 +58,8 @@ export function DisplayForm() {
 		defaultValues,
 	});
 
+	const [isLoading, setIsLoading] = useState(false);
+
 	function onSubmit(data: DisplayFormValues) {
 		toast({
 			title: "You submitted the following values:",
@@ -67,115 +71,150 @@ export function DisplayForm() {
 		});
 	}
 
+	function handleCancel() {
+		form.reset();
+
+		toast({
+			title: "Changes cancelled",
+			variant: "success",
+			persistent: true,
+		});
+	}
+
 	return (
-		<Form {...form}>
-			<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-				<FormField
-					control={form.control}
-					name="sidebar"
-					render={() => (
-						<FormItem>
-							<div className="mb-4">
-								<FormLabel className="text-base">Sidebar</FormLabel>
-								<FormDescription>
-									Select the items you want to display in the sidebar.
-								</FormDescription>
-							</div>
-							{sidebarItems.map((item) => (
-								<FormField
-									key={item.id}
-									control={form.control}
-									name="sidebar"
-									render={({ field }) => {
-										return (
-											<FormItem
-												key={item.id}
-												className="flex flex-row items-start space-x-3 space-y-0"
-											>
-												<FormControl>
-													<Checkbox
-														checked={field.value?.includes(item.id)}
-														onCheckedChange={(checked) => {
-															return checked
-																? field.onChange([
-																		...field.value,
-																		item.id,
-																  ])
-																: field.onChange(
-																		field.value?.filter(
-																			(value) =>
-																				value !== item.id
-																		)
-																  );
-														}}
-													/>
-												</FormControl>
-												<FormLabel className="font-normal">
-													{item.label}
-												</FormLabel>
-											</FormItem>
-										);
-									}}
-								/>
-							))}
-							<FormMessage />
-						</FormItem>
-					)}
-				/>
-				<FormField
-					control={form.control}
-					name="calendar"
-					render={() => (
-						<FormItem>
-							<div className="mb-4">
-								<FormLabel className="text-base">Calendar</FormLabel>
-								<FormDescription>
-									Select the items you want to display in the calendar.
-								</FormDescription>
-							</div>
-							{calendarItems.map((item) => (
-								<FormField
-									key={item.id}
-									control={form.control}
-									name="calendar"
-									render={({ field }) => {
-										return (
-											<FormItem
-												key={item.id}
-												className="flex flex-row items-start space-x-3 space-y-0"
-											>
-												<FormControl>
-													<Checkbox
-														checked={field.value?.includes(item.id)}
-														onCheckedChange={(checked) => {
-															return checked
-																? field.onChange([
-																		...field.value,
-																		item.id,
-																  ])
-																: field.onChange(
-																		field.value?.filter(
-																			(value) =>
-																				value !== item.id
-																		)
-																  );
-														}}
-													/>
-												</FormControl>
-												<FormLabel className="font-normal">
-													{item.label}
-												</FormLabel>
-											</FormItem>
-										);
-									}}
-								/>
-							))}
-							<FormMessage />
-						</FormItem>
-					)}
-				/>
-				<Button type="submit">Update display</Button>
-			</form>
-		</Form>
+		<div className="space-y-8">
+			<Separator />
+			<div>
+				<h3 className="text-lg font-medium">Display</h3>
+				<p className="text-sm text-muted-foreground">Manage your display settings</p>
+			</div>
+
+			<Form {...form}>
+				<form
+					onSubmit={form.handleSubmit(onSubmit)}
+					className="space-y-8 bg-background-50 border-2 border-background-100 rounded-xl p-5"
+				>
+					<FormField
+						control={form.control}
+						name="sidebar"
+						render={() => (
+							<FormItem>
+								<div className="mb-4">
+									<FormLabel className="text-base">Sidebar</FormLabel>
+									<FormDescription>
+										Select the items you want to display in the sidebar.
+									</FormDescription>
+								</div>
+								{sidebarItems.map((item) => (
+									<FormField
+										key={item.id}
+										control={form.control}
+										name="sidebar"
+										render={({ field }) => {
+											return (
+												<FormItem
+													key={item.id}
+													className="flex flex-row items-start space-x-3 space-y-0"
+												>
+													<FormControl>
+														<Checkbox
+															checked={field.value?.includes(item.id)}
+															onCheckedChange={(checked) => {
+																return checked
+																	? field.onChange([
+																			...field.value,
+																			item.id,
+																	  ])
+																	: field.onChange(
+																			field.value?.filter(
+																				(value) =>
+																					value !==
+																					item.id
+																			)
+																	  );
+															}}
+														/>
+													</FormControl>
+													<FormLabel className="font-normal">
+														{item.label}
+													</FormLabel>
+												</FormItem>
+											);
+										}}
+									/>
+								))}
+								<FormMessage />
+							</FormItem>
+						)}
+					/>
+					<FormField
+						control={form.control}
+						name="calendar"
+						render={() => (
+							<FormItem>
+								<div className="mb-4">
+									<FormLabel className="text-base">Calendar</FormLabel>
+									<FormDescription>
+										Select the items you want to display in the calendar.
+									</FormDescription>
+								</div>
+								{calendarItems.map((item) => (
+									<FormField
+										key={item.id}
+										control={form.control}
+										name="calendar"
+										render={({ field }) => {
+											return (
+												<FormItem
+													key={item.id}
+													className="flex flex-row items-start space-x-3 space-y-0"
+												>
+													<FormControl>
+														<Checkbox
+															checked={field.value?.includes(item.id)}
+															onCheckedChange={(checked) => {
+																return checked
+																	? field.onChange([
+																			...field.value,
+																			item.id,
+																	  ])
+																	: field.onChange(
+																			field.value?.filter(
+																				(value) =>
+																					value !==
+																					item.id
+																			)
+																	  );
+															}}
+														/>
+													</FormControl>
+													<FormLabel className="font-normal">
+														{item.label}
+													</FormLabel>
+												</FormItem>
+											);
+										}}
+									/>
+								))}
+								<FormMessage />
+							</FormItem>
+						)}
+					/>
+				</form>
+				<form onSubmit={form.handleSubmit(onSubmit)} className="flex space-x-4 justify-end">
+					<Button
+						variant="outline"
+						type="reset"
+						disabled={isLoading}
+						onClick={handleCancel}
+					>
+						Cancel
+					</Button>
+					<Button type="submit" disabled={isLoading}>
+						{isLoading ? "Updating..." : "Update display"}
+					</Button>
+				</form>
+			</Form>
+		</div>
 	);
 }
