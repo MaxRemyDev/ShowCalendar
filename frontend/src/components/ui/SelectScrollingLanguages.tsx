@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Globe } from "lucide-react";
 import {
 	Select,
@@ -11,11 +11,36 @@ import {
 } from "@/components/ui/select";
 import languagesData from "@/components/data/languages";
 
-export function SelectScrollingLanguages({ iconDisable = false }) {
-	const [selectedLanguage, setSelectedLanguage] = useState("en");
+interface SelectScrollingLanguagesProps {
+	name: string;
+	defaultValue: string;
+	iconDisable?: boolean;
+	onValueChange?: (value: string) => void;
+	disabled?: boolean;
+}
+
+export function SelectScrollingLanguages({
+	name,
+	defaultValue,
+	iconDisable = false,
+	onValueChange,
+	disabled,
+}: SelectScrollingLanguagesProps) {
+	const [selectedLanguage, setSelectedLanguage] = useState(defaultValue);
+
+	useEffect(() => {
+		setSelectedLanguage(defaultValue);
+	}, [defaultValue]);
+
+	const handleChange = (value: string) => {
+		setSelectedLanguage(value);
+		if (onValueChange) {
+			onValueChange(value);
+		}
+	};
 
 	return (
-		<Select value={selectedLanguage} onValueChange={setSelectedLanguage}>
+		<Select value={selectedLanguage} onValueChange={handleChange} disabled={disabled}>
 			<SelectTrigger className="w-[150px] flex justify-between items-center">
 				{!iconDisable && <Globe className="mr-2" />}
 				<SelectValue placeholder="Select language" />
