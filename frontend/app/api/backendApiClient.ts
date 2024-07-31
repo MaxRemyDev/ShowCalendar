@@ -1,6 +1,7 @@
 import axios, { AxiosError, AxiosResponse, InternalAxiosRequestConfig } from "axios";
 import { getCookie } from "cookies-next";
 import { handleError } from "./lib/error-handler";
+import { useRouter } from "next/navigation";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -36,7 +37,9 @@ BackendApiClient.interceptors.response.use(
 			_retry?: boolean;
 			_retryCount?: number;
 		};
-		return handleError(error, config);
+		const router = useRouter();
+
+		return handleError(error, config, router);
 	}
 );
 

@@ -76,6 +76,21 @@ export const getUserById = async (userId: number) => {
 	}
 };
 
+export const updateUser = async (userId: number, data: any) => {
+	try {
+		const response = await BackendApiClient.put(`/api/users/${userId}`, data);
+
+		if (cachedUser && cachedUser.userId === userId) {
+			cachedUser = response.data;
+		}
+		userCache.set(userId, response.data);
+		return response.data;
+	} catch (error) {
+		console.error("Error updating user data:", error);
+		throw error;
+	}
+};
+
 let cachedUser: any = null;
 
 export const refreshUser = async () => {
