@@ -138,10 +138,10 @@ const CountryState = ({
 	}, [dropdownCountryValue, dropdownStateValue, setValue]);
 
 	return (
-		<div className="flex flex-col sm:flex-row w-full max-w-[480px] items-center justify-start sm:space-x-3 space-y-3 sm:space-y-0">
-			<CountryDropdown disabled={isDisabled} className="w-full sm:w-auto" />
+		<div className="flex flex-col sm:flex-row w-full max-w-[480px] items-center justify-between space-y-3 sm:space-y-0">
+			<CountryDropdown disabled={isDisabled} className="w-full sm:w-[calc(50%-1rem)]" />
 			<span className="hidden sm:inline mx-2">-</span>
-			<StateDropdown disabled={isDisabled} className="w-full sm:w-auto" />
+			<StateDropdown disabled={isDisabled} className="w-full sm:w-[calc(50%-1rem)]" />
 		</div>
 	);
 };
@@ -184,13 +184,16 @@ export function AccountForm() {
 				bio: userDetails.bio || "",
 				urls: userDetails.websites?.map((url) => ({ value: url })) || [{ value: "" }],
 				location: userDetails.location || "",
-				countryValue: country || "",
-				stateValue: state || "",
+				countryValue: country?.trim() || "",
+				stateValue: state?.trim() || "",
 				avatar: userDetails.avatar || "",
 			};
 			console.log("Initial Values:", values);
 			methods.reset(values);
 			setInitialValues(values);
+
+			useDropdownStore.getState().setCountryValue(country?.trim() || "");
+			useDropdownStore.getState().setStateValue(state?.trim() || "");
 		}
 	}, [user, methods]);
 
