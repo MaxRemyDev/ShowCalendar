@@ -6,7 +6,6 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useMediaQuery } from "react-responsive";
 import { useSidebar } from "./hooks/useSidebar";
-import { motion } from "framer-motion";
 
 interface FixedLayoutProps {
 	sidebarContent: React.ReactNode;
@@ -30,7 +29,6 @@ const FixedLayout: React.FC<FixedLayoutProps> = ({
 
 	const handleCollapse = () => {
 		toggle();
-		document.cookie = `fixed-layout:collapsed=${JSON.stringify(!isOpen)}`;
 	};
 
 	const getAppliedDirection = () => {
