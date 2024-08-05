@@ -1,10 +1,11 @@
+import * as React from "react";
 import { CalendarIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "./button";
 import { Calendar } from "./calendar";
 import { DateInput, DateSegment } from "./minimal-date-field";
 import { FieldError, FieldGroup, Label } from "./field";
-import { AriaPopoverComponent as Popover } from "./popover";
+import { Popover, PopoverTrigger, PopoverContent } from "./popover";
 import { useState, useEffect } from "react";
 import { format, parse, parseISO } from "date-fns";
 import { CalendarDate, DateValue } from "@internationalized/date";
@@ -14,10 +15,8 @@ import {
 	DateRangePicker as AriaDateRangePicker,
 	DateRangePickerProps as AriaDateRangePickerProps,
 	ValidationResult as AriaValidationResult,
-	composeRenderProps,
 	Text,
 } from "react-aria-components";
-import * as React from "react";
 
 const DatePicker = AriaDatePicker;
 const DateRangePicker = AriaDateRangePicker;
@@ -32,19 +31,27 @@ const DatePickerContent = ({
 	popoverClassName?: string;
 	children?: React.ReactNode;
 }>) => (
-	<Popover
-		className={composeRenderProps(popoverClassName, (className) => cn("w-auto p-3", className))}
-		{...props}
-	>
-		<div
-			role="dialog"
-			className={cn(
-				"flex w-full flex-col space-y-4 outline-none sm:flex-row sm:space-x-4 sm:space-y-0",
-				className
-			)}
-		>
-			{children}
-		</div>
+	<Popover>
+		<PopoverTrigger asChild>
+			<Button
+				variant="ghost"
+				size="icon"
+				className="mr-1 size-6 data-[focus-visible]:ring-offset-0"
+			>
+				<CalendarIcon aria-hidden className="size-4" />
+			</Button>
+		</PopoverTrigger>
+		<PopoverContent className={cn("w-auto p-3", popoverClassName)} {...props}>
+			<div
+				role="dialog"
+				className={cn(
+					"flex w-full flex-col space-y-4 outline-none sm:flex-row sm:space-x-4 sm:space-y-0",
+					className
+				)}
+			>
+				{children}
+			</div>
+		</PopoverContent>
 	</Popover>
 );
 
@@ -122,9 +129,7 @@ function MinimalDatePicker({
 
 	return (
 		<DatePicker
-			className={composeRenderProps(className, (className) =>
-				cn("group flex flex-col gap-2", className)
-			)}
+			className={cn("group flex flex-col gap-2", className)}
 			value={date}
 			onChange={handleDateChange as any}
 			{...props}
@@ -139,13 +144,15 @@ function MinimalDatePicker({
 				>
 					{(segment) => <DateSegment segment={segment} />}
 				</DateInput>
-				<Button
-					variant="ghost"
-					size="icon"
-					className="mr-1 size-6 data-[focus-visible]:ring-offset-0"
-				>
-					<CalendarIcon aria-hidden className="size-4" />
-				</Button>
+				<DatePickerContent>
+					<Calendar
+						mode="single"
+						selected={date ? new Date(date.toString()) : undefined}
+						onSelect={handleDateChange}
+						month={month}
+						onMonthChange={handleMonthChange}
+					/>
+				</DatePickerContent>
 			</FieldGroup>
 			{description && (
 				<Text className="text-sm text-muted-foreground" slot="description">
@@ -157,19 +164,6 @@ function MinimalDatePicker({
 					? errorMessage({} as AriaValidationResult)
 					: errorMessage}
 			</FieldError>
-			<DatePickerContent>
-				<Calendar
-					mode="single"
-					selected={date ? new Date(date.toString()) : undefined}
-					onSelect={handleDateChange}
-					month={month}
-					onMonthChange={handleMonthChange}
-					classNames={{
-						day_selected:
-							"bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground focus:bg-primary focus:text-primary-foreground",
-					}}
-				/>
-			</DatePickerContent>
 		</DatePicker>
 	);
 }
@@ -296,9 +290,7 @@ function MinimalDateRangePicker({
 
 	return (
 		<DateRangePicker
-			className={composeRenderProps(className, (className) =>
-				cn("group flex flex-col gap-2", className)
-			)}
+			className={cn("group flex flex-col gap-2", className)}
 			value={{ start: range.start as DateValue, end: range.end as DateValue }}
 			onChange={handleRangeChange as any}
 			{...props}
@@ -325,13 +317,18 @@ function MinimalDateRangePicker({
 				>
 					{(segment) => <DateSegment segment={segment} />}
 				</DateInput>
-				<Button
-					variant="ghost"
-					size="icon"
-					className="mr-1 size-6 data-[focus-visible]:ring-offset-0"
-				>
-					<CalendarIcon aria-hidden className="size-4" />
-				</Button>
+				<DatePickerContent>
+					<Calendar
+						mode="range"
+						selected={{
+							start: range.start ? new Date(range.start.toString()) : undefined,
+							end: range.end ? new Date(range.end.toString()) : undefined,
+						}}
+						onSelect={handleRangeChange}
+						month={month}
+						onMonthChange={handleMonthChange}
+					/>
+				</DatePickerContent>
 			</FieldGroup>
 			{description && (
 				<Text className="text-sm text-muted-foreground" slot="description">
@@ -343,22 +340,6 @@ function MinimalDateRangePicker({
 					? errorMessage({} as AriaValidationResult)
 					: errorMessage}
 			</FieldError>
-			<DatePickerContent>
-				<Calendar
-					mode="range"
-					selected={{
-						start: range.start ? new Date(range.start.toString()) : undefined,
-						end: range.end ? new Date(range.end.toString()) : undefined,
-					}}
-					onSelect={handleRangeChange}
-					month={month}
-					onMonthChange={handleMonthChange}
-					classNames={{
-						day_selected:
-							"bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground focus:bg-primary focus:text-primary-foreground",
-					}}
-				/>
-			</DatePickerContent>
 		</DateRangePicker>
 	);
 }
