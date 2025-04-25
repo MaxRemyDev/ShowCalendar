@@ -6,7 +6,6 @@
 
 **_New features to add_**
 
-- [ ] **add:** Microsoft Calendar API integration
 - [ ] **add:** Apple Calendar API integration
 - [ ] **add:** Calendar events caching for performance
 - [ ] **add:** Webhooks for real-time calendar updates
@@ -21,12 +20,12 @@
 
 #### IN PROGRESS
 
-- [ ] **adding:** Google Calendar API integration
 - [ ] **adding:** Provider-Based Microservice architecture implementation
+- [ ] **adding:** Microsoft Calendar API integration
 
 #### DONE
 
--
+- - [x] **added:** Google Calendar API integration
 
 [high]: https://img.shields.io/badge/-HIGH-red
 [mid]: https://img.shields.io/badge/-MID-yellow
