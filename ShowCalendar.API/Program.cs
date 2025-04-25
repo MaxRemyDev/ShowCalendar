@@ -1,25 +1,40 @@
+using DotNetEnv;
+using ShowCalendar.API.Extensions;
+
+Env.Load(); // LOAD ENVIRONMENT VARIABLES
+
+// BUILDER
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
+// SERVICES
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddGoogleCalendarServices(builder.Configuration); // REGISTER GOOGLE CALENDAR SERVICES
 
+// API DOCUMENTATION
+builder.Services.AddSwaggerGen();
+builder.Services.AddEndpointsApiExplorer();
+
+// CREATE APPLICATION
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// SWAGGER UI
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(c =>
+        {
+            c.SwaggerEndpoint("/swagger/v1/swagger.json", "ShowCalendar API V1");
+            c.RoutePrefix = string.Empty;  // SET SWAGGER UI AT APP ROOT
+        }
+    );
 }
 
+// MIDDLEWARE
 app.UseHttpsRedirection();
-
 app.UseAuthorization();
 
+// ROUTES
 app.MapControllers();
 
+// RUN APPLICATION
 app.Run();
