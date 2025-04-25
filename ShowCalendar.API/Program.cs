@@ -8,7 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // SERVICES
 builder.Services.AddControllers();
-builder.Services.AddGoogleCalendarServices(builder.Configuration); // REGISTER GOOGLE CALENDAR SERVICES
+builder.Services.AddCalendarServices(builder.Configuration); // REGISTER CALENDAR SERVICES
 
 // API DOCUMENTATION
 builder.Services.AddSwaggerGen();

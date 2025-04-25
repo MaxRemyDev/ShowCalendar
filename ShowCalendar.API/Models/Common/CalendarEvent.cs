@@ -1,4 +1,4 @@
-namespace ShowCalendar.API.Models
+namespace ShowCalendar.API.Models.Common
 {
     public class CalendarEvent
     {
@@ -7,5 +7,6 @@ namespace ShowCalendar.API.Models
         public string Description { get; set; } = string.Empty;
         public DateTime Start { get; set; }
         public DateTime End { get; set; }
+        public string Provider { get; set; } = string.Empty;
     }
-}
+} 

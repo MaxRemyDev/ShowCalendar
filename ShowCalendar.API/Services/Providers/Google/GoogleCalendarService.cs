@@ -1,5 +1,6 @@
-using ShowCalendar.API.Interfaces;
-using ShowCalendar.API.Models;
+using ShowCalendar.API.Models.Common;
+using ShowCalendar.API.Models.Providers.Google;
+using ShowCalendar.API.Services.Common;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Calendar.v3;
 using Google.Apis.Calendar.v3.Data;
@@ -8,14 +9,15 @@ using Microsoft.Extensions.Options;
 using Google.Apis.Auth.OAuth2.Flows;
 using Google.Apis.Auth.OAuth2.Responses;
 
-namespace ShowCalendar.API.Services
+namespace ShowCalendar.API.Services.Providers.Google
 {
-    public class GoogleCalendarService : ICalendarService
+    public class GoogleCalendarService : CalendarServiceBase
     {
         private readonly GoogleCalendarConfig _config;
         private CalendarService? _calendarService;
 
-        public string ProviderName => "Google";
+        public override string ProviderName => "Google";
+        public override bool IsEnabled => _config.Enabled;
 
         public GoogleCalendarService(IOptions<GoogleCalendarConfig> config)
         {
@@ -25,7 +27,6 @@ namespace ShowCalendar.API.Services
         // GET CALENDAR SERVICE ASYNC
         private Task<CalendarService> GetCalendarServiceAsync()
         {
-
             // CHECK IF CALENDAR SERVICE IS ALREADY INITIALIZED
             if (_calendarService != null)
             {
@@ -76,8 +77,13 @@ namespace ShowCalendar.API.Services
         }
 
         // GET EVENS ASYNC
-        public async Task<List<CalendarEvent>> GetEventsAsync(DateTime startDate, DateTime endDate)
+        public override async Task<List<CalendarEvent>> GetEventsAsync(DateTime startDate, DateTime endDate)
         {
+            if (!IsEnabled)
+            {
+                return EmptyEventList();
+            }
+
             var events = new List<CalendarEvent>(); // CREATE EVENTS LIST
 
             // TRY TO GET EVENTS
@@ -118,14 +124,13 @@ namespace ShowCalendar.API.Services
         {
             if (googleEvents == null) return Enumerable.Empty<CalendarEvent>();
 
-            return googleEvents.Select(e => new CalendarEvent
-            {
-                Id = e.Id ?? string.Empty,
-                Title = e.Summary ?? string.Empty,
-                Description = e.Description,
-                Start = e.Start?.DateTimeDateTimeOffset?.DateTime ?? DateTime.Parse(e.Start?.Date ?? DateTime.Now.ToString("yyyy-MM-dd")),
-                End = e.End?.DateTimeDateTimeOffset?.DateTime ?? DateTime.Parse(e.End?.Date ?? DateTime.Now.AddDays(1).ToString("yyyy-MM-dd")),
-            });
+            return googleEvents.Select(e => CreateCalendarEvent(
+                id: e.Id ?? string.Empty,
+                title: e.Summary ?? string.Empty,
+                description: e.Description ?? string.Empty,
+                start: e.Start?.DateTimeDateTimeOffset?.DateTime ?? DateTime.Parse(e.Start?.Date ?? DateTime.Now.ToString("yyyy-MM-dd")),
+                end: e.End?.DateTimeDateTimeOffset?.DateTime ?? DateTime.Parse(e.End?.Date ?? DateTime.Now.AddDays(1).ToString("yyyy-MM-dd"))
+            ));
         }
     }
-}
+} 

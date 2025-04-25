@@ -4,7 +4,7 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Auth.OAuth2.Flows;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
-using ShowCalendar.API.Models;
+using ShowCalendar.API.Models.Providers.Google;
 
 namespace ShowCalendar.API.Controllers
 {

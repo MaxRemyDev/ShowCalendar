@@ -1,4 +1,4 @@
-using ShowCalendar.API.Models;
+using ShowCalendar.API.Models.Common;
 
 namespace ShowCalendar.API.Interfaces
 {
@@ -6,5 +6,6 @@ namespace ShowCalendar.API.Interfaces
     {
         Task<List<CalendarEvent>> GetEventsAsync(DateTime startDate, DateTime endDate);
         string ProviderName { get; }
+        bool IsEnabled { get; }
     }
 }

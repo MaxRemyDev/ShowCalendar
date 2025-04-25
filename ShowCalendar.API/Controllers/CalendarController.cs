@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
-using ShowCalendar.API.Interfaces;
-using ShowCalendar.API.Models;
+using ShowCalendar.API.Models.Common;
+using ShowCalendar.API.Services.Common;
 
 namespace ShowCalendar.API.Controllers
 {
@@ -8,11 +8,11 @@ namespace ShowCalendar.API.Controllers
     [Route("api/[controller]")]
     public class CalendarController : ControllerBase
     {
-        private readonly IEnumerable<ICalendarService> _calendarServices;
+        private readonly CalendarServiceFactory _calendarServiceFactory;
 
-        public CalendarController(IEnumerable<ICalendarService> calendarServices)
+        public CalendarController(CalendarServiceFactory calendarServiceFactory)
         {
-            _calendarServices = calendarServices;
+            _calendarServiceFactory = calendarServiceFactory;
         }
 
         // GET EVENTS ENDPOINT WITH OPTIONAL DATE RANGE AND PROVIDER FILTERS
@@ -32,8 +32,8 @@ namespace ShowCalendar.API.Controllers
 
                 // GET SERVICES
                 var services = string.IsNullOrEmpty(provider)
-                    ? _calendarServices
-                    : _calendarServices.Where(s => s.ProviderName.Equals(provider, StringComparison.OrdinalIgnoreCase));
+                    ? _calendarServiceFactory.GetEnabledServices()
+                    : _calendarServiceFactory.GetServicesByProvider(provider);
 
                 // CHECK IF ANY SERVICES ARE FOUND
                 if (!services.Any())
@@ -52,7 +52,7 @@ namespace ShowCalendar.API.Controllers
                 {
                     EventCount = allEvent.Count, // COUNT OF EVENTS
                     TimeRange = $"From {effectiveStartDate} to {effectiveEndDate}", // SELECTED TIME RANGE
-                    Provider = _calendarServices.Select(s => s.ProviderName), // SHOW LIST OF PROVIDER SELECTED
+                    Provider = services.Select(s => s.ProviderName), // SHOW LIST OF PROVIDER SELECTED
                     Events = allEvent // SHOW ALL EVENTS FROM PROVIDER
                 });
             }
@@ -66,7 +66,7 @@ namespace ShowCalendar.API.Controllers
         [HttpGet("providers")]
         public ActionResult<IEnumerable<string>> GetProvider()
         {
-            return Ok(_calendarServices.Select(s => s.ProviderName));
+            return Ok(_calendarServiceFactory.GetAvailableProviderNames());
         }
     }
 }
