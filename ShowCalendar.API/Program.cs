@@ -1,5 +1,6 @@
 using DotNetEnv;
 using ShowCalendar.API.Extensions;
+using ShowCalendar.API.Middleware;
 
 Env.Load(); // LOAD ENVIRONMENT VARIABLES
 
@@ -30,6 +31,7 @@ if (app.Environment.IsDevelopment())
 }
 
 // MIDDLEWARE
+app.UseGlobalExceptionHandler(app.Environment.IsDevelopment()); 
 app.UseHttpsRedirection();
 app.UseAuthorization();
 
