@@ -8,5 +8,6 @@ namespace ShowCalendar.API.Models.Providers.Apple
         public string RefreshToken { get; set; } = string.Empty;
         public string[] Scopes { get; set; } = Array.Empty<string>();
         public bool Enabled { get; set; } = false;
+        public string? UserEmail { get; set; }
     }
 } 

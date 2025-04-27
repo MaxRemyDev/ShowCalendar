@@ -7,14 +7,21 @@ namespace ShowCalendar.API.Services.Common
     {
         public abstract string ProviderName { get; }
         public abstract bool IsEnabled { get; }
-
         public abstract Task<List<CalendarEvent>> GetEventsAsync(DateTime startDate, DateTime endDate);
+        
+        // GETS THE EMAIL ADDRESS ASSOCIATED WITH THIS CALENDAR SERVICE.
+        public virtual string GetUserEmail()
+        {
+            return $"{ProviderName.ToLower()} - unknown email";
+        }
 
+        // RETURNS AN EMPTY LIST OF CALENDAR EVENTS
         protected List<CalendarEvent> EmptyEventList()
         {
             return new List<CalendarEvent>();
         }
 
+        // CREATES A NEW CALENDAR EVENT
         protected CalendarEvent CreateCalendarEvent(
             string id,
             string title,

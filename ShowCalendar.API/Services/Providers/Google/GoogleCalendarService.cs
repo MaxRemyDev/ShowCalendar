@@ -8,6 +8,7 @@ using Google.Apis.Services;
 using Microsoft.Extensions.Options;
 using Google.Apis.Auth.OAuth2.Flows;
 using Google.Apis.Auth.OAuth2.Responses;
+using GoogleEvent = Google.Apis.Calendar.v3.Data.Event;
 
 namespace ShowCalendar.API.Services.Providers.Google
 {
@@ -15,13 +16,63 @@ namespace ShowCalendar.API.Services.Providers.Google
     {
         private readonly GoogleCalendarConfig _config;
         private CalendarService? _calendarService;
+        private readonly ILogger<GoogleCalendarService> _logger;
 
         public override string ProviderName => "Google";
         public override bool IsEnabled => _config.Enabled;
 
-        public GoogleCalendarService(IOptions<GoogleCalendarConfig> config)
+        public GoogleCalendarService(IOptions<GoogleCalendarConfig> config, ILogger<GoogleCalendarService> logger)
         {
             _config = config.Value;
+            _logger = logger;
+        }
+
+        public override string GetUserEmail()
+        {
+            try
+            {
+                // RETRIEVE USER PROFILE INFORMATION SYNCHRONOUSLY
+                var task = GetUserEmailAsync();
+                task.Wait();
+                return task.Result;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Unable to retrieve Google account email: {ex.Message}");
+                return $"{ProviderName.ToLower()} - unknown email";
+            }
+        }
+        
+        private async Task<string> GetUserEmailAsync()
+        {
+            try
+            {
+                var service = await GetCalendarServiceAsync();
+                
+                // GET THE LIST OF CALENDARS TO OBTAIN THE PRIMARY EMAIL
+                var calendarListRequest = service.CalendarList.List();
+                var calendarList = await calendarListRequest.ExecuteAsync();
+                
+                // THE FIRST CALENDAR IS USUALLY THE MAIN CALENDAR WITH THE USER'S EMAIL
+                if (calendarList?.Items?.Count > 0)
+                {
+                    var primaryCalendar = calendarList.Items.FirstOrDefault(c => c.Primary == true);
+                    if (primaryCalendar != null)
+                    {
+                        return primaryCalendar.Id; // THE PRIMARY CALENDAR ID IS THE EMAIL
+                    }
+                    
+                    // IF NO PRIMARY CALENDAR IS FOUND, USE THE FIRST ONE
+                    return calendarList.Items[0].Id;
+                }
+                
+                return "unknown email";
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Unable to retrieve Google account email: {ex.Message}");
+                return "unknown email";
+            }
         }
 
         // GET CALENDAR SERVICE ASYNC
@@ -41,7 +92,7 @@ namespace ShowCalendar.API.Services.Providers.Google
                 // CHECK IF REFRESH TOKEN IS AVAILABLE
                 if (string.IsNullOrEmpty(_config.RefreshToken))
                 {
-                    Console.WriteLine("No RefreshToken available, need to generate one.");
+                    _logger.LogError("No RefreshToken available, need to generate one.");
                     throw new InvalidOperationException("RefreshToken is missing. Configure it in environment variable");
                 }
 
@@ -71,7 +122,7 @@ namespace ShowCalendar.API.Services.Providers.Google
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error initializing Google Calendar Service: {ex.Message}");
+                _logger.LogError($"Error initializing Google Calendar Service: {ex.Message}");
                 throw;
             }
         }
@@ -114,13 +165,13 @@ namespace ShowCalendar.API.Services.Providers.Google
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error fetching Google Calendar events: {ex.Message}");
+                _logger.LogError($"Error fetching Google Calendar events: {ex.Message}");
             }
 
             return events;
         }
 
-        private IEnumerable<CalendarEvent> GoogleEvents(IList<Event> googleEvents, string calendarId)
+        private IEnumerable<CalendarEvent> GoogleEvents(IList<GoogleEvent> googleEvents, string calendarId)
         {
             if (googleEvents == null) return Enumerable.Empty<CalendarEvent>();
 

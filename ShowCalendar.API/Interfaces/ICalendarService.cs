@@ -6,6 +6,7 @@ namespace ShowCalendar.API.Interfaces
     {
         Task<List<CalendarEvent>> GetEventsAsync(DateTime startDate, DateTime endDate);
         string ProviderName { get; }
-        bool IsEnabled { get; }
+        bool IsEnabled { get; }      
+        string GetUserEmail();
     }
 }

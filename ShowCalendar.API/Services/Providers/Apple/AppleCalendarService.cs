@@ -28,5 +28,10 @@ namespace ShowCalendar.API.Services.Providers.Apple
             Console.WriteLine("Apple Calendar implementation not yet available");
             return Task.FromResult(EmptyEventList());
         }
+
+        public override string GetUserEmail()
+        {
+            return _config.UserEmail ?? "unknown email";
+        }
     }
 } 
