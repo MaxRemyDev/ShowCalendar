@@ -1,29 +1,43 @@
 using Microsoft.AspNetCore.Mvc;
+using ShowCalendar.API.Interfaces;
 using ShowCalendar.API.Models.Common;
 using ShowCalendar.API.Services.Common;
+using ShowCalendar.API.Services.Providers.Microsoft;
+using Microsoft.Graph;
+using Microsoft.Kiota.Abstractions.Authentication;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace ShowCalendar.API.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/calendar")]
     public class CalendarController : ControllerBase
     {
         private readonly CalendarServiceFactory _calendarServiceFactory;
+        private readonly MicrosoftAuthService _microsoftAuthService;
+        private readonly ILogger<CalendarController> _logger;
 
-        public CalendarController(CalendarServiceFactory calendarServiceFactory)
+        public CalendarController(
+            CalendarServiceFactory calendarServiceFactory,
+            MicrosoftAuthService microsoftAuthService,
+            ILogger<CalendarController> logger)
         {
             _calendarServiceFactory = calendarServiceFactory;
+            _microsoftAuthService = microsoftAuthService;
+            _logger = logger;
         }
 
-        // GET EVENTS ENDPOINT WITH OPTIONAL DATE RANGE AND PROVIDER FILTERS
+        // GET ALL EVENTS FROM ALL PROVIDERS OR SPECIFIC PROVIDER
         [HttpGet("events")]
-        public async Task<ActionResult> GetEvent(
+        public async Task<ActionResult> GetEvents(
             [FromQuery] DateTime? startDate = null,
             [FromQuery] DateTime? endDate = null,
-            [FromQuery] string? provider = null
-        )
+            [FromQuery] string? provider = null)
         {
-            // TRY TO GET EVENTS
             try
             {
                 // DEFAULT VALUE: 30 DAYS IN THE PAST TO 30 DAYS IN THE FUTURE
@@ -39,32 +53,59 @@ namespace ShowCalendar.API.Controllers
                 if (!services.Any())
                     return NotFound($"No Calendar provider found with name: {provider}");
 
-                var allEvent = new List<CalendarEvent>(); // GET ALL EVENTS
+                var allEvents = new List<CalendarEvent>();
 
                 // GET EVENTS FROM EACH SERVICE
                 foreach (var service in services)
                 {
-                    var events = await service.GetEventsAsync(effectiveStartDate, effectiveEndDate);
-                    allEvent.AddRange(events);
+                    try
+                    {
+                        var events = await service.GetEventsAsync(effectiveStartDate, effectiveEndDate);
+                        allEvents.AddRange(events);
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.LogError(ex, $"Error retrieving events from {service.ProviderName}");
+                        // CONTINUE WITH OTHER PROVIDERS IF ONE FAILS
+                    }
                 }
 
                 return Ok(new
                 {
-                    EventCount = allEvent.Count, // COUNT OF EVENTS
-                    TimeRange = $"From {effectiveStartDate} to {effectiveEndDate}", // SELECTED TIME RANGE
-                    Provider = services.Select(s => s.ProviderName), // SHOW LIST OF PROVIDER SELECTED
-                    Events = allEvent // SHOW ALL EVENTS FROM PROVIDER
+                    EventCount = allEvents.Count,
+                    TimeRange = $"From {effectiveStartDate} to {effectiveEndDate}",
+                    Provider = services.Select(s => s.ProviderName),
+                    ProviderDetails = services.Select(s => new {
+                        Name = s.ProviderName,
+                        Email = s.GetUserEmail()
+                    }),
+                    Events = allEvents
                 });
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Error retrieving calendar events");
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
 
-        // GET PROVIDER ENDPOINT IN LISTS AVAILABLE CALENDAR PROVIDERS
+        // GET STATUS OF ALL PROVIDERS
+        [HttpGet("status")]
+        public ActionResult<object> GetStatus()
+        {
+            var services = _calendarServiceFactory.GetEnabledServices();
+            
+            return Ok(services.Select(s => new
+            {
+                Provider = s.ProviderName,
+                Enabled = s.IsEnabled,
+                Email = s.GetUserEmail()
+            }));
+        }
+
+        // LIST ALL AVAILABLE PROVIDERS
         [HttpGet("providers")]
-        public ActionResult<IEnumerable<string>> GetProvider()
+        public ActionResult<IEnumerable<string>> GetProviders()
         {
             return Ok(_calendarServiceFactory.GetAvailableProviderNames());
         }

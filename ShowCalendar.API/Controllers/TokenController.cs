@@ -7,6 +7,9 @@ using ShowCalendar.API.Models.Providers.Google;
 using ShowCalendar.API.Models.Providers.Apple;
 using ShowCalendar.API.Models.Providers.Microsoft;
 using ShowCalendar.API.Services.Common;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Text.Json;
 
 namespace ShowCalendar.API.Controllers
 {
@@ -33,12 +36,30 @@ namespace ShowCalendar.API.Controllers
 
         // TEST TOKEN ACCESS ENDPOINT
         [HttpGet("test")]
-        public async Task<IActionResult> TestTokenAccess([FromQuery] string accessToken, [FromQuery] string provider = "Google")
+        public async Task<IActionResult> TestTokenAccess([FromQuery] string accessToken, [FromQuery] string provider = "auto")
         {
             // CHECK IF ACCESS TOKEN IS PROVIDED
             if (string.IsNullOrEmpty(accessToken))
             {
                 return BadRequest("Access token is required");
+            }
+
+            // IF PROVIDER IS AUTO OR EMPTY, TRY TO AUTO-DETECT
+            if (provider.ToLowerInvariant() == "auto" || string.IsNullOrWhiteSpace(provider))
+            {
+                var detectionResult = await DetectProviderFromToken(accessToken);
+                if (detectionResult.Success)
+                {
+                    provider = detectionResult.ProviderName;
+                }
+                else
+                {
+                    return BadRequest(new { 
+                        Success = false, 
+                        Error = "Could not automatically detect provider for the given token",
+                        Details = detectionResult.ErrorMessage
+                    });
+                }
             }
 
             // VERIFY PROVIDER EXISTS AND IS ENABLED
@@ -51,10 +72,76 @@ namespace ShowCalendar.API.Controllers
             return provider.ToLowerInvariant() switch
             {
                 "google" => await TestGoogleToken(accessToken),
-                "apple" => await TestAppleToken(accessToken),
+                "apple" => TestAppleToken(accessToken),
                 "microsoft" => await TestMicrosoftToken(accessToken),
                 _ => BadRequest($"Unknown provider: {provider}")
             };
+        }
+
+        // DETECT PROVIDER FROM TOKEN
+        private async Task<(bool Success, string ProviderName, string ErrorMessage)> DetectProviderFromToken(string accessToken)
+        {
+            // LIST OF PROVIDERS TO TRY
+            var providers = _calendarServiceFactory.GetEnabledServices()
+                .Select(s => s.ProviderName.ToLowerInvariant())
+                .Distinct()
+                .ToList();
+
+            var errors = new Dictionary<string, string>();
+
+            // TRY GOOGLE
+            if (providers.Contains("google"))
+            {
+                try
+                {
+                    var credential = GoogleCredential.FromAccessToken(accessToken);
+                    var service = new CalendarService(new BaseClientService.Initializer
+                    {
+                        HttpClientInitializer = credential,
+                        ApplicationName = _googleConfig.Value.ApplicationName
+                    });
+
+                    // TRY A SIMPLE API CALL
+                    await service.CalendarList.List().ExecuteAsync();
+                    return (true, "google", null);
+                }
+                catch (Exception ex)
+                {
+                    errors["google"] = ex.Message;
+                }
+            }
+
+            // TRY MICROSOFT
+            if (providers.Contains("microsoft"))
+            {
+                try
+                {
+                    using var httpClient = new HttpClient();
+                    httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+                    var response = await httpClient.GetAsync("https://graph.microsoft.com/v1.0/me/calendars");
+                    
+                    if (response.IsSuccessStatusCode)
+                    {
+                        return (true, "microsoft", null);
+                    }
+                    
+                    errors["microsoft"] = $"Status code: {response.StatusCode}";
+                }
+                catch (Exception ex)
+                {
+                    errors["microsoft"] = ex.Message;
+                }
+            }
+
+            // APPLE IS CURRENTLY NOT IMPLEMENTED FOR AUTO-DETECTION
+            if (providers.Contains("apple"))
+            {
+                // PLACEHOLDER FOR APPLE TOKEN VALIDATION
+                errors["apple"] = "Apple token validation not implemented for auto-detection";
+            }
+
+            // IF WE GET HERE, NO PROVIDER MATCHED
+            return (false, null, $"Token validation failed for all providers: {JsonSerializer.Serialize(errors)}");
         }
 
         // TEST GOOGLE TOKEN ENDPOINT
@@ -97,7 +184,7 @@ namespace ShowCalendar.API.Controllers
         }
 
         // TEST APPLE TOKEN ENDPOINT
-        private async Task<IActionResult> TestAppleToken(string accessToken)
+        private IActionResult TestAppleToken(string accessToken)
         {
             // THIS IS A PLACEHOLDER IMPLEMENTATION
             if (_appleConfig.Value.Enabled)
@@ -124,24 +211,66 @@ namespace ShowCalendar.API.Controllers
         // TEST MICROSOFT TOKEN ENDPOINT
         private async Task<IActionResult> TestMicrosoftToken(string accessToken)
         {
-            // THIS IS A PLACEHOLDER IMPLEMENTATION
-            if (_microsoftConfig.Value.Enabled)
-            {
-                return Ok(new
-                {
-                    Success = true,
-                    Provider = "Microsoft",
-                    Message = "Token validation is not yet implemented for Microsoft Calendar. This is a placeholder."
-                });
-            }
-            else
+            if (!_microsoftConfig.Value.Enabled)
             {
                 return Ok(new
                 {
                     Success = false,
                     Provider = "Microsoft",
-                    Error = "Microsoft Calendar provider is not enabled",
-                    Note = "This is a placeholder implementation."
+                    Error = "Microsoft Calendar provider is not enabled"
+                });
+            }
+
+            try
+            {
+                // CREATE HTTP CLIENT
+                using var httpClient = new HttpClient();
+                
+                // ADD ACCESS TOKEN TO REQUEST HEADER
+                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+                
+                // MAKE REQUEST TO MICROSOFT GRAPH API TO GET CALENDARS
+                var response = await httpClient.GetAsync("https://graph.microsoft.com/v1.0/me/calendars");
+                
+                if (response.IsSuccessStatusCode)
+                {
+                    var content = await response.Content.ReadAsStringAsync();
+                    var calendarData = JsonSerializer.Deserialize<JsonElement>(content);
+                    int calendarCount = 0;
+                    
+                    if (calendarData.TryGetProperty("value", out var calendars))
+                    {
+                        calendarCount = calendars.GetArrayLength();
+                    }
+                    
+                    return Ok(new
+                    {
+                        Success = true,
+                        Provider = "Microsoft",
+                        CalendarCount = calendarCount,
+                        Message = "Authentication successful with access token"
+                    });
+                }
+                else
+                {
+                    var errorContent = await response.Content.ReadAsStringAsync();
+                    return StatusCode((int)response.StatusCode, new
+                    {
+                        Success = false,
+                        Provider = "Microsoft",
+                        Error = $"API request failed with status {response.StatusCode}",
+                        Details = errorContent
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new
+                {
+                    Success = false,
+                    Provider = "Microsoft",
+                    Error = ex.Message,
+                    StackTrace = ex.StackTrace
                 });
             }
         }
