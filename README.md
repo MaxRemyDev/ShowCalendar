@@ -1,17 +1,26 @@
-# SHOWCALENDAR
+<h1 align="center">
+  <strong>SHOWCALENDAR</strong>
+</h1>
 
-[VERSION_BADGE]: https://img.shields.io/badge/version-WIP-blue.svg
-[LICENSE_BADGE]: https://img.shields.io/badge/license-MIT-blue.svg
-[LICENSE_URL]: LICENSE
-[TOTAL_STABILITY]: https://img.shields.io/badge/Total%20Stability-100%25-blue
-[CHANGELOG_BADGE]: https://img.shields.io/badge/CHANGELOG-blue.svg
-[CHANGELOG_URL]: CHANGELOG.md
-[TODO_BADGE]: https://img.shields.io/badge/TODO-blue.svg
-[TODO_URL]: TODO.md
-[DOCS_BADGE]: https://img.shields.io/badge/DOCS-blue.svg
-[DOCS_URL]: docs/
+<p align="center">
+  <a href="https://img.shields.io/badge/version-WIP-blue.svg">
+    <img src="https://img.shields.io/badge/version-WIP-blue.svg" alt="Version" />
+  </a>
+  <a href="LICENSE">
+    <img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License" />
+  </a>
+  <img src="https://img.shields.io/badge/Total%20Stability-100%25-blue" alt="Total Stability" />
+  <a href="CHANGELOG.md">
+    <img src="https://img.shields.io/badge/CHANGELOG-blue.svg" alt="CHANGELOG" />
+  </a>
+  <a href="TODO.md">
+    <img src="https://img.shields.io/badge/TODO-blue.svg" alt="TODO" />
+  </a>
+  <a href="docs/">
+    <img src="https://img.shields.io/badge/DOCS-blue.svg" alt="Documentation" />
+  </a>
+</p>
 
-![Version][VERSION_BADGE] [![License][LICENSE_BADGE]][LICENSE_URL] ![Stability][TOTAL_STABILITY] [![CHANGELOG][CHANGELOG_BADGE]][CHANGELOG_URL] [![TODO][TODO_BADGE]][TODO_URL] [![Documentation][DOCS_BADGE]][DOCS_URL]
 
 **ShowCalendar** is an open-source solution designed to integrate your personal and professional calendars into a **fully customizable** structure.  
 Unlike standard scheduling tools, ShowCalendar offers you **total freedom**: adapt the UI, customize internal workflows, control hosting (self-hosted or managed), and design a completely tailored calendar experience.
