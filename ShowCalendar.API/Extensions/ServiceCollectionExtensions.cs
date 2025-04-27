@@ -70,6 +70,8 @@ namespace ShowCalendar.API.Extensions
                 // LOAD FROM ENVIRONMENT VARIABLES OR CONFIG
                 config.ClientId = Environment.GetEnvironmentVariable("MS_CLIENT_ID") ?? string.Empty;
                 config.ClientSecret = Environment.GetEnvironmentVariable("MS_CLIENT_SECRET") ?? string.Empty;
+                config.TenantId = Environment.GetEnvironmentVariable("MS_TENANT_ID") ?? string.Empty;
+                config.ApplicationName = Environment.GetEnvironmentVariable("MS_APPLICATION_NAME") ?? string.Empty;
                 config.RefreshToken = Environment.GetEnvironmentVariable("MS_REFRESH_TOKEN") ?? string.Empty;
                 
                 // ENABLED STATE FROM CONFIG OR ENVIRONMENT VARIABLE
@@ -86,6 +88,9 @@ namespace ShowCalendar.API.Extensions
             services.AddScoped<ICalendarService, GoogleCalendarService>();
             services.AddScoped<ICalendarService, AppleCalendarService>();
             services.AddScoped<ICalendarService, MicrosoftCalendarService>();
+            
+            // REGISTER AUTH SERVICES
+            services.AddScoped<MicrosoftAuthService>();
         }
     }
 }
